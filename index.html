@@ -2154,6 +2154,16 @@ function donLetterAvatar(name, index) {
   return `<div class="don-top-letter" style="background:${color}">${letter}</div>`;
 }
 
+// Fallback seguro para cuando Gravatar no encuentra imagen
+// Usa el DOM directamente — evita el bug de comillas en onerror inline
+function donAvatarFallback(img, name, idx) {
+  const div = document.createElement('div');
+  div.className = 'don-top-letter';
+  div.style.background = DON_AVATAR_COLORS[idx % DON_AVATAR_COLORS.length];
+  div.textContent = (name || '?')[0].toUpperCase();
+  img.parentNode.replaceChild(div, img);
+}
+
 async function donLoadTop() {
   const container = document.getElementById('don-top-list');
   if (!container) return;
@@ -2168,7 +2178,7 @@ async function donLoadTop() {
     container.innerHTML = donors.slice(0, 20).map((d, i) => {
       const rank = ranks[i] || `#${i + 1}`;
       const avatar = d.email_hash
-        ? `<img class="don-top-avatar" src="https://www.gravatar.com/avatar/${d.email_hash}?s=72&d=404" alt="${d.name}" onerror="this.outerHTML=\`${donLetterAvatar(d.name, i)}\`;">`
+        ? `<img class="don-top-avatar" src="https://www.gravatar.com/avatar/${d.email_hash}?s=72&d=404" alt="" onerror="donAvatarFallback(this,${JSON.stringify(d.name)},${i})">`
         : donLetterAvatar(d.name, i);
       return `<div class="don-top-item">
         <span class="don-top-rank">${rank}</span>
