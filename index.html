@@ -1946,6 +1946,35 @@ function donCopy() {
   });
 }
 
+const DON_MOBILE_WALLETS = [
+  { name: 'MetaMask',     icon: 'images/MetaMask-icon-fox.svg',         url: 'https://metamask.app.link/dapp/anonimustradelive.com' },
+  { name: 'Trust Wallet', icon: 'images/Trust_Stacked Logo_Green.svg',  url: 'https://link.trustwallet.com/open_url?coin_id=20000714&url=https://anonimustradelive.com' },
+];
+
+function donIsMobile() {
+  return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+
+function donShowMobileWallets() {
+  document.getElementById('don-picker-overlay')?.remove();
+  const overlay = document.createElement('div');
+  overlay.id = 'don-picker-overlay';
+  overlay.className = 'don-modal-overlay';
+  overlay.innerHTML = `
+    <div class="don-modal">
+      <div class="don-modal-title">Abrir con tu cartera</div>
+      <p style="font-size:0.7rem;color:var(--text-muted);line-height:1.5;margin-bottom:0.25rem;">Abre la página dentro del navegador de tu cartera para conectar y donar.</p>
+      ${DON_MOBILE_WALLETS.map(w => `
+        <a class="don-wallet-btn" href="${w.url}" target="_blank" rel="noopener" style="text-decoration:none;">
+          <img src="${w.icon}" style="width:24px;height:24px;object-fit:contain;">
+          <span>${w.name}</span>
+        </a>`).join('')}
+      <button class="don-modal-cancel" onclick="donClosePicker()">Cancelar</button>
+    </div>`;
+  overlay.addEventListener('click', e => { if (e.target === overlay) donClosePicker(); });
+  document.body.appendChild(overlay);
+}
+
 function donGetProviders() {
   if (!window.ethereum) return [];
   if (window.ethereum.providers && window.ethereum.providers.length > 0)
@@ -2003,7 +2032,10 @@ async function donWeb3() {
   const amountRaw = parseFloat(document.getElementById('don-amount').value);
   status.style.color = 'var(--text-muted)';
   if (!amountRaw || amountRaw <= 0) { status.textContent = 'Ingresa un monto válido.'; return; }
-  if (!window.ethereum) { status.textContent = 'No se detectó cartera Web3. Instala MetaMask o Trust Wallet.'; return; }
+  if (!window.ethereum) {
+    if (donIsMobile()) { donShowMobileWallets(); } else { status.textContent = 'No se detectó cartera Web3. Instala MetaMask o Trust Wallet.'; }
+    return;
+  }
   const providers = donGetProviders();
   if (providers.length > 1) { donShowPicker(providers); } else { donConnectWith(providers[0]); }
 }
