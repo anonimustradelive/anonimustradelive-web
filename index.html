@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnonimusTrade Live</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #C0112B;
+    --red-dark: #8B0D1F;
+    --red-light: #E8153A;
+    --black: #080810;
+    --black2: #0E0E18;
+    --black3: #14141F;
+    --black4: #1A1A28;
+    --white: #F0EFFF;
+    --purple: #7C3AED;
+    --purple-dark: #4C1D95;
+    --purple-mid: #6D28D9;
+    --purple-light: #A78BFA;
+    --purple-glow: rgba(124,58,237,0.18);
+    --gray: #252535;
+    --gray2: #333348;
+    --text-muted: #7070A0;
+    --green: #22C55E;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: var(--black);
+    color: var(--white);
+    overflow-x: hidden;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 2px; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 5vw;
+    height: 64px;
+    background: rgba(8,8,16,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(124,58,237,0.18);
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .nav-logo img { height: 32px; filter: invert(0); }
+  .nav-logo span {
+    font-size: 0.8rem; font-weight: 700; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--white);
+  }
+  .nav-logo .live-glow {
+    animation: liveGlow 2s ease-in-out infinite;
+  }
+  @keyframes liveGlow {
+    0%, 100% { 
+      color: var(--red); 
+      text-shadow: 0 0 8px rgba(192,17,43,0.6), 0 0 16px rgba(192,17,43,0.4);
+    }
+    50% { 
+      color: var(--red-light); 
+      text-shadow: 0 0 12px rgba(192,17,43,0.9), 0 0 24px rgba(192,17,43,0.6), 0 0 36px rgba(192,17,43,0.3);
+    }
+  }
+  .nav-logo span .live-glow {
+    color: var(--red);
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+  @keyframes glow-pulse {
+    0%, 100% { 
+      text-shadow: 0 0 5px rgba(192,17,43,0.4), 0 0 10px rgba(192,17,43,0.3), 0 0 15px rgba(192,17,43,0.2);
+    }
+    50% { 
+      text-shadow: 0 0 10px rgba(192,17,43,0.8), 0 0 20px rgba(192,17,43,0.6), 0 0 30px rgba(192,17,43,0.4);
+    }
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    color: var(--text-muted); text-decoration: none;
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--purple-light); }
+  .nav-cta {
+    background: var(--purple); color: var(--white);
+    padding: 8px 20px; border-radius: 3px;
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    text-decoration: none; transition: background 0.2s;
+  }
+  .nav-cta:hover { background: var(--purple-mid); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex; align-items: center;
+    position: relative; overflow: hidden;
+    padding: 80px 5vw 0;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 60% at 65% 50%, rgba(109,40,217,0.14) 0%, transparent 70%),
+                radial-gradient(ellipse 35% 45% at 10% 90%, rgba(192,17,43,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 25% 30% at 90% 10%, rgba(124,58,237,0.07) 0%, transparent 60%);
+  }
+  .hero-grid {
+    position: absolute; inset: 0; opacity: 0.03;
+    background-image: linear-gradient(var(--white) 1px, transparent 1px),
+                      linear-gradient(90deg, var(--white) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .hero-content {
+    position: relative; z-index: 2;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 4rem; align-items: center; width: 100%;
+    max-width: 1200px; margin: 0 auto;
+  }
+  .hero-text { }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(124,58,237,0.1); border: 1px solid rgba(124,58,237,0.28);
+    padding: 6px 14px; border-radius: 2px; margin-bottom: 2rem;
+  }
+  .hero-badge .dot { width: 6px; height: 6px; background: var(--purple-light); border-radius: 50%; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+  .hero-badge span { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--purple-light); }
+  .hero-title {
+    font-size: clamp(2.8rem, 5vw, 5rem);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+  }
+  .hero-title .line1 { display: block; color: var(--white); }
+  .hero-title .line2 { display: block; color: var(--red); font-style: italic; }
+  .hero-title .line3 { display: block; color: var(--white); font-size: 0.45em; font-weight: 300; letter-spacing: 0.05em; margin-top: 0.5rem; }
+  .hero-sub {
+    font-size: 0.9rem; line-height: 1.8; color: var(--text-muted);
+    font-weight: 400; max-width: 480px; margin-bottom: 2.5rem;
+  }
+  .hero-sub strong { color: var(--white); font-weight: 600; }
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--red); color: var(--white);
+    padding: 14px 32px; border-radius: 3px;
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    text-decoration: none; transition: all 0.2s; border: none; cursor: pointer;
+  }
+  .btn-primary:hover { background: var(--red-light); transform: translateY(-2px); }
+  .btn-ghost {
+    background: transparent; color: var(--white);
+    padding: 14px 32px; border-radius: 3px;
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    text-decoration: none; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.15);
+  }
+  .btn-ghost:hover { border-color: var(--red); color: var(--red); }
+  .hero-visual {
+    position: relative; display: flex; justify-content: center; align-items: flex-end;
+  }
+  .hero-photos {
+    display: flex; gap: 1.5rem; align-items: flex-end;
+    position: relative;
+  }
+  .hero-photo-wrap {
+    position: relative;
+  }
+  .hero-photo-wrap img {
+    width: 220px; height: 320px; object-fit: cover; object-position: top;
+    border-radius: 4px;
+    filter: grayscale(20%);
+  }
+  .hero-photo-wrap:first-child {
+    transform: translateY(20px);
+  }
+  .hero-photo-wrap .photo-label {
+    position: absolute; bottom: -28px; left: 0; right: 0;
+    text-align: center;
+    font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .hero-photo-wrap .photo-label span { color: var(--red); }
+  .hero-logo-big {
+    position: absolute; top: -40px; right: -20px;
+    width: 80px; opacity: 0.08;
+    pointer-events: none;
+  }
+
+  /* ── SECTION BASE ── */
+  section { padding: 100px 5vw; }
+  .section-label {
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--purple-light); margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 900; line-height: 1.1;
+    letter-spacing: -0.02em; margin-bottom: 1.5rem;
+  }
+  .section-sub {
+    font-size: 0.9rem; color: var(--text-muted); line-height: 1.8;
+    max-width: 600px;
+  }
+  .divider { width: 40px; height: 3px; background: var(--purple); margin: 1.5rem 0; }
+  .max-w { max-width: 1200px; margin: 0 auto; }
+
+  /* ── NOSOTROS ── */
+  #nosotros { background: var(--black2); }
+  .hosts-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 3rem; margin-top: 4rem;
+  }
+  .host-card {
+    display: grid; grid-template-columns: 180px 1fr;
+    gap: 2rem; align-items: start;
+    border: 1px solid var(--gray); padding: 2rem; border-radius: 4px;
+    transition: border-color 0.3s;
+  }
+  .host-card:hover { border-color: rgba(192,17,43,0.4); }
+  .host-photo {
+    width: 180px; height: 220px; object-fit: cover; object-position: top;
+    border-radius: 3px; filter: grayscale(20%);
+  }
+  .host-name {
+    font-size: 1.3rem; font-weight: 800; line-height: 1.2; margin-bottom: 0.25rem;
+  }
+  .host-role {
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--red); margin-bottom: 1rem;
+  }
+  .host-bio {
+    font-size: 0.82rem; color: var(--text-muted); line-height: 1.8;
+  }
+  .host-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; }
+  .tag {
+    font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 4px 10px; border: 1px solid var(--gray2); border-radius: 2px; color: var(--text-muted);
+  }
+
+  /* ── FOREX CLOCK ── */
+  #sesiones { background: var(--black); }
+  .clock-container {
+    margin-top: 3rem;
+    border: 1px solid var(--gray); border-radius: 6px; overflow: hidden;
+  }
+  .clock-header {
+    background: var(--black3); padding: 1.5rem 2rem;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--gray);
+  }
+  .clock-time-display {
+    font-size: 1.8rem; font-weight: 800; letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .clock-time-display span { color: var(--red); }
+  .clock-date { font-size: 0.72rem; color: var(--text-muted); font-weight: 500; margin-top: 2px; }
+  .tz-selector { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+  .tz-selector label { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; }
+  .tz-selector select {
+    background: var(--gray); color: var(--white); border: 1px solid var(--gray2);
+    padding: 6px 12px; border-radius: 3px; font-family: inherit; font-size: 0.75rem;
+    cursor: pointer;
+  }
+  .clock-controls { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+  .btn-time-format {
+    background: transparent; color: var(--text-muted);
+    border: 1px solid var(--gray2); border-radius: 3px;
+    padding: 6px 14px; font-family: inherit; font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.08em; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-time-format:hover { border-color: var(--purple-light); color: var(--purple-light); }
+  .btn-time-format.active { background: var(--purple); border-color: var(--purple); color: var(--white); }
+  .sessions-list { padding: 1.5rem 2rem; display: flex; flex-direction: column; gap: 1rem; }
+  .session-row {
+    display: grid; grid-template-columns: 140px 1fr 120px;
+    align-items: center; gap: 1.5rem;
+  }
+  .session-info { }
+  .session-name { font-size: 0.85rem; font-weight: 700; }
+  .session-local-time { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+  .session-bar-wrap {
+    position: relative; height: 28px;
+    background-color: var(--black3);
+    background-image: linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size: calc(100% / 24) 100%;
+    border-radius: 3px; overflow: hidden;
+  }
+  .session-bar {
+    position: absolute; height: 100%; border-radius: 3px; transition: all 0.3s;
+    opacity: 0.85;
+  }
+  .session-bar.sydney  { background: linear-gradient(90deg, #3B82F6, #1D4ED8); }
+  .session-bar.tokyo   { background: linear-gradient(90deg, #A855F7, #7C3AED); }
+  .session-bar.london  { background: linear-gradient(90deg, #EAB308, #CA8A04); }
+  .session-bar.ny      { background: linear-gradient(90deg, #22C55E, #15803D); }
+  .session-current-time {
+    position: absolute; top: 0; width: 2px; height: 100%;
+    background: var(--red); z-index: 2;
+    box-shadow: 0 0 6px rgba(192,17,43,0.8);
+  }
+  .session-status {
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 2px; text-align: center;
+  }
+  .status-open { background: rgba(34,197,94,0.15); color: #22C55E; border: 1px solid rgba(34,197,94,0.3); }
+  .status-closed { background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid var(--gray); }
+  .timeline-hours {
+    padding: 0 2rem 0.75rem;
+    display: grid; grid-template-columns: 140px 1fr 120px;
+    gap: 1.5rem;
+  }
+  .hours-track {
+    display: grid;
+    grid-template-columns: repeat(24, 1fr);
+    border-top: 1px solid var(--gray);
+    padding-top: 0.4rem; padding-bottom: 0.5rem;
+  }
+  .hours-track span {
+    font-size: 0.55rem; color: var(--text-muted); font-weight: 600;
+    font-variant-numeric: tabular-nums; text-align: left;
+  }
+  .overlap-banner {
+    margin: 0 2rem 1.5rem;
+    background: rgba(192,17,43,0.08); border: 1px solid rgba(192,17,43,0.2);
+    border-radius: 3px; padding: 0.75rem 1.25rem;
+    display: flex; gap: 1rem; align-items: center;
+  }
+  .overlap-banner .ob-dot { width: 8px; height: 8px; background: var(--red); border-radius: 50%; flex-shrink: 0; animation: pulse 1.5s infinite; }
+  .overlap-banner p { font-size: 0.72rem; color: var(--text-muted); line-height: 1.6; }
+  .overlap-banner strong { color: var(--white); }
+
+  /* ── TIER LIST ── */
+  #brokers, #exchanges { background: var(--black2); }
+  #propfirms { background: var(--black); }
+  .exchange-sub-title { font-size: 1rem; font-weight: 800; color: var(--white); margin: 0 0 0.2rem; letter-spacing: -0.01em; }
+  .exchange-sub-desc { font-size: 0.7rem; color: var(--text-muted); margin: 0 0 0.5rem; }
+  .exchanges-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem; align-items: start; }
+  .exchanges-col .tier-container { margin-top: 0.75rem; }
+  @media (max-width: 720px) { .exchanges-grid { grid-template-columns: 1fr; } }
+  .tier-container { margin-top: 3rem; }
+  .tier-row {
+    display: flex; gap: 0; margin-bottom: 4px; border-radius: 4px; overflow: hidden;
+    border: 1px solid var(--gray);
+  }
+  .tier-label {
+    width: 64px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; font-weight: 900; letter-spacing: -0.02em;
+  }
+  .tier-s  .tier-label { background: #FF4444; }
+  .tier-a  .tier-label { background: #FF8C00; }
+  .tier-b  .tier-label { background: #FFD700; color: #111; }
+  .tier-c  .tier-label { background: #4CAF50; }
+  .tier-d  .tier-label { background: #2196F3; }
+  .tier-items {
+    flex: 1; padding: 8px; display: flex; gap: 8px; flex-wrap: wrap;
+    background: var(--black3); align-items: center;
+  }
+  .tier-card {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    background: var(--gray); border-radius: 4px; padding: 10px 14px;
+    cursor: pointer; text-decoration: none; color: var(--white);
+    transition: all 0.2s; border: 1px solid transparent; min-width: 90px;
+  }
+  .tier-card:hover { border-color: var(--red); transform: translateY(-2px); background: var(--gray2); }
+  .tier-card-name { font-size: 0.65rem; font-weight: 700; text-align: center; }
+  .tier-card-badge {
+    font-size: 0.55rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 2px 6px; border-radius: 2px; background: var(--purple-glow); color: var(--purple-light);
+  }
+  /* Tier card — vista detallada */
+  .tier-card { align-items: flex-start; min-width: 130px; }
+  .tier-card-name { font-size: 0.82rem; text-align: left; }
+  .tier-legend { display: flex; gap: 1.25rem; flex-wrap: wrap; margin: 1.5rem 0 0.5rem; }
+  .tier-legend-item { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; display: flex; align-items: center; gap: 5px; color: var(--text-muted); }
+  .tier-legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .tld-reg   { background: #60A5FA; }
+  .tld-plat  { background: #4ADE80; }
+  .tld-trait { background: #94A3B8; }
+  .tld-fee   { background: #F87171; }
+  .tier-desc { font-size: 0.72rem; color: var(--text-muted); margin: 10px 0 4px; padding-left: 2px; letter-spacing: 0.02em; }
+  .tc-regs { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+  .tc-reg { font-size: 0.58rem; font-weight: 700; padding: 2px 6px; border-radius: 2px; background: rgba(59,130,246,0.18); color: #60A5FA; letter-spacing: 0.04em; }
+  .tc-meta { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+  .tc-platforms { font-size: 0.58rem; font-weight: 700; padding: 2px 6px; border-radius: 2px; background: rgba(34,197,94,0.18); color: #4ADE80; letter-spacing: 0.04em; }
+  .tc-trait { font-size: 0.58rem; font-weight: 600; padding: 2px 6px; border-radius: 2px; background: rgba(148,163,184,0.12); color: #94A3B8; letter-spacing: 0.04em; }
+  .tc-fee { font-size: 0.58rem; font-weight: 700; padding: 2px 6px; border-radius: 2px; background: rgba(239,68,68,0.18); color: #F87171; letter-spacing: 0.04em; }
+  .tier-note {
+    font-size: 0.7rem; color: var(--text-muted); margin-top: 1.5rem; line-height: 1.6;
+    padding: 1rem 1.5rem; border-left: 2px solid var(--red); background: rgba(192,17,43,0.04);
+  }
+
+  /* ── INDICADORES ── */
+  #indicadores { background: var(--black2); }
+  .indicators-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 2rem; margin-top: 3rem;
+  }
+  .indicator-card {
+    border: 1px solid var(--gray); border-radius: 6px; overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .indicator-card:hover { border-color: rgba(192,17,43,0.4); }
+  .indicator-preview {
+    width: 100%; height: 200px; object-fit: cover; object-position: top;
+    display: block; border-bottom: 1px solid var(--gray);
+  }
+  .indicator-body { padding: 1.5rem; }
+  .indicator-tag {
+    font-size: 0.58rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--purple-light); margin-bottom: 0.75rem;
+  }
+  .indicator-name { font-size: 1.1rem; font-weight: 800; margin-bottom: 0.75rem; line-height: 1.3; }
+  .indicator-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 1.25rem; }
+  .indicator-features { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.25rem; }
+  .indicator-feat {
+    font-size: 0.72rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem;
+  }
+  .indicator-feat::before { content: ''; width: 4px; height: 4px; background: var(--red); border-radius: 50%; flex-shrink: 0; }
+  .indicator-actions { display: flex; gap: 0.75rem; }
+  .btn-indicator {
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 8px 16px; border-radius: 3px; text-decoration: none; transition: all 0.2s;
+  }
+  .btn-ind-primary {
+    background: var(--purple); color: var(--white); border: none;
+  }
+  .btn-ind-primary:hover { background: var(--purple-light); }
+  .btn-ind-ghost {
+    background: transparent; color: var(--text-muted); border: 1px solid var(--gray2);
+  }
+  .btn-ind-ghost:hover { color: var(--white); border-color: var(--white); }
+
+  /* ── SOCIALS ── */
+  #comunidad { background: var(--black); text-align: center; }
+  .social-grid {
+    display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin-top: 3rem;
+  }
+  .social-card {
+    display: flex; flex-direction: column; align-items: center; gap: 0.75rem;
+    padding: 2rem 2.5rem; border: 1px solid var(--gray); border-radius: 4px;
+    text-decoration: none; color: var(--white); transition: all 0.3s; min-width: 140px;
+  }
+  .social-card:hover { border-color: var(--red); transform: translateY(-4px); }
+  .social-icon { width: 2.5rem; height: 2.5rem; object-fit: contain; }
+  .social-name { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+  .social-handle { font-size: 0.65rem; color: var(--text-muted); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--black2); border-top: 1px solid var(--gray);
+    padding: 3rem 5vw; text-align: center;
+  }
+  .footer-logo { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 1.5rem; }
+  .footer-logo img { height: 28px; }
+  .footer-logo span { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; }
+  .footer-text { font-size: 0.7rem; color: var(--text-muted); line-height: 1.8; }
+  .footer-disclaimer {
+    font-size: 0.62rem; color: #555; margin-top: 1.5rem; line-height: 1.6; max-width: 600px; margin-left: auto; margin-right: auto;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+  .fade-up { animation: fadeUp 0.7s ease forwards; }
+  .delay-1 { animation-delay: 0.1s; opacity:0; }
+  .delay-2 { animation-delay: 0.25s; opacity:0; }
+  .delay-3 { animation-delay: 0.4s; opacity:0; }
+  .delay-4 { animation-delay: 0.55s; opacity:0; }
+
+  /* ── RESPONSIVE ── */
+  @media(max-width: 768px) {
+    .hero-content { grid-template-columns: 1fr; }
+    .hero-visual { display: none; }
+    .hosts-grid { grid-template-columns: 1fr; }
+    .host-card { grid-template-columns: 1fr; }
+    .host-photo { width: 100%; height: 200px; }
+    .session-row { grid-template-columns: 100px 1fr 80px; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#hero">
+    <img src="images/logo.png" alt="AT Logo">
+    <span>AnonimusTrade<span class="live-glow"> Live</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#nosotros">nosotros</a></li>
+    <li><a href="#sesiones">sesiones</a></li>
+    <li><a href="#brokers">brokers</a></li>
+    <li><a href="#propfirms">prop firms</a></li>
+    <li><a href="#exchanges">exchanges</a></li>
+    <li><a href="#indicadores">indicadores</a></li>
+    <li><a href="#comunidad">comunidad</a></li>
+  </ul>
+  <a class="nav-cta" href="https://wa.me/18495683020?text=Hola%2C%20estoy%20interesado%20en%20entrar%20a%20la%20comunidad%20de%20AnonimusTrade%20Live." target="_blank" rel="noopener">únete</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-text">
+      <div class="hero-badge fade-up"><div class="dot"></div><span>en vivo lunes a viernes · 9:00 AM EST</span></div>
+      <h1 class="hero-title fade-up delay-1">
+        <span class="line1">AnonimusTrade</span>
+        <span class="line2">Live.</span>
+        <span class="line3">Trading transparente · Entradas en vivo · Comunidad gratuita · 0% humo.</span>
+      </h1>
+      <p class="hero-sub fade-up delay-2">
+        Dos traders dominicanos. Una misión: derrocar el sistema de vendehumos de República Dominicana, no atacándolos, sino predicando con el ejemplo. <strong>Sin humo, sin promesas vacías.</strong><br><br>
+        Creemos que Dios pone todo en su lugar. <em>"Porque nada hay encubierto, que no haya de descubrirse; ni oculto, que no haya de saberse."</em> — Lucas 12:2
+      </p>
+      <div class="hero-actions fade-up delay-3">
+        <a class="btn-primary" href="https://wa.me/18495683020?text=Hola%2C%20estoy%20interesado%20en%20entrar%20a%20la%20comunidad%20de%20AnonimusTrade%20Live." target="_blank" rel="noopener" style="background:var(--purple);" onmouseover="this.style.background='var(--purple-mid)'" onmouseout="this.style.background='var(--purple)'">entrar a la comunidad</a>
+        <a class="btn-primary" href="https://www.youtube.com/@anonimustradelive?sub_confirmation=1" target="_blank" rel="noopener">ver sesiones en vivo</a>
+      </div>
+    </div>
+    <div class="hero-visual fade-up delay-4">
+      <img class="hero-logo-big" src="images/logo.png" alt="">
+      <div class="hero-photos">
+        <div class="hero-photo-wrap">
+          <img src="images/img_03.png" alt="Richard">
+          <p class="photo-label">richard <span>cejas</span></p>
+        </div>
+        <div class="hero-photo-wrap" style="transform:translateY(-20px);">
+          <img src="images/img_04.png" alt="Ridolfi">
+          <p class="photo-label">ridolfi <span>mosquea</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NOSOTROS -->
+<section id="nosotros">
+  <div class="max-w">
+    <p class="section-label">Detrás de la pantalla</p>
+    <h2 class="section-title">Dos traders.<br>Una misión.</h2>
+    <div class="divider"></div>
+    <p class="section-sub">Mostrar que no es necesario vender humo para tener una comunidad de trading pública, rentable y saludable. No somos gurús. Somos traders que operan en vivo, cometen errores en pantalla y aprenden en tiempo real junto a la comunidad.</p>
+    <div class="hosts-grid">
+      <div class="host-card">
+        <img class="host-photo" src="images/img_03.png" alt="Richard Cejas">
+        <div>
+          <h3 class="host-name">Richard<br>Cejas Rodríguez</h3>
+          <p class="host-role">Fundador · Analista · Dev</p>
+          <p class="host-bio">Trader enfocado en quiebres de estructura y retrocesos de Fibonacci. Desarrollador de indicadores para la comunidad de AnonimusTrade. Background en criptomonedas. Su fuerte es la psicología del trading — cree que entender la mente del trader es tan importante como entender el mercado.</p>
+          <div class="host-tags">
+            <span class="tag">Fibonacci</span>
+            <span class="tag">XAU</span>
+            <span class="tag">SP500</span>
+            <span class="tag">NQ100</span>
+            <span class="tag">Forex</span>
+          </div>
+        </div>
+      </div>
+      <div class="host-card">
+        <img class="host-photo" src="images/img_04.png" alt="Ridolfi Mosquea">
+        <div>
+          <h3 class="host-name">Ridolfi<br>Mosquea de Aza</h3>
+          <p class="host-role">Cofundador · Estratega · Analista</p>
+          <p class="host-bio">Trader con enfoque en gestión de riesgo y consistencia. Convencido de que el 80% del trading es psicología. Su approach al trading es agresivo, pero se esfuerza constantemente por controlar el riesgo y sus emociones. Su objetivo: que la comunidad tenga el contexto correcto antes de abrir cada operación.</p>
+          <div class="host-tags">
+            <span class="tag">Risk Management</span>
+            <span class="tag">Psicología</span>
+            <span class="tag">Prop Firms</span>
+            <span class="tag">Oro / XAUUSD</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SESIONES FOREX -->
+<section id="sesiones">
+  <div class="max-w">
+    <p class="section-label">¿Cuándo opera el mundo?</p>
+    <h2 class="section-title">Reloj de<br>sesiones Forex.</h2>
+    <div class="divider"></div>
+    <p class="section-sub">Visualiza en tiempo real qué sesiones están abiertas ahora mismo y cuándo se producen los solapamientos de mayor volumen. Ajusta tu zona horaria.</p>
+    <div class="clock-container">
+      <div class="clock-header">
+        <div>
+          <div class="clock-time-display" id="clockDisplay">--<span>:</span>--<span>:</span>--</div>
+          <div class="clock-date" id="clockDate">cargando...</div>
+        </div>
+        <div class="clock-controls">
+          <div class="tz-selector">
+            <label>zona horaria:</label>
+            <select id="tzSelect" onchange="savePrefs(); updateClock()">
+            <option value="America/New_York">Nueva York (ET)</option>
+            <option value="America/Santo_Domingo" selected>Santo Domingo (AST)</option>
+            <option value="Europe/London">Londres (GMT/BST)</option>
+            <option value="Europe/Madrid">Madrid (CET/CEST)</option>
+            <option value="America/Mexico_City">Ciudad de México (CST)</option>
+            <option value="America/Bogota">Bogotá (COT)</option>
+            <option value="America/Lima">Lima (PET)</option>
+            <option value="America/Santiago">Santiago (CLT)</option>
+            <option value="America/Buenos_Aires">Buenos Aires (ART)</option>
+            <option value="Asia/Tokyo">Tokio (JST)</option>
+            <option value="Australia/Sydney">Sídney (AEST)</option>
+          </select>
+          </div>
+          <button class="btn-time-format active" id="timeFormatBtn" onclick="toggleTimeFormat()">24H</button>
+          <button class="btn-time-format active" id="dstBtn" onclick="toggleDST()">DST ON</button>
+        </div>
+      </div>
+      <div class="sessions-list" id="sessionsList">
+        <!-- generated by JS -->
+      </div>
+      <div class="timeline-hours">
+        <div></div>
+        <div class="hours-track" id="hoursTrack"></div>
+        <div></div>
+      </div>
+      <div class="overlap-banner">
+        <div class="ob-dot"></div>
+        <p id="overlapText">cargando estado de sesiones...</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BROKERS TIER LIST -->
+<section id="brokers">
+  <div class="max-w">
+    <p class="section-label">Nuestra opinión honesta</p>
+    <h2 class="section-title">Tier list<br>de brokers.</h2>
+    <div class="divider"></div>
+    <p class="section-sub">Clasificación basada en experiencia real. Spread, ejecución, regulación, soporte. Sin patrocinios que distorsionen la opinión.</p>
+    <div class="tier-legend">
+      <div class="tier-legend-item"><span class="tier-legend-dot tld-reg"></span>Regulación</div>
+      <div class="tier-legend-item"><span class="tier-legend-dot tld-plat"></span># Plataformas</div>
+      <div class="tier-legend-item"><span class="tier-legend-dot tld-trait"></span>Rasgo notable</div>
+      <div class="tier-legend-item"><span class="tier-legend-dot tld-fee"></span>Comisión / limitación</div>
+    </div>
+    <div class="tier-container">
+
+      <p class="tier-desc">S — Regulación élite, suite completa de plataformas, sin comisiones</p>
+      <div class="tier-row tier-s">
+        <div class="tier-label">S</div>
+        <div class="tier-items">
+          <a class="tier-card" href="#" target="_blank">
+            <span class="tier-card-name">Pepperstone</span>
+            <div class="tc-regs">
+              <span class="tc-reg">FCA</span><span class="tc-reg">ASIC</span><span class="tc-reg">BaFIN</span><span class="tc-reg">CySEC</span><span class="tc-reg">CMA</span><span class="tc-reg">DFSA</span>
+            </div>
+            <div class="tc-meta">
+              <span class="tc-platforms">5 plataformas</span>
+              <span class="tc-trait">Crypto ✓ · Sin comisiones</span>
+            </div>
+          </a>
+          <a class="tier-card" href="#" target="_blank">
+            <span class="tier-card-name">IC Markets</span>
+            <div class="tc-regs">
+              <span class="tc-reg">CySEC</span><span class="tc-reg">ASIC</span><span class="tc-reg">FSCA</span>
+            </div>
+            <div class="tc-meta">
+              <span class="tc-platforms">5 plataformas</span>
+              <span class="tc-trait">Crypto ✓ · Mín. $200</span>
+            </div>
+          </a>
+          <a class="tier-card" href="#" target="_blank">
+            <span class="tier-card-name">Tickmill</span>
+            <div class="tc-regs">
+              <span class="tc-reg">FCA</span><span class="tc-reg">CySEC</span><span class="tc-reg">FSCA</span><span class="tc-reg">FSA</span>
+            </div>
+            <div class="tc-meta">
+              <span class="tc-platforms">4 plataformas</span>
+              <span class="tc-trait">Crypto ✓ · Apalancamiento 1000x</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <p class="tier-desc">A — Regulación sólida, amplia selección de plataformas, inconvenientes menores</p>
+      <div class="tier-row tier-a">
+        <div class="tier-label">A</div>
+        <div class="tier-items">
+          <a class="tier-card" href="#" target="_blank">
+            <span class="tier-card-name">Thinkmarkets</span>
+            <div class="tc-regs">
+              <span class="tc-reg">FCA</span><span class="tc-reg">CySEC</span><span class="tc-reg">FSA</span><span class="tc-reg">ASIC</span><span class="tc-reg">NZFMA</span><span class="tc-reg">DFSA</span><span class="tc-reg">CIMA</span><span class="tc-reg">FSCA</span><span class="tc-reg">JFSA</span>
+            </div>
+            <div class="tc-meta">
+              <span class="tc-platforms">4 plataformas</span>
+              <span class="tc-fee">Comisión inactividad $30</span>
+            </div>
+          </a>
+          <a class="tier-card" href="#" target="_blank">
+            <span class="tier-card-name">FxPro</span>
+            <div class="tc-regs">
+              <span class="tc-reg">FCA</span><span class="tc-reg">SCB</span>
+            </div>
+            <div class="tc-meta">
+              <span class="tc-platforms">5 plataformas</span>
+              <span class="tc-trait">Crypto ✓ · Sin comisiones</span>
+            </div>
+          </a>
+          <a class="tier-card" href="#" target="_blank">
+            <span class="tier-card-name">Trade Nation</span>
+            <div class="tc-regs">
+              <span class="tc-reg">FCA</span><span class="tc-reg">ASIC</span><span class="tc-reg">FSCA</span><span class="tc-reg">SCB</span>
+            </div>
+            <div class="tc-meta">
+              <span class="tc-platforms">4 plataformas</span>
+              <span class="tc-trait">Crypto ✓ · Sin comisiones</span>
+            </div>
+          </a>
+          <a class="tier-card" href="#" target="_blank">
+            <span class="tier-card-name">Vantage</span>
+            <div class="tc-regs">
+              <span class="tc-reg">FCA</span><span class="tc-reg">ASIC</span><span class="tc-reg">FSCA</span><span class="tc-reg">CIMA</span>
+            </div>
+            <div class="tc-meta">
+              <span class="tc-platforms">5 plataformas</span>
+              <span class="tc-trait">Crypto ✓ · Sin comisiones</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <p class="tier-desc">B — Regulación decente, buenas plataformas, un inconveniente notable</p>
+      <div class="tier-row tier-b">
+        <div class="tier-label" style="color:#111">B</div>
+        <div class="tier-items">
+          <a class="tier-card" href="#" target="_blank">
+            <span class="tier-card-name">easyMarkets</span>
+            <div class="tc-regs">
+              <span class="tc-reg">ASIC</span><span class="tc-reg">FSCA</span><span class="tc-reg">FSA</span><span class="tc-reg">BVI</span>
+            </div>
+            <div class="tc-meta">
+              <span class="tc-platforms">4 plataformas</span>
+              <span class="tc-fee">Comisión inactividad $25</span>
+            </div>
+          </a>
+          <a class="tier-card" href="#" target="_blank">
+            <span class="tier-card-name">Black Bull Markets</span>
+            <div class="tc-regs">
+              <span class="tc-reg">CIMA</span><span class="tc-reg">FSCA</span><span class="tc-reg">FSP</span>
+            </div>
+            <div class="tc-meta">
+              <span class="tc-platforms">5 plataformas</span>
+              <span class="tc-fee">Comisión retiro $5</span>
+            </div>
+          </a>
+          <a class="tier-card" href="#" target="_blank">
+            <span class="tier-card-name">HFM</span>
+            <div class="tc-regs">
+              <span class="tc-reg">CySEC</span><span class="tc-reg">ASIC</span><span class="tc-reg">FSCA</span>
+            </div>
+            <div class="tc-meta">
+              <span class="tc-platforms">3 plataformas</span>
+              <span class="tc-trait">Crypto ✓ · Apalancamiento 2000x</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <p class="tier-desc">C — Regulación limitada o restricciones significativas</p>
+      <div class="tier-row tier-c">
+        <div class="tier-label">C</div>
+        <div class="tier-items">
+          <a class="tier-card" href="#" target="_blank">
+            <span class="tier-card-name">Exness</span>
+            <div class="tc-regs">
+              <span class="tc-reg">FSA</span><span class="tc-reg">CBCS</span><span class="tc-reg">FSC</span>
+            </div>
+            <div class="tc-meta">
+              <span class="tc-platforms">4 plataformas</span>
+              <span class="tc-trait">Apalancamiento 1.000.000x</span>
+            </div>
+          </a>
+          <a class="tier-card" href="#" target="_blank">
+            <span class="tier-card-name">IG</span>
+            <div class="tc-regs">
+              <span class="tc-reg">FSA</span><span class="tc-reg">CBCS</span><span class="tc-reg">FSC</span>
+            </div>
+            <div class="tc-meta">
+              <span class="tc-platforms">5 plataformas</span>
+              <span class="tc-fee">Sin retiro de crypto</span>
+            </div>
+          </a>
+          <a class="tier-card" href="#" target="_blank">
+            <span class="tier-card-name">Oanda</span>
+            <div class="tc-regs">
+              <span class="tc-reg">FSC</span><span class="tc-reg">BVI only</span>
+            </div>
+            <div class="tc-meta">
+              <span class="tc-platforms">3 plataformas</span>
+              <span class="tc-trait">Crypto ✓ · Sin comisiones</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div class="tier-row tier-d">
+        <div class="tier-label">D</div>
+        <div class="tier-items">
+          <span style="font-size:0.72rem; color:var(--text-muted); padding:0.5rem;">próximamente...</span>
+        </div>
+      </div>
+
+    </div>
+    <p class="tier-note">⚠️ <strong>Aviso:</strong> Algunos enlaces son de referido. Esto no modifica nuestra evaluación — si un broker está en D, en D se queda, con o sin referido. La honestidad primero.</p>
+  </div>
+</section>
+
+<!-- PROP FIRMS TIER LIST -->
+<section id="propfirms">
+  <div class="max-w">
+    <p class="section-label">Capital fondeado</p>
+    <h2 class="section-title">Tier list<br>de prop firms.</h2>
+    <div class="divider"></div>
+    <p class="section-sub">Hemos pasado challenges, recibido pagos y sufrido reglas injustas. Esta lista refleja experiencia directa, no publicidad.</p>
+    <div class="tier-container">
+
+      <div class="tier-row tier-s">
+        <div class="tier-label">S</div>
+        <div class="tier-items">
+          <a class="tier-card" href="#" target="_blank">
+            <span class="tier-card-name">FTMO</span>          </a>
+          <a class="tier-card" href="#" target="_blank">
+            <span class="tier-card-name">The Funded Trader</span>          </a>
+        </div>
+      </div>
+
+      <div class="tier-row tier-a">
+        <div class="tier-label">A</div>
+        <div class="tier-items">
+          <a class="tier-card" href="#" target="_blank">
+            <span class="tier-card-name">MyFundedFX</span>          </a>
+          <a class="tier-card" href="#" target="_blank">
+            <span class="tier-card-name">True Forex Funds</span>          </a>
+        </div>
+      </div>
+
+      <div class="tier-row tier-b">
+        <div class="tier-label" style="color:#111">B</div>
+        <div class="tier-items">
+          <a class="tier-card" href="#" target="_blank">
+            <span class="tier-card-name">E8 Funding</span>
+          </a>
+          <a class="tier-card" href="#" target="_blank">
+            <span class="tier-card-name">Fidelcrest</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="tier-row tier-c">
+        <div class="tier-label">C</div>
+        <div class="tier-items">
+          <span style="font-size:0.72rem; color:var(--text-muted); padding:0.5rem;">próximamente...</span>
+        </div>
+      </div>
+
+    </div>
+    <p class="tier-note">💡 Los tier lists se actualizan cuando hay cambios relevantes en las condiciones de las firmas. Una firma puede subir o bajar de tier sin previo aviso si cambia sus reglas.</p>
+  </div>
+</section>
+
+<!-- EXCHANGES TIER LIST -->
+<section id="exchanges">
+  <div class="max-w">
+    <p class="section-label">Criptomonedas</p>
+    <h2 class="section-title">Tier list<br>de exchanges.</h2>
+    <div class="divider"></div>
+    <p class="section-sub">Exchanges evaluados según liquidez, seguridad, reputación y condiciones reales de uso. Dos listas separadas según requerimiento de KYC.</p>
+
+    <div class="exchanges-grid">
+
+      <!-- CON KYC -->
+      <div class="exchanges-col">
+        <p class="exchange-sub-title">Exchanges con KYC obligatorio</p>
+        <p class="exchange-sub-desc">De la lista CoinMarketCap Top 29 · Requieren verificación de identidad</p>
+        <div class="tier-container">
+
+          <div class="tier-row tier-s">
+            <div class="tier-label">S</div>
+            <div class="tier-items">
+              <a class="tier-card" href="#" target="_blank">
+                <span class="tier-card-name">Binance</span>
+              </a>
+              <a class="tier-card" href="#" target="_blank">
+                <span class="tier-card-name">Bybit</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="tier-row tier-a">
+            <div class="tier-label">A</div>
+            <div class="tier-items">
+              <a class="tier-card" href="#" target="_blank">
+                <span class="tier-card-name">OKX</span>
+              </a>
+              <a class="tier-card" href="#" target="_blank">
+                <span class="tier-card-name">Bitget</span>
+              </a>
+              <a class="tier-card" href="https://bingxdao.com/partner/AnonimusTrade/" target="_blank" rel="noopener">
+                <span class="tier-card-name">BingX</span>
+                <span class="tier-card-badge">referido</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="tier-row tier-b">
+            <div class="tier-label" style="color:#111">B</div>
+            <div class="tier-items">
+              <a class="tier-card" href="#" target="_blank">
+                <span class="tier-card-name">Kraken</span>
+              </a>
+              <a class="tier-card" href="#" target="_blank">
+                <span class="tier-card-name">Gate</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="tier-row tier-c">
+            <div class="tier-label">C</div>
+            <div class="tier-items">
+              <a class="tier-card" href="#" target="_blank">
+                <span class="tier-card-name">KuCoin</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SIN KYC -->
+      <div class="exchanges-col">
+        <p class="exchange-sub-title">Exchanges sin KYC obligatorio</p>
+        <p class="exchange-sub-desc">De la lista CoinMarketCap Top 29 · KYC opcional o con límites sin verificar</p>
+        <div class="tier-container">
+
+          <div class="tier-row tier-s">
+            <div class="tier-label">S</div>
+            <div class="tier-items">
+              <a class="tier-card" href="#" target="_blank">
+                <span class="tier-card-name">MEXC</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="tier-row tier-a">
+            <div class="tier-label">A</div>
+            <div class="tier-items">
+              <a class="tier-card" href="https://www.bitunix.com/register?vipCode=KMrN" target="_blank" rel="noopener">
+                <span class="tier-card-name">Bitunix</span>
+                <span class="tier-card-badge">referido</span>
+              </a>
+              <a class="tier-card" href="#" target="_blank">
+                <span class="tier-card-name">CoinEx</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="tier-row tier-b">
+            <div class="tier-label" style="color:#111">B</div>
+            <div class="tier-items">
+              <a class="tier-card" href="#" target="_blank">
+                <span class="tier-card-name">XT.com</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="tier-row tier-c">
+            <div class="tier-label">C</div>
+            <div class="tier-items">
+              <a class="tier-card" href="#" target="_blank">
+                <span class="tier-card-name">Pionex</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+    <p class="tier-note">⚠️ <strong>Aviso:</strong> Los exchanges marcados como "referido" tienen enlace de afiliado. Esto no modifica nuestra evaluación — si un exchange está en C, en C se queda, con o sin referido. La honestidad primero.</p>
+  </div>
+</section>
+
+<!-- INDICADORES -->
+<section id="indicadores">
+  <div class="max-w">
+    <p class="section-label">Herramientas propias</p>
+    <h2 class="section-title">Indicadores<br>para TradingView.</h2>
+    <div class="divider"></div>
+    <p class="section-sub">Diseñados desde la práctica real. Cada indicador nace de una necesidad concreta que encontramos operando. Gratis para la comunidad.</p>
+    <div class="indicators-grid">
+
+      <div class="indicator-card">
+        <img class="indicator-preview" src="images/img_07.png" alt="Días de la Semana - Smart Money Bias">
+        <div class="indicator-body">
+          <p class="indicator-tag">📅 Contexto semanal · Smart Money</p>
+          <h3 class="indicator-name">Días de la semana<br><span style="font-weight:400; font-size:0.85em;">Smart Money Bias</span></h3>
+          <p class="indicator-desc">Visualiza cada día de la semana con una columna de color sobre el gráfico y una tabla de sesgo institucional. Diseñado para traders ICT / Smart Money que necesitan contexto antes de operar.</p>
+          <div class="indicator-features">
+            <span class="indicator-feat">Fondo de color configurable por día</span>
+            <span class="indicator-feat">Tabla de sesgo institucional en tiempo real</span>
+            <span class="indicator-feat">Compatible con todos los timeframes intradiarios (1m → 4h)</span>
+            <span class="indicator-feat">Se desactiva automáticamente en Daily+</span>
+            <span class="indicator-feat">Colores, opacidad y visibilidad 100% configurables</span>
+          </div>
+          <div class="indicator-actions">
+            <a class="btn-indicator btn-ind-primary" href="https://es.tradingview.com/script/Zrbc5Yl9/" target="_blank">ver en tradingview</a>
+            <a class="btn-indicator btn-ind-ghost" href="https://es.tradingview.com/script/Zrbc5Yl9/" target="_blank">añadir al chart</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- placeholder for future indicators -->
+      <div class="indicator-card" style="border-style:dashed; display:flex; align-items:center; justify-content:center; min-height:300px;">
+        <div style="text-align:center; padding:2rem;">
+          <div style="font-size:2.5rem; margin-bottom:1rem; opacity:0.3;">⚡</div>
+          <p style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">Próximo indicador<br>en desarrollo</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- COMUNIDAD -->
+<section id="comunidad">
+  <div class="max-w">
+    <p class="section-label">No operes solo</p>
+    <h2 class="section-title">Únete a la<br>comunidad.</h2>
+    <div class="divider" style="margin:1.5rem auto;"></div>
+    <p class="section-sub" style="margin:0 auto 3rem; text-align:center;">Análisis en vivo, herramientas gratis, sesiones de trading diarias y traders que realmente comparten lo que están viendo en el mercado.</p>
+    <div class="social-grid">
+      <a class="social-card" href="https://t.me/+18495683020" target="_blank" rel="noopener">
+        <img class="social-icon" src="images/Telegram_logo.svg.png" alt="Telegram">
+        <span class="social-name">Telegram</span>
+        <span class="social-handle">+1 (849) 568-3020</span>
+      </a>
+      <a class="social-card" href="https://www.youtube.com/@anonimustradelive?sub_confirmation=1" target="_blank" rel="noopener">
+        <img class="social-icon" src="images/YouTube_full-color_icon_(2017).svg.png" alt="YouTube">
+        <span class="social-name">YouTube</span>
+        <span class="social-handle">@anonimustradelive</span>
+      </a>
+      <a class="social-card" href="https://www.instagram.com/anonimustradelive/" target="_blank" rel="noopener">
+        <img class="social-icon" src="images/Instagram_logo_2022.svg" alt="Instagram">
+        <span class="social-name">Instagram</span>
+        <span class="social-handle">@anonimustradelive</span>
+      </a>
+      <a class="social-card" href="https://x.com/anonimustradelv" target="_blank" rel="noopener">
+        <img class="social-icon" src="images/X_logo.jpg" alt="X">
+        <span class="social-name">X</span>
+        <span class="social-handle">@anonimustradelv</span>
+      </a>
+      <a class="social-card" href="https://www.tiktok.com/@anonimustradelive" target="_blank" rel="noopener">
+        <img class="social-icon" src="images/tiktok-6338432_1280.webp" alt="TikTok">
+        <span class="social-name">TikTok</span>
+        <span class="social-handle">@anonimustradelive</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <img src="images/logo.png" alt="AT">
+    <span>AnonimusTrade Live</span>
+  </div>
+  <p class="footer-text">Richard Cejas Rodríguez & Ridolfi Mosquea de Aza · República Dominicana</p>
+  <p class="footer-disclaimer">
+    El contenido de esta página es únicamente con fines educativos e informativos. El trading implica riesgo de pérdida.
+    Nada de lo publicado aquí constituye asesoramiento financiero. Opera siempre con capital que estés dispuesto a perder.
+  </p>
+</footer>
+
+<script>
+// ── FOREX SESSION CLOCK ──
+
+// Retorna el offset entero (horas adelante/detrás de UTC) para una tz en este momento
+function tzOffset(tz) {
+  const now = new Date();
+  const utcH = now.getUTCHours();
+  let locH = parseInt(now.toLocaleTimeString('en-GB', { timeZone: tz, hour: '2-digit', hour12: false }).slice(0, 2));
+  if (locH === 24) locH = 0;
+  let d = locH - utcH;
+  if (d > 12) d -= 24;
+  if (d < -12) d += 24;
+  return d;
+}
+// Offsets estándar (invierno / sin horario de verano)
+const STANDARD_OFFSETS = {
+  'Australia/Sydney': 10,
+  'Asia/Tokyo':        9,
+  'Europe/London':     0,
+  'America/New_York': -5,
+};
+
+let dstEnabled = true;
+
+function getOffset(tz) {
+  return dstEnabled ? tzOffset(tz) : STANDARD_OFFSETS[tz];
+}
+function localToUTC(localH, tz) { return (localH - getOffset(tz) + 24) % 24; }
+
+function recomputeSessions() {
+  SESSIONS.forEach(s => {
+    s.openUTC  = localToUTC(8,  s.tz);
+    s.closeUTC = localToUTC(16, s.tz);
+  });
+}
+
+function toggleDST() {
+  dstEnabled = !dstEnabled;
+  const btn = document.getElementById('dstBtn');
+  btn.textContent = dstEnabled ? 'DST ON' : 'DST OFF';
+  btn.classList.toggle('active', dstEnabled);
+  savePrefs();
+  recomputeSessions();
+  updateClock();
+}
+
+function savePrefs() {
+  localStorage.setItem('at_use12h',   use12h     ? '1' : '0');
+  localStorage.setItem('at_dst',      dstEnabled ? '1' : '0');
+  localStorage.setItem('at_tz', document.getElementById('tzSelect').value);
+}
+
+function loadPrefs() {
+  const s12  = localStorage.getItem('at_use12h');
+  const sDst = localStorage.getItem('at_dst');
+  const sTz  = localStorage.getItem('at_tz');
+
+  if (s12 !== null) {
+    use12h = s12 === '1';
+    const btn = document.getElementById('timeFormatBtn');
+    btn.textContent = use12h ? 'AM/PM' : '24H';
+    btn.classList.toggle('active', !use12h);
+  }
+
+  if (sDst !== null) {
+    dstEnabled = sDst === '1';
+    const btn = document.getElementById('dstBtn');
+    btn.textContent = dstEnabled ? 'DST ON' : 'DST OFF';
+    btn.classList.toggle('active', dstEnabled);
+  }
+
+  if (sTz !== null) {
+    const sel = document.getElementById('tzSelect');
+    if ([...sel.options].some(o => o.value === sTz)) sel.value = sTz;
+  }
+}
+
+// Cada sesión abre 8 AM y cierra 4 PM hora local de su ciudad → DST automático
+const SESSIONS = [
+  { name: 'Sydney',     flag: '🇦🇺', color: 'sydney', tz: 'Australia/Sydney'  },
+  { name: 'Tokyo',      flag: '🇯🇵', color: 'tokyo',  tz: 'Asia/Tokyo'        },
+  { name: 'Londres',    flag: '🇬🇧', color: 'london', tz: 'Europe/London'     },
+  { name: 'Nueva York', flag: '🇺🇸', color: 'ny',     tz: 'America/New_York'  },
+];
+recomputeSessions();
+
+let use12h = false;
+
+function toggleTimeFormat() {
+  use12h = !use12h;
+  const btn = document.getElementById('timeFormatBtn');
+  btn.textContent = use12h ? 'AM/PM' : '24H';
+  btn.classList.toggle('active', !use12h);
+  savePrefs();
+  updateClock();
+}
+
+function getUTCHour() {
+  return new Date().getUTCHours() + new Date().getUTCMinutes() / 60;
+}
+
+function isOpen(session, utcNow) {
+  const o = session.openUTC, c = session.closeUTC;
+  if (o > c) return utcNow >= o || utcNow < c;
+  return utcNow >= o && utcNow < c;
+}
+
+function barDivs(session, currentPct) {
+  const pct = (h) => (h / 24) * 100;
+  const o = session.openUTC, c = session.closeUTC;
+  let html = '';
+  if (o < c) {
+    html += `<div class="session-bar ${session.color}" style="left:${pct(o)}%; width:${pct(c - o)}%;"></div>`;
+  } else {
+    // Cruza medianoche UTC: dos segmentos
+    html += `<div class="session-bar ${session.color}" style="left:${pct(o)}%; width:${pct(24 - o)}%;"></div>`;
+    html += `<div class="session-bar ${session.color}" style="left:0%; width:${pct(c)}%;"></div>`;
+  }
+  html += `<div class="session-current-time" style="left:${currentPct}%"></div>`;
+  return html;
+}
+
+function formatLocalTime(session, tz) {
+  const now = new Date();
+  const d = new Date(now);
+  d.setUTCHours(session.openUTC, 0, 0, 0);
+  const openStr = d.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit', timeZone: tz, hour12: use12h });
+  const d2 = new Date(now);
+  d2.setUTCHours(session.closeUTC, 0, 0, 0);
+  const closeStr = d2.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit', timeZone: tz, hour12: use12h });
+  return `${openStr} – ${closeStr}`;
+}
+
+function updateClock() {
+  const tz = document.getElementById('tzSelect').value;
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('es', { timeZone: tz, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: use12h });
+  const dateStr = now.toLocaleDateString('es', { timeZone: tz, weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  document.getElementById('clockDisplay').innerHTML = timeStr.replace(/:/g, '<span style="color:var(--red)">:</span>');
+  document.getElementById('clockDate').textContent = dateStr;
+
+  const utcNow = getUTCHour();
+  const currentPct = (utcNow / 24) * 100;
+
+  let html = '';
+  let openSessions = [];
+
+  SESSIONS.forEach(s => {
+    const open = isOpen(s, utcNow);
+    if (open) openSessions.push(s.name);
+    html += `
+      <div class="session-row">
+        <div class="session-info">
+          <div class="session-name">${s.flag} ${s.name}</div>
+          <div class="session-local-time">${formatLocalTime(s, tz)}</div>
+        </div>
+        <div class="session-bar-wrap">
+          ${barDivs(s, currentPct)}
+        </div>
+        <div class="session-status ${open ? 'status-open' : 'status-closed'}">${open ? '● Abierta' : '● Cerrada'}</div>
+      </div>`;
+  });
+
+  document.getElementById('sessionsList').innerHTML = html;
+
+  const track = document.getElementById('hoursTrack');
+  let hoursHTML = '';
+  for (let i = 0; i < 24; i++) {
+    const d = new Date();
+    d.setUTCHours(i, 0, 0, 0);
+    const h24 = parseInt(d.toLocaleTimeString('en', { timeZone: tz, hour: '2-digit', hour12: false }));
+    const label = use12h ? (h24 % 12 || 12) : h24;
+    hoursHTML += `<span>${label}</span>`;
+  }
+  track.innerHTML = hoursHTML;
+
+  const ob = document.getElementById('overlapText');
+  if (openSessions.length === 0) {
+    ob.innerHTML = '<strong>Mercado inactivo.</strong> El mercado Forex está cerrado en este momento (fin de semana o fuera de horario).';
+  } else if (openSessions.length >= 2) {
+    ob.innerHTML = `<strong>Solapamiento activo:</strong> ${openSessions.join(' + ')} están abiertas simultáneamente — mayor volumen y volatilidad. Los mejores setups suelen aparecer ahora.`;
+  } else {
+    ob.innerHTML = `<strong>Sesión ${openSessions[0]} abierta.</strong> Mercado en movimiento. Atentos a los niveles clave del día.`;
+  }
+}
+
+loadPrefs();
+recomputeSessions();
+updateClock();
+setInterval(updateClock, 1000);
+
+// Tier cards sin enlace real: bloquea el clic hasta que se agregue la URL
+document.querySelectorAll('.tier-card[href="#"]').forEach(el =>
+  el.addEventListener('click', e => e.preventDefault())
+);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnonimusTrade Live — Links</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #C0112B; --red-dark: #8B0D1F; --red-light: #E8153A;
+    --black: #080810; --black2: #0E0E18; --black3: #14141F; --black4: #1A1A28;
+    --white: #F0EFFF;
+    --purple: #7C3AED; --purple-dark: #4C1D95; --purple-mid: #6D28D9;
+    --purple-light: #A78BFA; --purple-glow: rgba(124,58,237,0.18);
+    --gray: #252535; --gray2: #333348; --text-muted: #7070A0; --green: #22C55E;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Montserrat', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2.5rem 1.25rem 5rem;
+  }
+
+  /* ── CONTENEDOR PRINCIPAL ── */
+  .bio-wrap {
+    width: 100%;
+    max-width: 460px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ── CABECERA ── */
+  .bio-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    padding-bottom: 1.75rem;
+  }
+
+  .bio-photo-countdown {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .bio-photo {
+    width: 100%;
+    max-width: 260px;
+    object-fit: contain;
+    filter: drop-shadow(0 6px 24px rgba(124,58,237,0.32));
+    position: relative;
+    z-index: 2;
+    margin-bottom: -1px;
+  }
+
+  .bio-logo {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    margin-bottom: 0.6rem;
+    filter: drop-shadow(0 0 10px rgba(124,58,237,0.3));
+  }
+
+  .bio-name {
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--white);
+  }
+
+  .bio-handle {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--purple-light);
+    margin-top: 0.2rem;
+    letter-spacing: 0.04em;
+  }
+
+  .bio-tagline {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 0.6rem;
+    line-height: 1.6;
+  }
+
+  /* ── ÍCONOS DE REDES ── */
+  .bio-socials {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 1.25rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .bio-social {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--black3);
+    border: 1px solid var(--gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: border-color 0.2s, transform 0.2s;
+    overflow: hidden;
+    padding: 8px;
+  }
+
+  .bio-social:hover {
+    border-color: var(--purple-light);
+    transform: translateY(-2px);
+  }
+
+  .bio-social img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  /* ── DIVISOR ── */
+  .bio-divider {
+    width: 36px;
+    height: 2px;
+    background: var(--red);
+    border-radius: 1px;
+    margin: 0.25rem 0 1.75rem;
+  }
+
+  /* ── SECCIÓN LABEL ── */
+  .bio-section-label {
+    width: 100%;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 1.25rem 0 0.5rem;
+    padding-left: 2px;
+  }
+
+  .bio-section-label:first-child { margin-top: 0; }
+
+  /* ── LINKS ── */
+  .bio-links {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .bio-link {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.9rem 1.1rem;
+    background: var(--black3);
+    border: 1px solid var(--gray);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--white);
+    transition: border-color 0.2s, background 0.2s, transform 0.2s;
+    width: 100%;
+  }
+
+  .bio-link:hover {
+    border-color: var(--purple-light);
+    background: var(--black4);
+    transform: translateY(-1px);
+  }
+
+  /* variantes de color */
+  .bio-link.v-purple {
+    background: var(--purple-glow);
+    border-color: rgba(124,58,237,0.5);
+  }
+  .bio-link.v-purple:hover { background: rgba(124,58,237,0.28); border-color: var(--purple); }
+  .bio-link.v-purple .bio-link-title { color: var(--purple-light); }
+
+  .bio-link.v-red {
+    background: rgba(192,17,43,0.1);
+    border-color: rgba(192,17,43,0.5);
+  }
+  .bio-link.v-red:hover { background: rgba(192,17,43,0.18); border-color: var(--red); }
+  .bio-link.v-red .bio-link-title { color: #FF6B6B; }
+
+  .bio-link-icon {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    object-fit: contain;
+  }
+
+  .bio-link-emoji {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    font-size: 1.35rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .bio-link-body { flex: 1; min-width: 0; }
+
+  .bio-link-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .bio-link-desc {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-top: 0.15rem;
+  }
+
+  .bio-link-arrow {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  /* ── GRID 2 COLUMNAS ── */
+  .bio-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    width: 100%;
+  }
+
+  .bio-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.45rem;
+    padding: 1rem 1rem 0.9rem;
+    background: var(--black3);
+    border: 1px solid var(--gray);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--white);
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .bio-card:hover {
+    border-color: var(--purple-light);
+    transform: translateY(-1px);
+  }
+
+  .bio-card-emoji { font-size: 1.4rem; line-height: 1; }
+
+  .bio-card-title {
+    font-size: 0.76rem;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  .bio-card-desc {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    line-height: 1.45;
+  }
+
+  /* ── FOOTER ── */
+  .bio-footer {
+    margin-top: 3rem;
+    text-align: center;
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+  }
+
+  .bio-footer a { color: var(--purple-light); text-decoration: none; }
+  .bio-footer a:hover { color: var(--white); }
+
+  /* ── WIDGET LIVE ── */
+  .bio-live-widget {
+    width: 100%;
+    padding: 1.1rem 1.25rem 1rem;
+    background: var(--black3);
+    border: 1px solid var(--gray);
+    border-radius: 6px;
+    text-align: center;
+    transition: background 0.4s, border-color 0.4s;
+    margin-bottom: 0.15rem;
+    position: relative;
+    z-index: 1;
+  }
+  .live-pre-label {
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+  }
+  .live-timer {
+    font-size: 2.4rem;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    color: var(--white);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .live-timer span { color: var(--red); }
+  .live-sub-label {
+    font-size: 0.58rem;
+    color: var(--text-muted);
+    margin-top: 0.45rem;
+  }
+  .live-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    text-decoration: none;
+    color: var(--white);
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    padding: 0.2rem 0;
+  }
+  .live-banner:hover .live-text { text-decoration: underline; }
+  .live-dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--red);
+    flex-shrink: 0;
+    animation: pulseDot 1.4s ease-in-out infinite;
+  }
+  @keyframes pulseDot {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(192,17,43,0.7); }
+    50%       { box-shadow: 0 0 0 6px rgba(192,17,43,0); }
+  }
+
+  /* ── DISCLAIMER REFERIDOS ── */
+  .bio-disclaimer {
+    width: 100%;
+    padding: 0.85rem 1.1rem;
+    background: var(--purple-glow);
+    border: 1px solid rgba(124,58,237,0.3);
+    border-left: 3px solid var(--purple);
+    border-radius: 6px;
+    font-size: 0.67rem;
+    line-height: 1.65;
+    color: var(--purple-light);
+  }
+
+  .bio-disclaimer strong { color: var(--white); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="bio-wrap">
+
+  <!-- CABECERA -->
+  <div class="bio-header">
+    <img class="bio-logo" src="https://anonimustradelive.com/images/logo.png" alt="AnonimusTrade Live">
+    <p class="bio-name">AnonimusTrade Live</p>
+    <p class="bio-handle">@anonimustradelive</p>
+    <p class="bio-tagline">Comunidad de trading · República Dominicana<br>Análisis real · Entradas en vivo · Sin humo</p>
+    <div class="bio-socials">
+      <a class="bio-social" href="https://t.me/+18495683020" target="_blank" rel="noopener">
+        <img src="https://anonimustradelive.com/images/Telegram_logo.svg.png" alt="Telegram">
+      </a>
+      <a class="bio-social" href="https://www.youtube.com/@anonimustradelive?sub_confirmation=1" target="_blank" rel="noopener">
+        <img src="https://anonimustradelive.com/images/YouTube_full-color_icon_(2017).svg.png" alt="YouTube">
+      </a>
+      <a class="bio-social" href="https://www.instagram.com/anonimustradelive/" target="_blank" rel="noopener">
+        <img src="https://anonimustradelive.com/images/Instagram_logo_2022.svg" alt="Instagram">
+      </a>
+      <a class="bio-social" href="https://x.com/anonimustradelv" target="_blank" rel="noopener">
+        <img src="https://anonimustradelive.com/images/X_logo.jpg" alt="X">
+      </a>
+      <a class="bio-social" href="https://www.tiktok.com/@anonimustradelive" target="_blank" rel="noopener">
+        <img src="https://anonimustradelive.com/images/tiktok-6338432_1280.webp" alt="TikTok">
+      </a>
+    </div>
+  </div>
+
+  <div class="bio-divider"></div>
+
+  <!-- FOTO + COUNTDOWN -->
+  <div class="bio-photo-countdown">
+    <img class="bio-photo" src="https://anonimustradelive.com/images/rido y richard.png" alt="Richard y Ridolfi — AnonimusTrade Live">
+    <div class="bio-live-widget" id="liveWidget">
+    <div id="liveCountdown">
+      <p class="live-pre-label">Próximo live en</p>
+      <div class="live-timer" id="liveTimer">--<span>:</span>--<span>:</span>--</div>
+      <p class="live-sub-label">09:00 AM hora de Nueva York · lunes a viernes</p>
+    </div>
+    <a id="liveBanner" class="live-banner" href="https://www.youtube.com/@anonimustradelive" target="_blank" rel="noopener" style="display:none">
+      <span class="live-dot"></span>
+      <span class="live-text">Estamos en vivo — únete ahora</span>
+      <span style="color:var(--text-muted)">›</span>
+    </a>
+  </div>
+  </div><!-- /bio-photo-countdown -->
+
+  <!-- LINKS -->
+  <div class="bio-links">
+
+    <!-- 1. COMUNIDAD -->
+    <p class="bio-section-label">Comunidad</p>
+
+    <a class="bio-link v-purple" href="https://t.me/+18495683020?text=Hola%2C%20estoy%20interesado%20en%20entrar%20a%20la%20comunidad%20de%20AnonimusTrade%20Live." target="_blank" rel="noopener">
+      <img class="bio-link-icon" src="https://anonimustradelive.com/images/Telegram_logo.svg.png" alt="Telegram">
+      <div class="bio-link-body">
+        <div class="bio-link-title">Únete a la comunidad</div>
+        <div class="bio-link-desc">Escríbenos por Telegram y te agregamos</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <!-- 2. REFERIDOS -->
+    <p class="bio-section-label">Apóyanos</p>
+
+    <div class="bio-disclaimer">
+      <strong>¿Cómo mantener el contenido gratuito?</strong> Si abres una cuenta con alguno de nuestros enlaces de referido, recibimos una pequeña comisión sin costo adicional para ti. Es una forma sencilla de apoyarnos. Gracias de verdad. 🙌
+    </div>
+
+    <a class="bio-link" href="https://bingxdao.com/partner/AnonimusTrade/" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">🏦</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">Abrir cuenta en BingX</div>
+        <div class="bio-link-desc">Exchange de crypto · Enlace de referido</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://www.bitunix.com/register?vipCode=KMrN" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">🏦</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">Abrir cuenta en Bitunix</div>
+        <div class="bio-link-desc">Exchange sin KYC · Enlace de referido</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://pana.go.link/am7IP" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">💳</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">Regístrate en Pana</div>
+        <div class="bio-link-desc">Recibe retiros en USDC · Gasta con tarjeta · Sin banco ni P2P</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <!-- 3. SESIONES EN VIVO -->
+    <p class="bio-section-label">Sesiones en vivo</p>
+
+    <a class="bio-link v-red" href="https://www.youtube.com/@anonimustradelive?sub_confirmation=1" target="_blank" rel="noopener">
+      <img class="bio-link-icon" src="https://anonimustradelive.com/images/YouTube_full-color_icon_(2017).svg.png" alt="YouTube">
+      <div class="bio-link-body">
+        <div class="bio-link-title">YouTube</div>
+        <div class="bio-link-desc">Sesiones en vivo · Suscríbete gratis</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://www.tiktok.com/@anonimustradelive" target="_blank" rel="noopener">
+      <img class="bio-link-icon" src="https://anonimustradelive.com/images/tiktok-6338432_1280.webp" alt="TikTok">
+      <div class="bio-link-body">
+        <div class="bio-link-title">TikTok</div>
+        <div class="bio-link-desc">Análisis cortos · Clips · Setups</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://www.instagram.com/anonimustradelive/" target="_blank" rel="noopener">
+      <img class="bio-link-icon" src="https://anonimustradelive.com/images/Instagram_logo_2022.svg" alt="Instagram">
+      <div class="bio-link-body">
+        <div class="bio-link-title">Instagram</div>
+        <div class="bio-link-desc">Gráficos · Entradas · Resultados</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <!-- 4. HERRAMIENTAS -->
+    <p class="bio-section-label">Herramientas y recursos</p>
+
+    <div class="bio-grid">
+      <a class="bio-card" href="https://anonimustradelive.com/index.html#brokers" target="_blank">
+        <span class="bio-card-emoji">📊</span>
+        <div class="bio-card-title">Tier list de brokers</div>
+        <div class="bio-card-desc">Clasificación honesta sin patrocinios</div>
+      </a>
+      <a class="bio-card" href="https://anonimustradelive.com/index.html#exchanges" target="_blank">
+        <span class="bio-card-emoji">🔁</span>
+        <div class="bio-card-title">Tier list de exchanges</div>
+        <div class="bio-card-desc">Con y sin KYC obligatorio</div>
+      </a>
+      <a class="bio-card" href="https://anonimustradelive.com/index.html#indicadores" target="_blank">
+        <span class="bio-card-emoji">🛠️</span>
+        <div class="bio-card-title">Indicadores propios</div>
+        <div class="bio-card-desc">Para TradingView · Gratis</div>
+      </a>
+      <a class="bio-card" href="https://anonimustradelive.com/index.html#sesiones" target="_blank">
+        <span class="bio-card-emoji">🕐</span>
+        <div class="bio-card-title">Reloj de sesiones</div>
+        <div class="bio-card-desc">Horario Forex en tiempo real</div>
+      </a>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="bio-footer">
+    <p><a href="https://anonimustradelive.com/index.html">Ver sitio web completo →</a></p>
+    <p style="margin-top:0.5rem;">© 2026 AnonimusTrade Live · República Dominicana</p>
+  </div>
+
+</div>
+
+<script>
+  function getNYTime() {
+    return new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
+  }
+
+  function updateLive() {
+    const ny       = getNYTime();
+    const totalSec = ny.getHours() * 3600 + ny.getMinutes() * 60 + ny.getSeconds();
+    const startSec = 9  * 3600;  // 9:00 AM ET
+    const endSec   = 11 * 3600;  // 11:00 AM ET
+
+    const widget    = document.getElementById('liveWidget');
+    const countdown = document.getElementById('liveCountdown');
+    const banner    = document.getElementById('liveBanner');
+    const timer     = document.getElementById('liveTimer');
+
+    if (totalSec >= startSec && totalSec < endSec) {
+      // ── EN VIVO ──
+      countdown.style.display  = 'none';
+      banner.style.display     = 'flex';
+      widget.style.background  = 'rgba(192,17,43,0.1)';
+      widget.style.borderColor = 'rgba(192,17,43,0.55)';
+    } else {
+      // ── CUENTA REGRESIVA ──
+      countdown.style.display  = 'block';
+      banner.style.display     = 'none';
+      widget.style.background  = '';
+      widget.style.borderColor = '';
+
+      const secsUntil = totalSec < startSec
+        ? startSec - totalSec
+        : (86400 - totalSec) + startSec;
+
+      const hh  = Math.floor(secsUntil / 3600);
+      const mm  = Math.floor((secsUntil % 3600) / 60);
+      const ss  = secsUntil % 60;
+      const pad = n => String(n).padStart(2, '0');
+
+      timer.innerHTML = `${pad(hh)}<span>:</span>${pad(mm)}<span>:</span>${pad(ss)}`;
+    }
+  }
+
+  updateLive();
+  setInterval(updateLive, 1000);
+</script>
+</body>
+</html>
