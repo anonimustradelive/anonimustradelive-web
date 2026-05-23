@@ -3,5 +3,6 @@ deployment:
   tasks:
     - export DEPLOYPATH=/home/ntpsrnlfrg/anonimustradelive.com/
     - /bin/cp index.html $DEPLOYPATH
-    - /bin/cp anonimustradebio.html $DEPLOYPATH
     - /bin/cp -r images $DEPLOYPATH
+    - /bin/mkdir -p ${DEPLOYPATH}bio
+    - /bin/cp bio/index.html ${DEPLOYPATH}bio/
