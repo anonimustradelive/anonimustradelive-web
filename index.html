@@ -94,8 +94,9 @@
     background: var(--purple); color: var(--white);
     padding: 8px 20px; border-radius: 3px;
     font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
-    text-decoration: none; transition: background 0.2s; margin-left: 8px;
+    text-decoration: none; transition: background 0.2s;
   }
+  .nav-actions { display: flex; align-items: center; gap: 8px; }
   .nav-cta:hover { background: var(--purple-mid); }
   .nav-cta-red {
     background: var(--red); color: var(--white);
@@ -693,8 +694,10 @@
     <li><a href="#indicadores">indicadores</a></li>
     <li><a href="#comunidad">comunidad</a></li>
   </ul>
-  <a class="nav-cta-red" href="#donaciones">🤍 donar</a>
-  <a class="nav-cta" href="https://wa.me/18495683020?text=Hola%2C%20estoy%20interesado%20en%20entrar%20a%20la%20comunidad%20de%20AnonimusTrade%20Live." target="_blank" rel="noopener">únete</a>
+  <div class="nav-actions">
+    <a class="nav-cta-red" href="#donaciones">🤍 donar</a>
+    <a class="nav-cta" href="https://wa.me/18495683020?text=Hola%2C%20estoy%20interesado%20en%20entrar%20a%20la%20comunidad%20de%20AnonimusTrade%20Live." target="_blank" rel="noopener">únete</a>
+  </div>
 </nav>
 
 <!-- HERO -->
