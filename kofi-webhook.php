@@ -4,8 +4,13 @@
 
 header('Content-Type: application/json');
 
-$KOFI_TOKEN = '86b319d1-e49e-4fbc-adb4-c3f0e51dd04d';
-$DONORS_FILE = __DIR__ . '/donors.json';
+$KOFI_TOKEN   = '86b319d1-e49e-4fbc-adb4-c3f0e51dd04d';
+$DONORS_FILE  = __DIR__ . '/donors.json';
+
+// Telegram
+$TG_TOKEN     = '8937136752:AAE7U1bxG5eIvCteE5F0ESPm7wTUrhsMzas';
+$TG_CHAT_ID   = '-1001517888411';
+$TG_THREAD_ID = '4936';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -85,6 +90,30 @@ if (!$found) {
 usort($donors, fn($a, $b) => $b['total'] <=> $a['total']);
 
 file_put_contents($DONORS_FILE, json_encode($donors, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+
+// Notificar en Telegram
+$msg = "☕ <b>¡Nueva donación Ko-fi!</b>\n\n"
+     . "💰 <b>\${$amount} {$currency}</b>\n"
+     . "👤 De: <b>{$name}</b>"
+     . (!empty($message) ? "\n💬 \"" . htmlspecialchars($message) . "\"" : '')
+     . "\n\n¡Gracias por apoyar a AnonimusTrade Live! 🙏";
+
+$tgPayload = json_encode([
+    'chat_id'           => $TG_CHAT_ID,
+    'message_thread_id' => (int)$TG_THREAD_ID,
+    'text'              => $msg,
+    'parse_mode'        => 'HTML',
+]);
+$ctx = stream_context_create([
+    'http' => [
+        'method'        => 'POST',
+        'header'        => "Content-Type: application/json\r\n",
+        'content'       => $tgPayload,
+        'timeout'       => 5,
+        'ignore_errors' => true,
+    ]
+]);
+@file_get_contents("https://api.telegram.org/bot{$TG_TOKEN}/sendMessage", false, $ctx);
 
 http_response_code(200);
 echo json_encode(['status' => 'ok', 'donor' => $name, 'amount' => $amount]);
