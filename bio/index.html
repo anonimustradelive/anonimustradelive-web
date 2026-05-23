@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AnonimusTrade Live — Links</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400&display=swap" rel="stylesheet">
+<link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+<script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
 <style>
   :root {
     --red: #C0112B; --red-dark: #8B0D1F; --red-light: #E8153A;
@@ -463,7 +465,19 @@
       <span class="bio-link-arrow">›</span>
     </a>
 
-    <!-- 3. DONAR -->
+    <!-- 3. MENTORÍA -->
+    <p class="bio-section-label">Mentoría</p>
+
+    <a class="bio-link v-purple" href="" onclick="Calendly.showPopupWidget('https://calendly.com/anonimustradelive/mentoria1a1?hide_gdpr_banner=1'); return false;">
+      <div class="bio-link-emoji">🎯</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">Agendar mentoría 1:1</div>
+        <div class="bio-link-desc">1 hora · Richard y Ridolfi · Solución personalizada</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <!-- 4. DONAR -->
     <p class="bio-section-label">Donar</p>
 
     <a class="bio-link v-purple" href="https://anonimustradelive.com#donaciones" target="_blank" rel="noopener">
@@ -594,6 +608,18 @@
 
   updateLive();
   setInterval(updateLive, 1000);
+
+  window.addEventListener('load', function() {
+    if (window.Calendly) {
+      Calendly.initBadgeWidget({
+        url: 'https://calendly.com/anonimustradelive/mentoria1a1?hide_gdpr_banner=1',
+        text: 'Agendar mentoría',
+        color: '#7C3AED',
+        textColor: '#F0EFFF',
+        branding: false,
+      });
+    }
+  });
 </script>
 </body>
 </html>

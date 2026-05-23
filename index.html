@@ -6,6 +6,8 @@
 <title>AnonimusTrade Live</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+<script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
 <style>
   :root {
     --red: #C0112B;
@@ -624,6 +626,36 @@
     text-align: center; padding: 0.25rem;
   }
   .don-modal-cancel:hover { color: var(--white); }
+
+  /* ── MENTORÍA CTA ── */
+  .mentoria-cta {
+    margin: 3rem auto 0;
+    background: var(--black3);
+    border: 1px solid var(--gray);
+    border-radius: 16px;
+    padding: 2rem 2.5rem;
+    text-align: center;
+    max-width: 560px;
+  }
+  .mentoria-cta-label {
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--purple-light); margin-bottom: 0.75rem;
+  }
+  .mentoria-cta-title {
+    font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em;
+    color: var(--white); margin-bottom: 0.75rem;
+  }
+  .mentoria-cta-desc {
+    font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem;
+  }
+  .mentoria-cta-btn {
+    display: inline-block; padding: 0.75rem 2rem;
+    background: var(--purple); border: none; border-radius: 8px;
+    color: var(--white); font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: background 0.2s;
+    text-decoration: none;
+  }
+  .mentoria-cta-btn:hover { background: var(--purple-mid); }
   .don-qr-wrap {
     display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
     margin: 0.75rem 0;
@@ -1175,6 +1207,12 @@
         <span class="social-name">TikTok</span>
         <span class="social-handle">@anonimustradelive</span>
       </a>
+    </div>
+    <div class="mentoria-cta">
+      <p class="mentoria-cta-label">Mentoría personalizada</p>
+      <h3 class="mentoria-cta-title">¿Quieres avanzar más rápido?</h3>
+      <p class="mentoria-cta-desc">Sesiones 1:1 de una hora con Richard y Ridolfi. Cuéntanos tu problema y saldrás con un plan claro para resolverlo.</p>
+      <button class="mentoria-cta-btn" onclick="Calendly.showPopupWidget('https://calendly.com/anonimustradelive/mentoria1a1?hide_gdpr_banner=1'); return false;">Agendar mentoría →</button>
     </div>
   </div>
 </section>
@@ -2055,6 +2093,18 @@ async function donWeb3() {
   const providers = donGetProviders();
   if (providers.length > 1) { donShowPicker(providers); } else { donConnectWith(providers[0]); }
 }
+
+window.addEventListener('load', function() {
+  if (window.Calendly) {
+    Calendly.initBadgeWidget({
+      url: 'https://calendly.com/anonimustradelive/mentoria1a1?hide_gdpr_banner=1',
+      text: 'Agendar mentoría',
+      color: '#7C3AED',
+      textColor: '#F0EFFF',
+      branding: false,
+    });
+  }
+});
 
 function donInitQR() {
   new QRCode(document.getElementById('don-qr'), {
