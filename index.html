@@ -857,20 +857,24 @@
         <div class="tl-label a">A</div>
         <div class="tl-cards">
           <div class="tl-card" onclick="tlShow('broker','thinkmarkets')">
-            <div class="tl-card-name">Thinkmarkets</div>
+            <div class="tl-card-name">ThinkMarkets</div>
             <div class="tl-card-meta"><span>FCA · ASIC + 7 más</span><span>4 plataformas</span></div>
           </div>
           <div class="tl-card" onclick="tlShow('broker','fxpro')">
             <div class="tl-card-name">FxPro</div>
-            <div class="tl-card-meta"><span>FCA · SCB</span><span>5 plataformas</span></div>
+            <div class="tl-card-meta"><span>FCA · CySEC + 4 más</span><span>5 plataformas</span></div>
           </div>
           <div class="tl-card" onclick="tlShow('broker','tradenation')">
             <div class="tl-card-name">Trade Nation</div>
-            <div class="tl-card-meta"><span>FCA · ASIC · FSCA</span><span>4 plataformas</span></div>
+            <div class="tl-card-meta"><span>FCA · ASIC · FSCA + 2</span><span>4 plataformas</span></div>
           </div>
           <div class="tl-card" onclick="tlShow('broker','vantage')">
             <div class="tl-card-name">Vantage</div>
-            <div class="tl-card-meta"><span>FCA · ASIC · CIMA</span><span>5 plataformas</span></div>
+            <div class="tl-card-meta"><span>FCA · ASIC · CIMA + 2</span><span>5 plataformas</span></div>
+          </div>
+          <div class="tl-card" onclick="tlShow('broker','hfm')">
+            <div class="tl-card-name">HFM</div>
+            <div class="tl-card-meta"><span>FCA · CySEC + 5 más</span><span>3 plataformas</span></div>
           </div>
         </div>
       </div>
@@ -879,32 +883,23 @@
         <div class="tl-cards">
           <div class="tl-card" onclick="tlShow('broker','easymarkets')">
             <div class="tl-card-name">easyMarkets</div>
-            <div class="tl-card-meta"><span>ASIC · FSCA</span><span>4 plataformas</span></div>
+            <div class="tl-card-meta"><span>ASIC · CySEC · FSA</span><span>4 plataformas</span></div>
           </div>
           <div class="tl-card" onclick="tlShow('broker','blackbull')">
             <div class="tl-card-name">Black Bull Markets</div>
-            <div class="tl-card-meta"><span>FSCA · CIMA</span><span>5 plataformas</span></div>
+            <div class="tl-card-meta"><span>FCA · FSCA · CIMA</span><span>5 plataformas</span></div>
           </div>
-          <div class="tl-card" onclick="tlShow('broker','hfm')">
-            <div class="tl-card-name">HFM</div>
-            <div class="tl-card-meta"><span>CySEC · ASIC</span><span>3 plataformas</span></div>
-          </div>
-        </div>
-      </div>
-      <div class="tl-row">
-        <div class="tl-label c">C</div>
-        <div class="tl-cards">
           <div class="tl-card" onclick="tlShow('broker','exness')">
             <div class="tl-card-name">Exness</div>
-            <div class="tl-card-meta"><span>FSA · CBCS</span><span>4 plataformas</span></div>
+            <div class="tl-card-meta"><span>FCA · CySEC + 4 más</span><span>4 plataformas</span></div>
           </div>
           <div class="tl-card" onclick="tlShow('broker','ig')">
             <div class="tl-card-name">IG</div>
-            <div class="tl-card-meta"><span>FSA · CBCS</span><span>5 plataformas</span></div>
+            <div class="tl-card-meta"><span>FCA · ASIC + 6 más</span><span>5 plataformas</span></div>
           </div>
           <div class="tl-card" onclick="tlShow('broker','oanda')">
             <div class="tl-card-name">Oanda</div>
-            <div class="tl-card-meta"><span>FSC · BVI</span><span>3 plataformas</span></div>
+            <div class="tl-card-meta"><span>FCA · CFTC + 5 más</span><span>4 plataformas</span></div>
           </div>
         </div>
       </div>
@@ -913,7 +908,6 @@
         <div class="tl-legend-item"><div class="tl-legend-dot s"></div>S — Élite</div>
         <div class="tl-legend-item"><div class="tl-legend-dot a"></div>A — Muy recomendable</div>
         <div class="tl-legend-item"><div class="tl-legend-dot b"></div>B — Buena opción</div>
-        <div class="tl-legend-item"><div class="tl-legend-dot c"></div>C — Con reservas</div>
       </div>
     </div>
     <p class="tier-note">⚠️ <strong>Aviso:</strong> Algunos enlaces son de referido. Esto no modifica nuestra evaluación — si un broker está en D, en D se queda, con o sin referido. La honestidad primero.</p>
@@ -1477,7 +1471,7 @@ setInterval(updateClock, 1000);
 const TL_DATA = {
   broker: {
     pepperstone: { name:"Pepperstone", tier:"s", fields:[
-      {label:"Regulación",          value:"FCA · ASIC · BaFin · CySEC · CMA · DFSA", note:"good"},
+      {label:"Regulación",          value:"FCA · ASIC · BaFin · CySEC · CMA · DFSA · SCB", note:"good"},
       {label:"Plataformas",         value:"MT4, MT5, cTrader, TradingView, Pepperstone App", note:""},
       {label:"Depósito mínimo",     value:"Sin mínimo", note:"good"},
       {label:"Spread EUR/USD",      value:"Desde 0.0 pips (Razor)*", note:"good"},
@@ -1489,7 +1483,7 @@ const TL_DATA = {
       {label:"Años operando",       value:"Desde 2010 (~15 años)", note:"good"},
     ], scores:{"Regulación":98,"Spreads":88,"Plataformas":95,"Reputación":92,"Soporte":85}},
     icmarkets: { name:"IC Markets", tier:"s", fields:[
-      {label:"Regulación",          value:"ASIC · CySEC · FSCA", note:"good"},
+      {label:"Regulación",          value:"ASIC · CySEC · FSA · FSCA", note:"good"},
       {label:"Plataformas",         value:"MT4, MT5, cTrader, TradingView, IC App*", note:""},
       {label:"Depósito mínimo",     value:"$200", note:""},
       {label:"Spread EUR/USD",      value:"Desde 0.0 pips (Raw)*", note:"good"},
@@ -1501,21 +1495,21 @@ const TL_DATA = {
       {label:"Años operando",       value:"Desde 2007 (~18 años)", note:"good"},
     ], scores:{"Regulación":90,"Spreads":92,"Plataformas":92,"Reputación":90,"Soporte":80}},
     tickmill: { name:"Tickmill", tier:"s", fields:[
-      {label:"Regulación",          value:"FCA · CySEC · FSCA · FSA", note:"good"},
-      {label:"Plataformas",         value:"MT4, MT5, cTrader, Tickmill App*", note:""},
+      {label:"Regulación",          value:"FCA · CySEC · FSCA · FSA · FSA (Labuan)", note:"good"},
+      {label:"Plataformas",         value:"MT4, MT5, TradingView, Tickmill App*", note:""},
       {label:"Depósito mínimo",     value:"$100*", note:""},
       {label:"Spread EUR/USD",      value:"Desde 0.0 pips (Pro)*", note:"good"},
       {label:"Comisión Pro",        value:"$2 / lote por lado*", note:"good"},
       {label:"Cuenta sin comisión", value:"Sí (Classic)*", note:"good"},
       {label:"Crypto disponible",   value:"Sí", note:"good"},
       {label:"Apalancamiento máx.", value:"1:1000", note:""},
-      {label:"Comisión inactividad",value:"No*", note:"good"},
+      {label:"Comisión inactividad",value:"$10 / mes*", note:"warn"},
       {label:"Años operando",       value:"Desde 2014 (~11 años)", note:""},
     ], scores:{"Regulación":90,"Spreads":90,"Plataformas":82,"Reputación":82,"Soporte":78}},
-    thinkmarkets: { name:"Thinkmarkets", tier:"a", fields:[
+    thinkmarkets: { name:"ThinkMarkets", tier:"a", fields:[
       {label:"Regulación",          value:"FCA · ASIC · CySEC · DFSA · JFSA · FSCA · FSA · NZFMA · CIMA", note:"good"},
       {label:"Plataformas",         value:"MT4, MT5, TradingView, ThinkTrader", note:""},
-      {label:"Depósito mínimo",     value:"$0 (Standard)*", note:"good"},
+      {label:"Depósito mínimo",     value:"$50*", note:"good"},
       {label:"Spread EUR/USD",      value:"Desde 0.0 pips (ThinkZero)*", note:"good"},
       {label:"Cuenta sin comisión", value:"Sí (Standard)*", note:"good"},
       {label:"Crypto disponible",   value:"Sí*", note:"good"},
@@ -1524,20 +1518,20 @@ const TL_DATA = {
       {label:"Años operando",       value:"Desde 2010 (~15 años)", note:"good"},
     ], scores:{"Regulación":98,"Spreads":78,"Plataformas":80,"Reputación":78,"Soporte":72}},
     fxpro: { name:"FxPro", tier:"a", fields:[
-      {label:"Regulación",          value:"FCA · SCB", note:""},
+      {label:"Regulación",          value:"FCA · CySEC · FSCA · BaFIN · DFSA · SCB", note:"good"},
       {label:"Plataformas",         value:"MT4, MT5, cTrader, FxPro App, TradingView*", note:""},
-      {label:"Depósito mínimo",     value:"$100*", note:""},
+      {label:"Depósito mínimo",     value:"Sin mínimo", note:"good"},
       {label:"Spread EUR/USD",      value:"Desde 0.0 pips (ECN)*", note:"good"},
       {label:"Cuenta sin comisión", value:"Sí (Standard)*", note:"good"},
       {label:"Crypto disponible",   value:"Sí", note:"good"},
-      {label:"Apalancamiento máx.", value:"1:200*", note:""},
+      {label:"Apalancamiento máx.", value:"1:500*", note:""},
       {label:"Comisión inactividad",value:"No*", note:"good"},
       {label:"Años operando",       value:"Desde 2006 (~19 años)", note:"good"},
-    ], scores:{"Regulación":78,"Spreads":82,"Plataformas":88,"Reputación":80,"Soporte":75}},
+    ], scores:{"Regulación":90,"Spreads":82,"Plataformas":88,"Reputación":82,"Soporte":76}},
     tradenation: { name:"Trade Nation", tier:"a", fields:[
-      {label:"Regulación",          value:"FCA · ASIC · FSCA · SCB", note:"good"},
+      {label:"Regulación",          value:"FCA · ASIC · FSCA · SCB · FSA", note:"good"},
       {label:"Plataformas",         value:"MT4, TN Trader, TradingView, Trade Nation App*", note:""},
-      {label:"Depósito mínimo",     value:"$0*", note:"good"},
+      {label:"Depósito mínimo",     value:"Sin mínimo", note:"good"},
       {label:"Spread EUR/USD",      value:"Fijo desde 0.6*", note:""},
       {label:"Cuenta sin comisión", value:"Sí*", note:"good"},
       {label:"Crypto disponible",   value:"Sí", note:"good"},
@@ -1546,7 +1540,7 @@ const TL_DATA = {
       {label:"Años operando",       value:"Desde 2014 (~11 años)", note:""},
     ], scores:{"Regulación":88,"Spreads":75,"Plataformas":78,"Reputación":76,"Soporte":74}},
     vantage: { name:"Vantage", tier:"a", fields:[
-      {label:"Regulación",          value:"FCA · ASIC · FSCA · CIMA", note:"good"},
+      {label:"Regulación",          value:"FCA · ASIC · FSCA · CIMA · VFSC", note:"good"},
       {label:"Plataformas",         value:"MT4, MT5, ProTrader, TradingView, Vantage App", note:""},
       {label:"Depósito mínimo",     value:"$50*", note:"good"},
       {label:"Spread EUR/USD",      value:"Desde 0.0 pips (Raw ECN)*", note:"good"},
@@ -1556,72 +1550,72 @@ const TL_DATA = {
       {label:"Comisión inactividad",value:"No*", note:"good"},
       {label:"Años operando",       value:"Desde 2009 (~16 años)", note:"good"},
     ], scores:{"Regulación":88,"Spreads":82,"Plataformas":85,"Reputación":80,"Soporte":76}},
+    hfm: { name:"HFM", tier:"a", fields:[
+      {label:"Regulación",          value:"FCA · CySEC · DFSA · FSCA · FSA (Seychelles) · FSC (Mauritius) · CMA (Kenya)", note:"good"},
+      {label:"Plataformas",         value:"MT4, MT5, HFM App", note:""},
+      {label:"Depósito mínimo",     value:"Sin mínimo", note:"good"},
+      {label:"Spread EUR/USD",      value:"Desde 0.0 pips (Zero)*", note:"good"},
+      {label:"Cuenta sin comisión", value:"Sí (Premium)*", note:"good"},
+      {label:"Crypto disponible",   value:"Sí", note:"good"},
+      {label:"Apalancamiento máx.", value:"1:2000", note:""},
+      {label:"Comisión inactividad",value:"No*", note:"good"},
+      {label:"Años operando",       value:"Desde 2010 (~15 años)", note:"good"},
+    ], scores:{"Regulación":88,"Spreads":76,"Plataformas":68,"Reputación":74,"Soporte":72}},
     easymarkets: { name:"easyMarkets", tier:"b", fields:[
-      {label:"Regulación",          value:"ASIC · FSCA · FSA · BVIFSC", note:""},
+      {label:"Regulación",          value:"ASIC · CySEC · FSA · BVIFSC", note:""},
       {label:"Plataformas",         value:"MT4, MT5, easyMarkets App, TradingView*", note:""},
-      {label:"Depósito mínimo",     value:"$25*", note:"good"},
+      {label:"Depósito mínimo",     value:"$50*", note:"good"},
       {label:"Spread EUR/USD",      value:"Fijo desde 0.7*", note:""},
       {label:"Cuenta sin comisión", value:"Sí*", note:"good"},
       {label:"Crypto disponible",   value:"Sí*", note:"good"},
-      {label:"Apalancamiento máx.", value:"1:2000*", note:""},
+      {label:"Apalancamiento máx.", value:"1:400*", note:""},
       {label:"Comisión inactividad",value:"$25 mensual*", note:"warn"},
       {label:"Años operando",       value:"Desde 2001 (~24 años)", note:"good"},
     ], scores:{"Regulación":72,"Spreads":62,"Plataformas":72,"Reputación":70,"Soporte":68}},
     blackbull: { name:"Black Bull Markets", tier:"b", fields:[
-      {label:"Regulación",          value:"FSCA · FSP (NZ) · CIMA", note:""},
+      {label:"Regulación",          value:"FCA · FSCA · FSP (NZ) · CIMA", note:""},
       {label:"Plataformas",         value:"MT4, MT5, cTrader, TradingView, Share Invest", note:""},
-      {label:"Depósito mínimo",     value:"$0*", note:"good"},
+      {label:"Depósito mínimo",     value:"Sin mínimo", note:"good"},
       {label:"Spread EUR/USD",      value:"Desde 0.0 pips (ECN)*", note:"good"},
       {label:"Cuenta sin comisión", value:"No — todas tienen comisión*", note:"warn"},
       {label:"Crypto disponible",   value:"Sí*", note:"good"},
       {label:"Apalancamiento máx.", value:"1:500*", note:""},
       {label:"Comisión retiro",     value:"$5 por retiro*", note:"warn"},
       {label:"Años operando",       value:"Desde 2014 (~11 años)", note:""},
-    ], scores:{"Regulación":68,"Spreads":80,"Plataformas":88,"Reputación":70,"Soporte":68}},
-    hfm: { name:"HFM", tier:"b", fields:[
-      {label:"Regulación",          value:"CySEC · ASIC · FSCA", note:""},
-      {label:"Plataformas",         value:"MT4, MT5, HFM App", note:""},
-      {label:"Depósito mínimo",     value:"$0*", note:"good"},
-      {label:"Spread EUR/USD",      value:"Desde 0.0 pips (Zero)*", note:"good"},
-      {label:"Cuenta sin comisión", value:"Sí (Premium)*", note:"good"},
-      {label:"Crypto disponible",   value:"Sí", note:"good"},
-      {label:"Apalancamiento máx.", value:"1:2000", note:""},
-      {label:"Comisión inactividad",value:"No*", note:"good"},
-      {label:"Años operando",       value:"Desde 2010 (~15 años)", note:""},
-    ], scores:{"Regulación":75,"Spreads":76,"Plataformas":65,"Reputación":68,"Soporte":70}},
-    exness: { name:"Exness", tier:"c", fields:[
-      {label:"Regulación",          value:"FSA (Seychelles) · CBCS · FSC (BVI)", note:"warn"},
+    ], scores:{"Regulación":75,"Spreads":80,"Plataformas":88,"Reputación":70,"Soporte":68}},
+    exness: { name:"Exness", tier:"b", fields:[
+      {label:"Regulación",          value:"FCA · CySEC · FSCA · FSA (Seychelles) · FSC (Mauritius) · CMA (Kenya)", note:""},
       {label:"Plataformas",         value:"MT4, MT5, cTrader, Exness App*", note:""},
-      {label:"Depósito mínimo",     value:"$10*", note:"good"},
+      {label:"Depósito mínimo",     value:"$0–$200 según cuenta*", note:"good"},
       {label:"Spread EUR/USD",      value:"Desde 0.0 pips (Raw)*", note:"good"},
       {label:"Cuenta sin comisión", value:"Sí (Standard)*", note:"good"},
       {label:"Crypto disponible",   value:"Sí*", note:"good"},
       {label:"Apalancamiento máx.", value:"1:1,000,000 (sin límite real)", note:"warn"},
       {label:"Comisión inactividad",value:"No*", note:"good"},
-      {label:"Años operando",       value:"Desde 2008 (~17 años)", note:""},
-    ], scores:{"Regulación":35,"Spreads":85,"Plataformas":78,"Reputación":55,"Soporte":72}},
-    ig: { name:"IG", tier:"c", fields:[
-      {label:"Regulación",          value:"FSA · CBCS · FSC", note:"warn"},
-      {label:"Plataformas",         value:"MT4, WebTrader, ProRealTime, IG App*", note:""},
-      {label:"Depósito mínimo",     value:"$250*", note:""},
+      {label:"Años operando",       value:"Desde 2008 (~17 años)", note:"good"},
+    ], scores:{"Regulación":72,"Spreads":85,"Plataformas":78,"Reputación":65,"Soporte":72}},
+    ig: { name:"IG", tier:"b", fields:[
+      {label:"Regulación",          value:"FCA · ASIC · CFTC/NFA · BaFIN · MAS · FINMA · JFSA · FMA", note:"good"},
+      {label:"Plataformas",         value:"MT4, MT5, WebTrader, ProRealTime, IG App*", note:""},
+      {label:"Depósito mínimo",     value:"$50*", note:"good"},
       {label:"Spread EUR/USD",      value:"Desde 0.6*", note:""},
       {label:"Cuenta sin comisión", value:"Sí (spread-only)*", note:"good"},
-      {label:"Crypto disponible",   value:"Sí (CFD, sin retiro)", note:""},
+      {label:"Crypto disponible",   value:"Sí (CFD únicamente)", note:""},
       {label:"Retiro de crypto",    value:"No", note:"warn"},
       {label:"Apalancamiento máx.", value:"1:200*", note:""},
       {label:"Años operando",       value:"Desde 1974 (~51 años)", note:"good"},
-    ], scores:{"Regulación":35,"Spreads":65,"Plataformas":72,"Reputación":60,"Soporte":68}},
-    oanda: { name:"Oanda", tier:"c", fields:[
-      {label:"Regulación",          value:"FSC (BVI only)", note:"warn"},
-      {label:"Plataformas",         value:"MT4, fxTrade, TradingView*", note:""},
-      {label:"Depósito mínimo",     value:"$0*", note:"good"},
+    ], scores:{"Regulación":98,"Spreads":62,"Plataformas":78,"Reputación":85,"Soporte":75}},
+    oanda: { name:"Oanda", tier:"b", fields:[
+      {label:"Regulación",          value:"FCA · CFTC/NFA · ASIC · MAS · CIRO · JFSA · FSC (BVI)", note:"good"},
+      {label:"Plataformas",         value:"MT4, fxTrade, TradingView, Oanda App*", note:""},
+      {label:"Depósito mínimo",     value:"Sin mínimo", note:"good"},
       {label:"Spread EUR/USD",      value:"Desde 0.6 (variable)*", note:""},
       {label:"Cuenta sin comisión", value:"Sí*", note:"good"},
-      {label:"Crypto disponible",   value:"Sí*", note:"good"},
-      {label:"Apalancamiento máx.", value:"1:50 (EE.UU.)*", note:""},
+      {label:"Crypto disponible",   value:"Sí", note:"good"},
+      {label:"Apalancamiento máx.", value:"1:200*", note:""},
       {label:"Comisión inactividad",value:"No*", note:"good"},
       {label:"Años operando",       value:"Desde 1996 (~29 años)", note:"good"},
-    ], scores:{"Regulación":40,"Spreads":65,"Plataformas":60,"Reputación":62,"Soporte":65}},
+    ], scores:{"Regulación":92,"Spreads":62,"Plataformas":65,"Reputación":80,"Soporte":72}},
   },
   fut: {
     tradeify: { name:"Tradeify", tier:"s", fields:[
