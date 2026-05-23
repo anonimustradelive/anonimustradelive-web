@@ -4,7 +4,7 @@
 
 header('Content-Type: application/json');
 
-$KOFI_TOKEN = 'REEMPLAZA_CON_TU_TOKEN_DE_KOFI';
+$KOFI_TOKEN = '86b319d1-e49e-4fbc-adb4-c3f0e51dd04d';
 $DONORS_FILE = __DIR__ . '/donors.json';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
