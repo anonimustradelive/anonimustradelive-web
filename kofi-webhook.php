@@ -41,11 +41,12 @@ if (($data['type'] ?? '') !== 'Donation') {
     exit;
 }
 
-$name   = trim($data['from_name'] ?? 'Anónimo');
-$amount = floatval($data['amount'] ?? 0);
-$currency = strtoupper($data['currency'] ?? 'USD');
-$message  = trim($data['message'] ?? '');
+$name      = trim($data['from_name'] ?? 'Anónimo');
+$amount    = floatval($data['amount'] ?? 0);
+$currency  = strtoupper($data['currency'] ?? 'USD');
+$message   = trim($data['message'] ?? '');
 $timestamp = date('Y-m-d H:i:s');
+$email_hash = !empty($data['email']) ? md5(strtolower(trim($data['email']))) : '';
 
 // Leer donors.json existente
 $donors = [];
@@ -76,6 +77,7 @@ if (!$found) {
         'currency'     => $currency,
         'last'         => $timestamp,
         'last_message' => $message,
+        'email_hash'   => $email_hash,
     ];
 }
 

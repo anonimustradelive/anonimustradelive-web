@@ -605,6 +605,26 @@
     text-decoration: none; transition: opacity 0.2s; width: 100%;
   }
   .don-kofi-btn:hover { opacity: 0.88; }
+  .don-top { margin-top: 2.5rem; }
+  .don-top-title {
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--purple-light); margin-bottom: 1rem; text-align: center;
+  }
+  .don-top-list { display: flex; flex-direction: column; gap: 0.5rem; max-width: 560px; margin: 0 auto; }
+  .don-top-item {
+    display: flex; align-items: center; gap: 0.9rem;
+    background: var(--black3); border: 1px solid var(--gray);
+    border-radius: 8px; padding: 0.65rem 1rem;
+  }
+  .don-top-rank { font-size: 1rem; min-width: 28px; text-align: center; flex-shrink: 0; }
+  .don-top-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+  .don-top-letter {
+    width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; font-weight: 800; color: var(--white);
+  }
+  .don-top-name { flex: 1; font-size: 0.8rem; font-weight: 700; }
+  .don-top-amount { font-size: 0.78rem; color: var(--green); font-weight: 700; flex-shrink: 0; }
   .don-modal-overlay {
     position: fixed; inset: 0; z-index: 9999;
     background: rgba(8,8,16,0.85); backdrop-filter: blur(6px);
@@ -1259,6 +1279,12 @@
         <a class="don-kofi-btn" href="https://ko-fi.com/anonimustradelive" target="_blank" rel="noopener">☕ Apoyar en Ko-fi →</a>
       </div>
 
+    </div>
+    <div class="don-top">
+      <p class="don-top-title">🏆 Top donadores</p>
+      <div class="don-top-list" id="don-top-list">
+        <p style="font-size:0.7rem;color:var(--text-muted);text-align:center;">Cargando...</p>
+      </div>
     </div>
   </div>
 </section>
@@ -2097,6 +2123,44 @@ async function donWeb3() {
   const providers = donGetProviders();
   if (providers.length > 1) { donShowPicker(providers); } else { donConnectWith(providers[0]); }
 }
+
+// ── TOP DONADORES ──
+const DON_AVATAR_COLORS = ['#7C3AED','#C0112B','#22C55E','#F59E0B','#3B82F6','#EC4899','#10B981','#8B5CF6'];
+
+function donLetterAvatar(name, index) {
+  const color = DON_AVATAR_COLORS[index % DON_AVATAR_COLORS.length];
+  const letter = (name || '?')[0].toUpperCase();
+  return `<div class="don-top-letter" style="background:${color}">${letter}</div>`;
+}
+
+async function donLoadTop() {
+  const container = document.getElementById('don-top-list');
+  if (!container) return;
+  try {
+    const res = await fetch('/donors.json?t=' + Date.now());
+    const donors = await res.json();
+    if (!donors.length) {
+      container.innerHTML = '<p style="font-size:0.7rem;color:var(--text-muted);text-align:center;padding:1rem 0;">Aún no hay donaciones. ¡Sé el primero!</p>';
+      return;
+    }
+    const ranks = ['🥇','🥈','🥉'];
+    container.innerHTML = donors.slice(0, 10).map((d, i) => {
+      const rank = ranks[i] || `#${i + 1}`;
+      const avatar = d.email_hash
+        ? `<img class="don-top-avatar" src="https://www.gravatar.com/avatar/${d.email_hash}?s=72&d=404" alt="${d.name}" onerror="this.outerHTML=\`${donLetterAvatar(d.name, i)}\`;">`
+        : donLetterAvatar(d.name, i);
+      return `<div class="don-top-item">
+        <span class="don-top-rank">${rank}</span>
+        ${avatar}
+        <span class="don-top-name">${d.name}</span>
+        <span class="don-top-amount">$${Number(d.total).toFixed(2)}</span>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    container.innerHTML = '<p style="font-size:0.7rem;color:var(--text-muted);text-align:center;padding:1rem 0;">No se pudo cargar el ranking.</p>';
+  }
+}
+document.addEventListener('DOMContentLoaded', donLoadTop);
 
 window.addEventListener('load', function() {
   if (window.Calendly) {
