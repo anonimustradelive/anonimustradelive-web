@@ -62,16 +62,20 @@ function parseAmount(array $tx, int $fallbackDecimals): float {
 
 $donors = [];
 
+$walletLower = strtolower($WALLET);
+
 // BSC — USDT
 foreach (fetchTransfers($WALLET, $USDT_BSC, 'bsc', $FROM_DATE, $MORALIS_KEY) as $tx) {
-    if (strtolower($tx['to_address']) !== strtolower($WALLET)) continue;
+    if (strtolower($tx['to_address'])   !== $walletLower) continue; // debe ser entrante
+    if (strtolower($tx['from_address']) === $walletLower) continue; // ignorar auto-transferencias
     $from = strtolower($tx['from_address']);
     $donors[$from] = ($donors[$from] ?? 0) + parseAmount($tx, 18);
 }
 
 // Base — USDC
 foreach (fetchTransfers($WALLET, $USDC_BASE, 'base', $FROM_DATE, $MORALIS_KEY) as $tx) {
-    if (strtolower($tx['to_address']) !== strtolower($WALLET)) continue;
+    if (strtolower($tx['to_address'])   !== $walletLower) continue;
+    if (strtolower($tx['from_address']) === $walletLower) continue;
     $from = strtolower($tx['from_address']);
     $donors[$from] = ($donors[$from] ?? 0) + parseAmount($tx, 6);
 }
