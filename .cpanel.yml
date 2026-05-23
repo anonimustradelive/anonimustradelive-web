@@ -9,3 +9,5 @@ deployment:
     - /bin/cp crypto-donors.php /home/ntpsrnlfrg/anonimustradelive.com/
     - /bin/cp telegram-notify.php /home/ntpsrnlfrg/anonimustradelive.com/
     - /bin/test -f /home/ntpsrnlfrg/anonimustradelive.com/donors.json || /bin/cp donors.json /home/ntpsrnlfrg/anonimustradelive.com/
+    - /bin/mkdir -p /home/ntpsrnlfrg/anonimustradelive.com/utilidades
+    - /bin/cp utilidades/index.html /home/ntpsrnlfrg/anonimustradelive.com/utilidades/
