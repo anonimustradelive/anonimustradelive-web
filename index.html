@@ -335,63 +335,96 @@
   /* ── TIER LIST ── */
   #brokers, #exchanges { background: var(--black2); }
   #propfirms { background: var(--black); }
-  .exchange-sub-title { font-size: 1rem; font-weight: 800; color: var(--white); margin: 0 0 0.2rem; letter-spacing: -0.01em; }
-  .exchange-sub-desc { font-size: 0.7rem; color: var(--text-muted); margin: 0 0 0.5rem; }
-  .exchanges-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem; align-items: start; }
-  .exchanges-col .tier-container { margin-top: 0.75rem; }
-  @media (max-width: 720px) { .exchanges-grid { grid-template-columns: 1fr; } }
-  .tier-container { margin-top: 3rem; }
-  .tier-row {
-    display: flex; gap: 0; margin-bottom: 4px; border-radius: 4px; overflow: hidden;
-    border: 1px solid var(--gray);
+  /* ── TIER LIST INTERACTIVO ── */
+  .tl-wrap { margin-top: 2rem; }
+  .tl-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--gray); margin-bottom: 1.5rem; overflow-x: auto; scrollbar-width: none; }
+  .tl-tabs::-webkit-scrollbar { display: none; }
+  .tl-tab-btn {
+    font-family: 'Montserrat', sans-serif; font-size: 0.72rem; font-weight: 700;
+    padding: 9px 18px; letter-spacing: 0.06em; text-transform: uppercase;
+    background: transparent; border: none; border-bottom: 2px solid transparent;
+    cursor: pointer; color: var(--text-muted);
+    transition: color 0.15s, border-color 0.15s; white-space: nowrap; margin-bottom: -1px;
   }
-  .tier-label {
-    width: 64px; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.4rem; font-weight: 900; letter-spacing: -0.02em;
+  .tl-tab-btn.active { color: var(--white); border-bottom-color: var(--purple); }
+  .tl-tab-btn:hover:not(.active) { color: var(--purple-light); }
+  .tl-tab-content { display: none; }
+  .tl-tab-content.active { display: block; }
+  .tl-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: stretch; }
+  .tl-label {
+    width: 40px; min-width: 40px; display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; font-weight: 900; border-radius: 6px; flex-shrink: 0; border: 1px solid;
   }
-  .tier-s  .tier-label { background: #FF4444; }
-  .tier-a  .tier-label { background: #FF8C00; }
-  .tier-b  .tier-label { background: #FFD700; color: #111; }
-  .tier-c  .tier-label { background: #4CAF50; }
-  .tier-d  .tier-label { background: #2196F3; }
-  .tier-items {
-    flex: 1; padding: 8px; display: flex; gap: 8px; flex-wrap: wrap;
-    background: var(--black3); align-items: center;
+  .tl-label.s { background: rgba(124,58,237,0.18); color: var(--purple-light); border-color: var(--purple); }
+  .tl-label.a { background: rgba(34,197,94,0.12); color: #4ADE80; border-color: #22C55E; }
+  .tl-label.b { background: rgba(245,158,11,0.12); color: #FCD34D; border-color: #F59E0B; }
+  .tl-label.c { background: rgba(192,17,43,0.12); color: #FF6B6B; border-color: var(--red); }
+  .tl-cards { display: flex; flex-wrap: wrap; gap: 8px; flex: 1; }
+  .tl-card {
+    background: var(--black3); border: 1px solid var(--gray); border-radius: 8px;
+    padding: 10px 14px; cursor: pointer;
+    transition: border-color 0.15s, transform 0.1s, background 0.15s;
+    min-width: 140px; flex: 1; user-select: none;
   }
-  .tier-card {
-    display: flex; flex-direction: column; align-items: center; gap: 4px;
-    background: var(--gray); border-radius: 4px; padding: 10px 14px;
-    cursor: pointer; text-decoration: none; color: var(--white);
-    transition: all 0.2s; border: 1px solid transparent; min-width: 90px;
-  }
-  .tier-card:hover { border-color: var(--red); transform: translateY(-2px); background: var(--gray2); }
-  .tier-card-name { font-size: 0.65rem; font-weight: 700; text-align: center; }
-  .tier-card-badge {
+  .tl-card:hover { border-color: var(--gray2); transform: translateY(-1px); background: var(--black4); }
+  .tl-card.selected { border-color: var(--purple); border-width: 1.5px; }
+  .tl-card-name { font-size: 0.85rem; font-weight: 700; color: var(--white); margin-bottom: 4px; }
+  .tl-card-meta { font-size: 0.65rem; color: var(--text-muted); display: flex; gap: 6px; flex-wrap: wrap; }
+  .tl-referido {
+    display: inline-block; margin-top: 5px;
     font-size: 0.55rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
     padding: 2px 6px; border-radius: 2px; background: var(--purple-glow); color: var(--purple-light);
   }
-  /* Tier card — vista detallada */
-  .tier-card { align-items: flex-start; min-width: 130px; }
-  .tier-card-name { font-size: 0.82rem; text-align: left; }
-  .tier-legend { display: flex; gap: 1.25rem; flex-wrap: wrap; margin: 1.5rem 0 0.5rem; }
-  .tier-legend-item { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; display: flex; align-items: center; gap: 5px; color: var(--text-muted); }
-  .tier-legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .tld-reg   { background: #60A5FA; }
-  .tld-plat  { background: #4ADE80; }
-  .tld-trait { background: #94A3B8; }
-  .tld-fee   { background: #F87171; }
-  .tier-desc { font-size: 0.72rem; color: var(--text-muted); margin: 10px 0 4px; padding-left: 2px; letter-spacing: 0.02em; }
-  .tc-regs { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
-  .tc-reg { font-size: 0.58rem; font-weight: 700; padding: 2px 6px; border-radius: 2px; background: rgba(59,130,246,0.18); color: #60A5FA; letter-spacing: 0.04em; }
-  .tc-meta { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
-  .tc-platforms { font-size: 0.58rem; font-weight: 700; padding: 2px 6px; border-radius: 2px; background: rgba(34,197,94,0.18); color: #4ADE80; letter-spacing: 0.04em; }
-  .tc-trait { font-size: 0.58rem; font-weight: 600; padding: 2px 6px; border-radius: 2px; background: rgba(148,163,184,0.12); color: #94A3B8; letter-spacing: 0.04em; }
-  .tc-fee { font-size: 0.58rem; font-weight: 700; padding: 2px 6px; border-radius: 2px; background: rgba(239,68,68,0.18); color: #F87171; letter-spacing: 0.04em; }
-  .tier-note {
-    font-size: 0.7rem; color: var(--text-muted); margin-top: 1.5rem; line-height: 1.6;
-    padding: 1rem 1.5rem; border-left: 2px solid var(--red); background: rgba(192,17,43,0.04);
+  .tl-no-select {
+    font-size: 0.72rem; color: var(--text-muted); padding: 2rem; text-align: center;
+    background: var(--black2); border-radius: 8px; border: 1px dashed var(--gray); margin-top: 1.25rem;
   }
+  .tl-detail {
+    background: var(--black2); border: 1px solid var(--gray); border-radius: 8px;
+    padding: 1.25rem; margin-top: 1.25rem; animation: tlFadeIn 0.2s ease;
+  }
+  @keyframes tlFadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .tl-detail-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--gray);
+    flex-wrap: wrap; gap: 8px;
+  }
+  .tl-detail-name { font-size: 1.1rem; font-weight: 800; color: var(--white); }
+  .tl-detail-badge { font-size: 0.65rem; font-weight: 700; padding: 3px 10px; border-radius: 4px; border: 1px solid; letter-spacing: 0.08em; text-transform: uppercase; }
+  .tl-detail-badge.s { background: rgba(124,58,237,0.18); color: var(--purple-light); border-color: var(--purple); }
+  .tl-detail-badge.a { background: rgba(34,197,94,0.12); color: #4ADE80; border-color: #22C55E; }
+  .tl-detail-badge.b { background: rgba(245,158,11,0.12); color: #FCD34D; border-color: #F59E0B; }
+  .tl-detail-badge.c { background: rgba(192,17,43,0.12); color: #FF6B6B; border-color: var(--red); }
+  .tl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-bottom: 1.25rem; }
+  .tl-field-label { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 2px; }
+  .tl-field-value { font-size: 0.78rem; font-weight: 600; color: var(--white); line-height: 1.4; }
+  .tl-field-value.good { color: #4ADE80; }
+  .tl-field-value.warn { color: #FCD34D; }
+  .tl-scores { border-top: 1px solid var(--gray); padding-top: 1rem; }
+  .tl-scores-label { font-size: 0.58rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
+  .tl-score-row { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; }
+  .tl-score-label { font-size: 0.72rem; color: var(--text-muted); width: 110px; flex-shrink: 0; }
+  .tl-score-track { flex: 1; height: 4px; background: var(--gray); border-radius: 2px; overflow: hidden; }
+  .tl-score-fill { height: 100%; border-radius: 2px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1); }
+  .tl-score-fill.s { background: var(--purple); }
+  .tl-score-fill.a { background: #22C55E; }
+  .tl-score-fill.b { background: #F59E0B; }
+  .tl-score-fill.c { background: var(--red); }
+  .tl-score-num { font-size: 0.72rem; font-weight: 700; color: var(--text-muted); width: 24px; text-align: right; }
+  .tl-cta { display: inline-flex; align-items: center; gap: 6px; margin-top: 1rem; padding: 8px 18px; background: var(--purple-glow); border: 1px solid var(--purple); border-radius: 4px; color: var(--purple-light); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; transition: background 0.2s, color 0.2s; }
+  .tl-cta:hover { background: rgba(124,58,237,0.35); color: var(--white); }
+  .tl-legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 1.5rem; }
+  .tl-legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.68rem; color: var(--text-muted); }
+  .tl-legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .tl-legend-dot.s { background: var(--purple); }
+  .tl-legend-dot.a { background: #22C55E; }
+  .tl-legend-dot.b { background: #F59E0B; }
+  .tl-legend-dot.c { background: var(--red); }
+  .tier-note { font-size: 0.7rem; color: var(--text-muted); margin-top: 1.5rem; line-height: 1.6; padding: 1rem 1.5rem; border-left: 2px solid var(--red); background: rgba(192,17,43,0.04); }
+  @media (max-width: 520px) { .tl-card { min-width: 100%; } .tl-grid { grid-template-columns: 1fr 1fr; } .tl-score-label { width: 80px; font-size: 0.65rem; } }
 
   /* ── INDICADORES ── */
   #indicadores { background: var(--black2); }
@@ -637,179 +670,86 @@
     <h2 class="section-title">Tier list<br>de brokers.</h2>
     <div class="divider"></div>
     <p class="section-sub">Clasificación basada en experiencia real. Spread, ejecución, regulación, soporte. Sin patrocinios que distorsionen la opinión.</p>
-    <div class="tier-legend">
-      <div class="tier-legend-item"><span class="tier-legend-dot tld-reg"></span>Regulación</div>
-      <div class="tier-legend-item"><span class="tier-legend-dot tld-plat"></span># Plataformas</div>
-      <div class="tier-legend-item"><span class="tier-legend-dot tld-trait"></span>Rasgo notable</div>
-      <div class="tier-legend-item"><span class="tier-legend-dot tld-fee"></span>Comisión / limitación</div>
-    </div>
-    <div class="tier-container">
-
-      <p class="tier-desc">S — Regulación élite, suite completa de plataformas, sin comisiones</p>
-      <div class="tier-row tier-s">
-        <div class="tier-label">S</div>
-        <div class="tier-items">
-          <a class="tier-card" href="#" target="_blank">
-            <span class="tier-card-name">Pepperstone</span>
-            <div class="tc-regs">
-              <span class="tc-reg">FCA</span><span class="tc-reg">ASIC</span><span class="tc-reg">BaFIN</span><span class="tc-reg">CySEC</span><span class="tc-reg">CMA</span><span class="tc-reg">DFSA</span>
-            </div>
-            <div class="tc-meta">
-              <span class="tc-platforms">5 plataformas</span>
-              <span class="tc-trait">Crypto ✓ · Sin comisiones</span>
-            </div>
-          </a>
-          <a class="tier-card" href="#" target="_blank">
-            <span class="tier-card-name">IC Markets</span>
-            <div class="tc-regs">
-              <span class="tc-reg">CySEC</span><span class="tc-reg">ASIC</span><span class="tc-reg">FSCA</span>
-            </div>
-            <div class="tc-meta">
-              <span class="tc-platforms">5 plataformas</span>
-              <span class="tc-trait">Crypto ✓ · Mín. $200</span>
-            </div>
-          </a>
-          <a class="tier-card" href="#" target="_blank">
-            <span class="tier-card-name">Tickmill</span>
-            <div class="tc-regs">
-              <span class="tc-reg">FCA</span><span class="tc-reg">CySEC</span><span class="tc-reg">FSCA</span><span class="tc-reg">FSA</span>
-            </div>
-            <div class="tc-meta">
-              <span class="tc-platforms">4 plataformas</span>
-              <span class="tc-trait">Crypto ✓ · Apalancamiento 1000x</span>
-            </div>
-          </a>
+    <div class="tl-wrap">
+      <div class="tl-row">
+        <div class="tl-label s">S</div>
+        <div class="tl-cards">
+          <div class="tl-card" onclick="tlShow('broker','pepperstone')">
+            <div class="tl-card-name">Pepperstone</div>
+            <div class="tl-card-meta"><span>FCA · ASIC · BaFin</span><span>5 plataformas</span></div>
+          </div>
+          <div class="tl-card" onclick="tlShow('broker','icmarkets')">
+            <div class="tl-card-name">IC Markets</div>
+            <div class="tl-card-meta"><span>ASIC · CySEC</span><span>5 plataformas</span></div>
+          </div>
+          <div class="tl-card" onclick="tlShow('broker','tickmill')">
+            <div class="tl-card-name">Tickmill</div>
+            <div class="tl-card-meta"><span>FCA · CySEC</span><span>4 plataformas</span></div>
+          </div>
         </div>
       </div>
-
-      <p class="tier-desc">A — Regulación sólida, amplia selección de plataformas, inconvenientes menores</p>
-      <div class="tier-row tier-a">
-        <div class="tier-label">A</div>
-        <div class="tier-items">
-          <a class="tier-card" href="#" target="_blank">
-            <span class="tier-card-name">Thinkmarkets</span>
-            <div class="tc-regs">
-              <span class="tc-reg">FCA</span><span class="tc-reg">CySEC</span><span class="tc-reg">FSA</span><span class="tc-reg">ASIC</span><span class="tc-reg">NZFMA</span><span class="tc-reg">DFSA</span><span class="tc-reg">CIMA</span><span class="tc-reg">FSCA</span><span class="tc-reg">JFSA</span>
-            </div>
-            <div class="tc-meta">
-              <span class="tc-platforms">4 plataformas</span>
-              <span class="tc-fee">Comisión inactividad $30</span>
-            </div>
-          </a>
-          <a class="tier-card" href="#" target="_blank">
-            <span class="tier-card-name">FxPro</span>
-            <div class="tc-regs">
-              <span class="tc-reg">FCA</span><span class="tc-reg">SCB</span>
-            </div>
-            <div class="tc-meta">
-              <span class="tc-platforms">5 plataformas</span>
-              <span class="tc-trait">Crypto ✓ · Sin comisiones</span>
-            </div>
-          </a>
-          <a class="tier-card" href="#" target="_blank">
-            <span class="tier-card-name">Trade Nation</span>
-            <div class="tc-regs">
-              <span class="tc-reg">FCA</span><span class="tc-reg">ASIC</span><span class="tc-reg">FSCA</span><span class="tc-reg">SCB</span>
-            </div>
-            <div class="tc-meta">
-              <span class="tc-platforms">4 plataformas</span>
-              <span class="tc-trait">Crypto ✓ · Sin comisiones</span>
-            </div>
-          </a>
-          <a class="tier-card" href="#" target="_blank">
-            <span class="tier-card-name">Vantage</span>
-            <div class="tc-regs">
-              <span class="tc-reg">FCA</span><span class="tc-reg">ASIC</span><span class="tc-reg">FSCA</span><span class="tc-reg">CIMA</span>
-            </div>
-            <div class="tc-meta">
-              <span class="tc-platforms">5 plataformas</span>
-              <span class="tc-trait">Crypto ✓ · Sin comisiones</span>
-            </div>
-          </a>
+      <div class="tl-row">
+        <div class="tl-label a">A</div>
+        <div class="tl-cards">
+          <div class="tl-card" onclick="tlShow('broker','thinkmarkets')">
+            <div class="tl-card-name">Thinkmarkets</div>
+            <div class="tl-card-meta"><span>FCA · ASIC + 7 más</span><span>4 plataformas</span></div>
+          </div>
+          <div class="tl-card" onclick="tlShow('broker','fxpro')">
+            <div class="tl-card-name">FxPro</div>
+            <div class="tl-card-meta"><span>FCA · SCB</span><span>5 plataformas</span></div>
+          </div>
+          <div class="tl-card" onclick="tlShow('broker','tradenation')">
+            <div class="tl-card-name">Trade Nation</div>
+            <div class="tl-card-meta"><span>FCA · ASIC · FSCA</span><span>4 plataformas</span></div>
+          </div>
+          <div class="tl-card" onclick="tlShow('broker','vantage')">
+            <div class="tl-card-name">Vantage</div>
+            <div class="tl-card-meta"><span>FCA · ASIC · CIMA</span><span>5 plataformas</span></div>
+          </div>
         </div>
       </div>
-
-      <p class="tier-desc">B — Regulación decente, buenas plataformas, un inconveniente notable</p>
-      <div class="tier-row tier-b">
-        <div class="tier-label" style="color:#111">B</div>
-        <div class="tier-items">
-          <a class="tier-card" href="#" target="_blank">
-            <span class="tier-card-name">easyMarkets</span>
-            <div class="tc-regs">
-              <span class="tc-reg">ASIC</span><span class="tc-reg">FSCA</span><span class="tc-reg">FSA</span><span class="tc-reg">BVI</span>
-            </div>
-            <div class="tc-meta">
-              <span class="tc-platforms">4 plataformas</span>
-              <span class="tc-fee">Comisión inactividad $25</span>
-            </div>
-          </a>
-          <a class="tier-card" href="#" target="_blank">
-            <span class="tier-card-name">Black Bull Markets</span>
-            <div class="tc-regs">
-              <span class="tc-reg">CIMA</span><span class="tc-reg">FSCA</span><span class="tc-reg">FSP</span>
-            </div>
-            <div class="tc-meta">
-              <span class="tc-platforms">5 plataformas</span>
-              <span class="tc-fee">Comisión retiro $5</span>
-            </div>
-          </a>
-          <a class="tier-card" href="#" target="_blank">
-            <span class="tier-card-name">HFM</span>
-            <div class="tc-regs">
-              <span class="tc-reg">CySEC</span><span class="tc-reg">ASIC</span><span class="tc-reg">FSCA</span>
-            </div>
-            <div class="tc-meta">
-              <span class="tc-platforms">3 plataformas</span>
-              <span class="tc-trait">Crypto ✓ · Apalancamiento 2000x</span>
-            </div>
-          </a>
+      <div class="tl-row">
+        <div class="tl-label b">B</div>
+        <div class="tl-cards">
+          <div class="tl-card" onclick="tlShow('broker','easymarkets')">
+            <div class="tl-card-name">easyMarkets</div>
+            <div class="tl-card-meta"><span>ASIC · FSCA</span><span>4 plataformas</span></div>
+          </div>
+          <div class="tl-card" onclick="tlShow('broker','blackbull')">
+            <div class="tl-card-name">Black Bull Markets</div>
+            <div class="tl-card-meta"><span>FSCA · CIMA</span><span>5 plataformas</span></div>
+          </div>
+          <div class="tl-card" onclick="tlShow('broker','hfm')">
+            <div class="tl-card-name">HFM</div>
+            <div class="tl-card-meta"><span>CySEC · ASIC</span><span>3 plataformas</span></div>
+          </div>
         </div>
       </div>
-
-      <p class="tier-desc">C — Regulación limitada o restricciones significativas</p>
-      <div class="tier-row tier-c">
-        <div class="tier-label">C</div>
-        <div class="tier-items">
-          <a class="tier-card" href="#" target="_blank">
-            <span class="tier-card-name">Exness</span>
-            <div class="tc-regs">
-              <span class="tc-reg">FSA</span><span class="tc-reg">CBCS</span><span class="tc-reg">FSC</span>
-            </div>
-            <div class="tc-meta">
-              <span class="tc-platforms">4 plataformas</span>
-              <span class="tc-trait">Apalancamiento 1.000.000x</span>
-            </div>
-          </a>
-          <a class="tier-card" href="#" target="_blank">
-            <span class="tier-card-name">IG</span>
-            <div class="tc-regs">
-              <span class="tc-reg">FSA</span><span class="tc-reg">CBCS</span><span class="tc-reg">FSC</span>
-            </div>
-            <div class="tc-meta">
-              <span class="tc-platforms">5 plataformas</span>
-              <span class="tc-fee">Sin retiro de crypto</span>
-            </div>
-          </a>
-          <a class="tier-card" href="#" target="_blank">
-            <span class="tier-card-name">Oanda</span>
-            <div class="tc-regs">
-              <span class="tc-reg">FSC</span><span class="tc-reg">BVI only</span>
-            </div>
-            <div class="tc-meta">
-              <span class="tc-platforms">3 plataformas</span>
-              <span class="tc-trait">Crypto ✓ · Sin comisiones</span>
-            </div>
-          </a>
+      <div class="tl-row">
+        <div class="tl-label c">C</div>
+        <div class="tl-cards">
+          <div class="tl-card" onclick="tlShow('broker','exness')">
+            <div class="tl-card-name">Exness</div>
+            <div class="tl-card-meta"><span>FSA · CBCS</span><span>4 plataformas</span></div>
+          </div>
+          <div class="tl-card" onclick="tlShow('broker','ig')">
+            <div class="tl-card-name">IG</div>
+            <div class="tl-card-meta"><span>FSA · CBCS</span><span>5 plataformas</span></div>
+          </div>
+          <div class="tl-card" onclick="tlShow('broker','oanda')">
+            <div class="tl-card-name">Oanda</div>
+            <div class="tl-card-meta"><span>FSC · BVI</span><span>3 plataformas</span></div>
+          </div>
         </div>
       </div>
-
-      <div class="tier-row tier-d">
-        <div class="tier-label">D</div>
-        <div class="tier-items">
-          <span style="font-size:0.72rem; color:var(--text-muted); padding:0.5rem;">próximamente...</span>
-        </div>
+      <div id="tl-detail-broker" class="tl-no-select">Selecciona un broker para ver sus métricas</div>
+      <div class="tl-legend">
+        <div class="tl-legend-item"><div class="tl-legend-dot s"></div>S — Élite</div>
+        <div class="tl-legend-item"><div class="tl-legend-dot a"></div>A — Muy recomendable</div>
+        <div class="tl-legend-item"><div class="tl-legend-dot b"></div>B — Buena opción</div>
+        <div class="tl-legend-item"><div class="tl-legend-dot c"></div>C — Con reservas</div>
       </div>
-
     </div>
     <p class="tier-note">⚠️ <strong>Aviso:</strong> Algunos enlaces son de referido. Esto no modifica nuestra evaluación — si un broker está en D, en D se queda, con o sin referido. La honestidad primero.</p>
   </div>
@@ -822,47 +762,93 @@
     <h2 class="section-title">Tier list<br>de prop firms.</h2>
     <div class="divider"></div>
     <p class="section-sub">Hemos pasado challenges, recibido pagos y sufrido reglas injustas. Esta lista refleja experiencia directa, no publicidad.</p>
-    <div class="tier-container">
-
-      <div class="tier-row tier-s">
-        <div class="tier-label">S</div>
-        <div class="tier-items">
-          <a class="tier-card" href="#" target="_blank">
-            <span class="tier-card-name">FTMO</span>          </a>
-          <a class="tier-card" href="#" target="_blank">
-            <span class="tier-card-name">The Funded Trader</span>          </a>
-        </div>
+    <div class="tl-wrap">
+      <div class="tl-tabs">
+        <button class="tl-tab-btn active" onclick="tlTab('fut',this)">Futures prop firms</button>
+        <button class="tl-tab-btn" onclick="tlTab('cfd',this)">CFD prop firms</button>
       </div>
-
-      <div class="tier-row tier-a">
-        <div class="tier-label">A</div>
-        <div class="tier-items">
-          <a class="tier-card" href="#" target="_blank">
-            <span class="tier-card-name">MyFundedFX</span>          </a>
-          <a class="tier-card" href="#" target="_blank">
-            <span class="tier-card-name">True Forex Funds</span>          </a>
+      <div id="tl-tab-fut" class="tl-tab-content active">
+        <div class="tl-row">
+          <div class="tl-label s">S</div>
+          <div class="tl-cards">
+            <div class="tl-card" onclick="tlShow('fut','tradeify')">
+              <div class="tl-card-name">Tradeify</div>
+              <div class="tl-card-meta"><span>80% split</span><span>$99 reset</span><span>$2k drawdown</span></div>
+            </div>
+            <div class="tl-card" onclick="tlShow('fut','lucid')">
+              <div class="tl-card-name">Lucid Trading</div>
+              <div class="tl-card-meta"><span>90% split</span><span>$129.50 reset</span><span>Sin activation</span></div>
+            </div>
+          </div>
         </div>
-      </div>
-
-      <div class="tier-row tier-b">
-        <div class="tier-label" style="color:#111">B</div>
-        <div class="tier-items">
-          <a class="tier-card" href="#" target="_blank">
-            <span class="tier-card-name">E8 Funding</span>
-          </a>
-          <a class="tier-card" href="#" target="_blank">
-            <span class="tier-card-name">Fidelcrest</span>
-          </a>
+        <div class="tl-row">
+          <div class="tl-label a">A</div>
+          <div class="tl-cards">
+            <div class="tl-card" onclick="tlShow('fut','takeprofit')">
+              <div class="tl-card-name">Takeprofit Trader</div>
+              <div class="tl-card-meta"><span>80% split</span><span>$99 reset</span><span>$170/mes</span></div>
+            </div>
+            <div class="tl-card" onclick="tlShow('fut','alpha')">
+              <div class="tl-card-name">Alpha Futures</div>
+              <div class="tl-card-meta"><span>90% split</span><span>$69 reset</span><span>$79/mes</span></div>
+            </div>
+          </div>
         </div>
-      </div>
-
-      <div class="tier-row tier-c">
-        <div class="tier-label">C</div>
-        <div class="tier-items">
-          <span style="font-size:0.72rem; color:var(--text-muted); padding:0.5rem;">próximamente...</span>
+        <div class="tl-row">
+          <div class="tl-label b">B</div>
+          <div class="tl-cards">
+            <div class="tl-card" onclick="tlShow('fut','topone')">
+              <div class="tl-card-name">Top One Futures</div>
+              <div class="tl-card-meta"><span>90% split</span><span>$35 reset</span><span>$39/mes</span></div>
+            </div>
+          </div>
         </div>
+        <div id="tl-detail-fut" class="tl-no-select">Selecciona una firma para ver sus métricas completas</div>
       </div>
-
+      <div id="tl-tab-cfd" class="tl-tab-content">
+        <div class="tl-row">
+          <div class="tl-label s">S</div>
+          <div class="tl-cards">
+            <div class="tl-card" onclick="tlShow('cfd','ftmo')">
+              <div class="tl-card-name">FTMO</div>
+              <div class="tl-card-meta"><span>90% split</span><span>11 años</span><span>~€345</span></div>
+            </div>
+            <div class="tl-card" onclick="tlShow('cfd','the5ers')">
+              <div class="tl-card-name">The 5ers</div>
+              <div class="tl-card-meta"><span>hasta 100% split</span><span>10 años</span><span>~$245</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-label a">A</div>
+          <div class="tl-cards">
+            <div class="tl-card" onclick="tlShow('cfd','fundinpips')">
+              <div class="tl-card-name">FundinPips</div>
+              <div class="tl-card-meta"><span>80–100% split</span><span>3 años</span><span>~$198</span></div>
+            </div>
+            <div class="tl-card" onclick="tlShow('cfd','fundednext')">
+              <div class="tl-card-name">Funded Next</div>
+              <div class="tl-card-meta"><span>hasta 95% split</span><span>4 años</span><span>~$270</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-label b">B</div>
+          <div class="tl-cards">
+            <div class="tl-card" onclick="tlShow('cfd','goat')">
+              <div class="tl-card-name">Goat Funded Trader</div>
+              <div class="tl-card-meta"><span>80–100% split</span><span>2 años</span><span>~$179</span></div>
+            </div>
+          </div>
+        </div>
+        <div id="tl-detail-cfd" class="tl-no-select">Selecciona una firma para ver sus métricas completas</div>
+      </div>
+      <div class="tl-legend">
+        <div class="tl-legend-item"><div class="tl-legend-dot s"></div>S — Élite</div>
+        <div class="tl-legend-item"><div class="tl-legend-dot a"></div>A — Muy recomendable</div>
+        <div class="tl-legend-item"><div class="tl-legend-dot b"></div>B — Buena opción</div>
+        <div class="tl-legend-item"><div class="tl-legend-dot c"></div>C — Con reservas</div>
+      </div>
     </div>
     <p class="tier-note">💡 Los tier lists se actualizan cuando hay cambios relevantes en las condiciones de las firmas. Una firma puede subir o bajar de tier sin previo aviso si cambia sus reglas.</p>
   </div>
@@ -876,115 +862,117 @@
     <div class="divider"></div>
     <p class="section-sub">Exchanges evaluados según liquidez, seguridad, reputación y condiciones reales de uso. Dos listas separadas según requerimiento de KYC.</p>
 
-    <div class="exchanges-grid">
-
-      <!-- CON KYC -->
-      <div class="exchanges-col">
-        <p class="exchange-sub-title">Exchanges con KYC obligatorio</p>
-        <p class="exchange-sub-desc">De la lista CoinMarketCap Top 29 · Requieren verificación de identidad</p>
-        <div class="tier-container">
-
-          <div class="tier-row tier-s">
-            <div class="tier-label">S</div>
-            <div class="tier-items">
-              <a class="tier-card" href="#" target="_blank">
-                <span class="tier-card-name">Binance</span>
-              </a>
-              <a class="tier-card" href="#" target="_blank">
-                <span class="tier-card-name">Bybit</span>
-              </a>
-            </div>
-          </div>
-
-          <div class="tier-row tier-a">
-            <div class="tier-label">A</div>
-            <div class="tier-items">
-              <a class="tier-card" href="#" target="_blank">
-                <span class="tier-card-name">OKX</span>
-              </a>
-              <a class="tier-card" href="#" target="_blank">
-                <span class="tier-card-name">Bitget</span>
-              </a>
-              <a class="tier-card" href="https://bingxdao.com/partner/AnonimusTrade/" target="_blank" rel="noopener">
-                <span class="tier-card-name">BingX</span>
-                <span class="tier-card-badge">referido</span>
-              </a>
-            </div>
-          </div>
-
-          <div class="tier-row tier-b">
-            <div class="tier-label" style="color:#111">B</div>
-            <div class="tier-items">
-              <a class="tier-card" href="#" target="_blank">
-                <span class="tier-card-name">Kraken</span>
-              </a>
-              <a class="tier-card" href="#" target="_blank">
-                <span class="tier-card-name">Gate</span>
-              </a>
-            </div>
-          </div>
-
-          <div class="tier-row tier-c">
-            <div class="tier-label">C</div>
-            <div class="tier-items">
-              <a class="tier-card" href="#" target="_blank">
-                <span class="tier-card-name">KuCoin</span>
-              </a>
-            </div>
-          </div>
-
-        </div>
+    <div class="tl-wrap">
+      <div class="tl-tabs">
+        <button class="tl-tab-btn active" onclick="tlTab('kyc',this)">Con KYC obligatorio</button>
+        <button class="tl-tab-btn" onclick="tlTab('nokyc',this)">Sin KYC obligatorio</button>
       </div>
-
-      <!-- SIN KYC -->
-      <div class="exchanges-col">
-        <p class="exchange-sub-title">Exchanges sin KYC obligatorio</p>
-        <p class="exchange-sub-desc">De la lista CoinMarketCap Top 29 · KYC opcional o con límites sin verificar</p>
-        <div class="tier-container">
-
-          <div class="tier-row tier-s">
-            <div class="tier-label">S</div>
-            <div class="tier-items">
-              <a class="tier-card" href="#" target="_blank">
-                <span class="tier-card-name">MEXC</span>
-              </a>
+      <div id="tl-tab-kyc" class="tl-tab-content active">
+        <div class="tl-row">
+          <div class="tl-label s">S</div>
+          <div class="tl-cards">
+            <div class="tl-card" onclick="tlShow('kyc','binance')">
+              <div class="tl-card-name">Binance</div>
+              <div class="tl-card-meta"><span>Mayor volumen mundial</span><span>Spot · Futuros</span></div>
+            </div>
+            <div class="tl-card" onclick="tlShow('kyc','bybit')">
+              <div class="tl-card-name">Bybit</div>
+              <div class="tl-card-meta"><span>Top 3 mundial</span><span>Spot · Futuros</span></div>
             </div>
           </div>
-
-          <div class="tier-row tier-a">
-            <div class="tier-label">A</div>
-            <div class="tier-items">
-              <a class="tier-card" href="https://www.bitunix.com/register?vipCode=KMrN" target="_blank" rel="noopener">
-                <span class="tier-card-name">Bitunix</span>
-                <span class="tier-card-badge">referido</span>
-              </a>
-              <a class="tier-card" href="#" target="_blank">
-                <span class="tier-card-name">CoinEx</span>
-              </a>
-            </div>
-          </div>
-
-          <div class="tier-row tier-b">
-            <div class="tier-label" style="color:#111">B</div>
-            <div class="tier-items">
-              <a class="tier-card" href="#" target="_blank">
-                <span class="tier-card-name">XT.com</span>
-              </a>
-            </div>
-          </div>
-
-          <div class="tier-row tier-c">
-            <div class="tier-label">C</div>
-            <div class="tier-items">
-              <a class="tier-card" href="#" target="_blank">
-                <span class="tier-card-name">Pionex</span>
-              </a>
-            </div>
-          </div>
-
         </div>
+        <div class="tl-row">
+          <div class="tl-label a">A</div>
+          <div class="tl-cards">
+            <div class="tl-card" onclick="tlShow('kyc','okx')">
+              <div class="tl-card-name">OKX</div>
+              <div class="tl-card-meta"><span>Top 5 mundial</span><span>Spot · Futuros · DeFi</span></div>
+            </div>
+            <div class="tl-card" onclick="tlShow('kyc','bitget')">
+              <div class="tl-card-name">Bitget</div>
+              <div class="tl-card-meta"><span>Top 10 mundial</span><span>Copy trading</span></div>
+            </div>
+            <div class="tl-card" onclick="tlShow('kyc','bingx')">
+              <div class="tl-card-name">BingX</div>
+              <div class="tl-card-meta"><span>Copy trading</span><span>Futuros grid</span></div>
+              <span class="tl-referido">referido</span>
+            </div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-label b">B</div>
+          <div class="tl-cards">
+            <div class="tl-card" onclick="tlShow('kyc','kraken')">
+              <div class="tl-card-name">Kraken</div>
+              <div class="tl-card-meta"><span>Seguridad premium</span><span>Desde 2011</span></div>
+            </div>
+            <div class="tl-card" onclick="tlShow('kyc','gate')">
+              <div class="tl-card-name">Gate</div>
+              <div class="tl-card-meta"><span>+3,000 tokens</span><span>Spot · Futuros</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-label c">C</div>
+          <div class="tl-cards">
+            <div class="tl-card" onclick="tlShow('kyc','kucoin')">
+              <div class="tl-card-name">KuCoin</div>
+              <div class="tl-card-meta"><span>Regulatorio incierto</span><span>Spot · Futuros</span></div>
+            </div>
+          </div>
+        </div>
+        <div id="tl-detail-kyc" class="tl-no-select">Selecciona un exchange para ver sus métricas</div>
       </div>
-
+      <div id="tl-tab-nokyc" class="tl-tab-content">
+        <div class="tl-row">
+          <div class="tl-label s">S</div>
+          <div class="tl-cards">
+            <div class="tl-card" onclick="tlShow('nokyc','mexc')">
+              <div class="tl-card-name">MEXC</div>
+              <div class="tl-card-meta"><span>Sin KYC</span><span>Alta liquidez</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-label a">A</div>
+          <div class="tl-cards">
+            <div class="tl-card" onclick="tlShow('nokyc','bitunix')">
+              <div class="tl-card-name">Bitunix</div>
+              <div class="tl-card-meta"><span>Sin KYC</span><span>Futuros</span></div>
+              <span class="tl-referido">referido</span>
+            </div>
+            <div class="tl-card" onclick="tlShow('nokyc','coinex')">
+              <div class="tl-card-name">CoinEx</div>
+              <div class="tl-card-meta"><span>Sin KYC</span><span>+700 tokens</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-label b">B</div>
+          <div class="tl-cards">
+            <div class="tl-card" onclick="tlShow('nokyc','xtcom')">
+              <div class="tl-card-name">XT.com</div>
+              <div class="tl-card-meta"><span>Sin KYC</span><span>Spot · Futuros</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-label c">C</div>
+          <div class="tl-cards">
+            <div class="tl-card" onclick="tlShow('nokyc','pionex')">
+              <div class="tl-card-name">Pionex</div>
+              <div class="tl-card-meta"><span>Grid bots</span><span>Liquidez limitada</span></div>
+            </div>
+          </div>
+        </div>
+        <div id="tl-detail-nokyc" class="tl-no-select">Selecciona un exchange para ver sus métricas</div>
+      </div>
+      <div class="tl-legend">
+        <div class="tl-legend-item"><div class="tl-legend-dot s"></div>S — Élite</div>
+        <div class="tl-legend-item"><div class="tl-legend-dot a"></div>A — Muy recomendable</div>
+        <div class="tl-legend-item"><div class="tl-legend-dot b"></div>B — Buena opción</div>
+        <div class="tl-legend-item"><div class="tl-legend-dot c"></div>C — Con reservas</div>
+      </div>
     </div>
     <p class="tier-note">⚠️ <strong>Aviso:</strong> Los exchanges marcados como "referido" tienen enlace de afiliado. Esto no modifica nuestra evaluación — si un exchange está en C, en C se queda, con o sin referido. La honestidad primero.</p>
   </div>
@@ -1272,10 +1260,503 @@ recomputeSessions();
 updateClock();
 setInterval(updateClock, 1000);
 
-// Tier cards sin enlace real: bloquea el clic hasta que se agregue la URL
-document.querySelectorAll('.tier-card[href="#"]').forEach(el =>
-  el.addEventListener('click', e => e.preventDefault())
-);
+/* ── TIER LIST ENGINE ── */
+const TL_DATA = {
+  broker: {
+    pepperstone: { name:"Pepperstone", tier:"s", fields:[
+      {label:"Regulación",          value:"FCA · ASIC · BaFin · CySEC · CMA · DFSA", note:"good"},
+      {label:"Plataformas",         value:"MT4, MT5, cTrader, TradingView, Pepperstone App", note:""},
+      {label:"Depósito mínimo",     value:"Sin mínimo", note:"good"},
+      {label:"Spread EUR/USD",      value:"Desde 0.0 pips (Razor)*", note:"good"},
+      {label:"Comisión Razor",      value:"$3.5 / lote por lado*", note:""},
+      {label:"Cuenta sin comisión", value:"Sí (Standard)", note:"good"},
+      {label:"Crypto disponible",   value:"Sí", note:"good"},
+      {label:"Apalancamiento máx.", value:"1:500 (fuera de UE)*", note:""},
+      {label:"Comisión inactividad",value:"No", note:"good"},
+      {label:"Años operando",       value:"Desde 2010 (~15 años)", note:"good"},
+    ], scores:{"Regulación":98,"Spreads":88,"Plataformas":95,"Reputación":92,"Soporte":85}},
+    icmarkets: { name:"IC Markets", tier:"s", fields:[
+      {label:"Regulación",          value:"ASIC · CySEC · FSCA", note:"good"},
+      {label:"Plataformas",         value:"MT4, MT5, cTrader, TradingView, IC App*", note:""},
+      {label:"Depósito mínimo",     value:"$200", note:""},
+      {label:"Spread EUR/USD",      value:"Desde 0.0 pips (Raw)*", note:"good"},
+      {label:"Comisión Raw",        value:"$3.5 / lote por lado*", note:""},
+      {label:"Cuenta sin comisión", value:"Sí (Standard)*", note:"good"},
+      {label:"Crypto disponible",   value:"Sí", note:"good"},
+      {label:"Apalancamiento máx.", value:"1:500*", note:""},
+      {label:"Comisión inactividad",value:"No*", note:"good"},
+      {label:"Años operando",       value:"Desde 2007 (~18 años)", note:"good"},
+    ], scores:{"Regulación":90,"Spreads":92,"Plataformas":92,"Reputación":90,"Soporte":80}},
+    tickmill: { name:"Tickmill", tier:"s", fields:[
+      {label:"Regulación",          value:"FCA · CySEC · FSCA · FSA", note:"good"},
+      {label:"Plataformas",         value:"MT4, MT5, cTrader, Tickmill App*", note:""},
+      {label:"Depósito mínimo",     value:"$100*", note:""},
+      {label:"Spread EUR/USD",      value:"Desde 0.0 pips (Pro)*", note:"good"},
+      {label:"Comisión Pro",        value:"$2 / lote por lado*", note:"good"},
+      {label:"Cuenta sin comisión", value:"Sí (Classic)*", note:"good"},
+      {label:"Crypto disponible",   value:"Sí", note:"good"},
+      {label:"Apalancamiento máx.", value:"1:1000", note:""},
+      {label:"Comisión inactividad",value:"No*", note:"good"},
+      {label:"Años operando",       value:"Desde 2014 (~11 años)", note:""},
+    ], scores:{"Regulación":90,"Spreads":90,"Plataformas":82,"Reputación":82,"Soporte":78}},
+    thinkmarkets: { name:"Thinkmarkets", tier:"a", fields:[
+      {label:"Regulación",          value:"FCA · ASIC · CySEC · DFSA · JFSA · FSCA · FSA · NZFMA · CIMA", note:"good"},
+      {label:"Plataformas",         value:"MT4, MT5, TradingView, ThinkTrader", note:""},
+      {label:"Depósito mínimo",     value:"$0 (Standard)*", note:"good"},
+      {label:"Spread EUR/USD",      value:"Desde 0.0 pips (ThinkZero)*", note:"good"},
+      {label:"Cuenta sin comisión", value:"Sí (Standard)*", note:"good"},
+      {label:"Crypto disponible",   value:"Sí*", note:"good"},
+      {label:"Apalancamiento máx.", value:"1:500*", note:""},
+      {label:"Comisión inactividad",value:"$30 / trimestre*", note:"warn"},
+      {label:"Años operando",       value:"Desde 2010 (~15 años)", note:"good"},
+    ], scores:{"Regulación":98,"Spreads":78,"Plataformas":80,"Reputación":78,"Soporte":72}},
+    fxpro: { name:"FxPro", tier:"a", fields:[
+      {label:"Regulación",          value:"FCA · SCB", note:""},
+      {label:"Plataformas",         value:"MT4, MT5, cTrader, FxPro App, TradingView*", note:""},
+      {label:"Depósito mínimo",     value:"$100*", note:""},
+      {label:"Spread EUR/USD",      value:"Desde 0.0 pips (ECN)*", note:"good"},
+      {label:"Cuenta sin comisión", value:"Sí (Standard)*", note:"good"},
+      {label:"Crypto disponible",   value:"Sí", note:"good"},
+      {label:"Apalancamiento máx.", value:"1:200*", note:""},
+      {label:"Comisión inactividad",value:"No*", note:"good"},
+      {label:"Años operando",       value:"Desde 2006 (~19 años)", note:"good"},
+    ], scores:{"Regulación":78,"Spreads":82,"Plataformas":88,"Reputación":80,"Soporte":75}},
+    tradenation: { name:"Trade Nation", tier:"a", fields:[
+      {label:"Regulación",          value:"FCA · ASIC · FSCA · SCB", note:"good"},
+      {label:"Plataformas",         value:"MT4, TN Trader, TradingView, Trade Nation App*", note:""},
+      {label:"Depósito mínimo",     value:"$0*", note:"good"},
+      {label:"Spread EUR/USD",      value:"Fijo desde 0.6*", note:""},
+      {label:"Cuenta sin comisión", value:"Sí*", note:"good"},
+      {label:"Crypto disponible",   value:"Sí", note:"good"},
+      {label:"Apalancamiento máx.", value:"1:500*", note:""},
+      {label:"Comisión inactividad",value:"No*", note:"good"},
+      {label:"Años operando",       value:"Desde 2014 (~11 años)", note:""},
+    ], scores:{"Regulación":88,"Spreads":75,"Plataformas":78,"Reputación":76,"Soporte":74}},
+    vantage: { name:"Vantage", tier:"a", fields:[
+      {label:"Regulación",          value:"FCA · ASIC · FSCA · CIMA", note:"good"},
+      {label:"Plataformas",         value:"MT4, MT5, ProTrader, TradingView, Vantage App", note:""},
+      {label:"Depósito mínimo",     value:"$50*", note:"good"},
+      {label:"Spread EUR/USD",      value:"Desde 0.0 pips (Raw ECN)*", note:"good"},
+      {label:"Cuenta sin comisión", value:"Sí (Standard STP)*", note:"good"},
+      {label:"Crypto disponible",   value:"Sí", note:"good"},
+      {label:"Apalancamiento máx.", value:"1:500*", note:""},
+      {label:"Comisión inactividad",value:"No*", note:"good"},
+      {label:"Años operando",       value:"Desde 2009 (~16 años)", note:"good"},
+    ], scores:{"Regulación":88,"Spreads":82,"Plataformas":85,"Reputación":80,"Soporte":76}},
+    easymarkets: { name:"easyMarkets", tier:"b", fields:[
+      {label:"Regulación",          value:"ASIC · FSCA · FSA · BVIFSC", note:""},
+      {label:"Plataformas",         value:"MT4, MT5, easyMarkets App, TradingView*", note:""},
+      {label:"Depósito mínimo",     value:"$25*", note:"good"},
+      {label:"Spread EUR/USD",      value:"Fijo desde 0.7*", note:""},
+      {label:"Cuenta sin comisión", value:"Sí*", note:"good"},
+      {label:"Crypto disponible",   value:"Sí*", note:"good"},
+      {label:"Apalancamiento máx.", value:"1:2000*", note:""},
+      {label:"Comisión inactividad",value:"$25 mensual*", note:"warn"},
+      {label:"Años operando",       value:"Desde 2001 (~24 años)", note:"good"},
+    ], scores:{"Regulación":72,"Spreads":62,"Plataformas":72,"Reputación":70,"Soporte":68}},
+    blackbull: { name:"Black Bull Markets", tier:"b", fields:[
+      {label:"Regulación",          value:"FSCA · FSP (NZ) · CIMA", note:""},
+      {label:"Plataformas",         value:"MT4, MT5, cTrader, TradingView, Share Invest", note:""},
+      {label:"Depósito mínimo",     value:"$0*", note:"good"},
+      {label:"Spread EUR/USD",      value:"Desde 0.0 pips (ECN)*", note:"good"},
+      {label:"Cuenta sin comisión", value:"No — todas tienen comisión*", note:"warn"},
+      {label:"Crypto disponible",   value:"Sí*", note:"good"},
+      {label:"Apalancamiento máx.", value:"1:500*", note:""},
+      {label:"Comisión retiro",     value:"$5 por retiro*", note:"warn"},
+      {label:"Años operando",       value:"Desde 2014 (~11 años)", note:""},
+    ], scores:{"Regulación":68,"Spreads":80,"Plataformas":88,"Reputación":70,"Soporte":68}},
+    hfm: { name:"HFM", tier:"b", fields:[
+      {label:"Regulación",          value:"CySEC · ASIC · FSCA", note:""},
+      {label:"Plataformas",         value:"MT4, MT5, HFM App", note:""},
+      {label:"Depósito mínimo",     value:"$0*", note:"good"},
+      {label:"Spread EUR/USD",      value:"Desde 0.0 pips (Zero)*", note:"good"},
+      {label:"Cuenta sin comisión", value:"Sí (Premium)*", note:"good"},
+      {label:"Crypto disponible",   value:"Sí", note:"good"},
+      {label:"Apalancamiento máx.", value:"1:2000", note:""},
+      {label:"Comisión inactividad",value:"No*", note:"good"},
+      {label:"Años operando",       value:"Desde 2010 (~15 años)", note:""},
+    ], scores:{"Regulación":75,"Spreads":76,"Plataformas":65,"Reputación":68,"Soporte":70}},
+    exness: { name:"Exness", tier:"c", fields:[
+      {label:"Regulación",          value:"FSA (Seychelles) · CBCS · FSC (BVI)", note:"warn"},
+      {label:"Plataformas",         value:"MT4, MT5, cTrader, Exness App*", note:""},
+      {label:"Depósito mínimo",     value:"$10*", note:"good"},
+      {label:"Spread EUR/USD",      value:"Desde 0.0 pips (Raw)*", note:"good"},
+      {label:"Cuenta sin comisión", value:"Sí (Standard)*", note:"good"},
+      {label:"Crypto disponible",   value:"Sí*", note:"good"},
+      {label:"Apalancamiento máx.", value:"1:1,000,000 (sin límite real)", note:"warn"},
+      {label:"Comisión inactividad",value:"No*", note:"good"},
+      {label:"Años operando",       value:"Desde 2008 (~17 años)", note:""},
+    ], scores:{"Regulación":35,"Spreads":85,"Plataformas":78,"Reputación":55,"Soporte":72}},
+    ig: { name:"IG", tier:"c", fields:[
+      {label:"Regulación",          value:"FSA · CBCS · FSC", note:"warn"},
+      {label:"Plataformas",         value:"MT4, WebTrader, ProRealTime, IG App*", note:""},
+      {label:"Depósito mínimo",     value:"$250*", note:""},
+      {label:"Spread EUR/USD",      value:"Desde 0.6*", note:""},
+      {label:"Cuenta sin comisión", value:"Sí (spread-only)*", note:"good"},
+      {label:"Crypto disponible",   value:"Sí (CFD, sin retiro)", note:""},
+      {label:"Retiro de crypto",    value:"No", note:"warn"},
+      {label:"Apalancamiento máx.", value:"1:200*", note:""},
+      {label:"Años operando",       value:"Desde 1974 (~51 años)", note:"good"},
+    ], scores:{"Regulación":35,"Spreads":65,"Plataformas":72,"Reputación":60,"Soporte":68}},
+    oanda: { name:"Oanda", tier:"c", fields:[
+      {label:"Regulación",          value:"FSC (BVI only)", note:"warn"},
+      {label:"Plataformas",         value:"MT4, fxTrade, TradingView*", note:""},
+      {label:"Depósito mínimo",     value:"$0*", note:"good"},
+      {label:"Spread EUR/USD",      value:"Desde 0.6 (variable)*", note:""},
+      {label:"Cuenta sin comisión", value:"Sí*", note:"good"},
+      {label:"Crypto disponible",   value:"Sí*", note:"good"},
+      {label:"Apalancamiento máx.", value:"1:50 (EE.UU.)*", note:""},
+      {label:"Comisión inactividad",value:"No*", note:"good"},
+      {label:"Años operando",       value:"Desde 1996 (~29 años)", note:"good"},
+    ], scores:{"Regulación":40,"Spreads":65,"Plataformas":60,"Reputación":62,"Soporte":65}},
+  },
+  fut: {
+    tradeify: { name:"Tradeify", tier:"s", fields:[
+      {label:"Profit target",     value:"$3,000", note:""},
+      {label:"Max position size", value:"4 minis / 40 micros", note:""},
+      {label:"Max drawdown",      value:"$2,000 (EOD)", note:""},
+      {label:"Max daily loss",    value:"No especificado*", note:"warn"},
+      {label:"Profit split",      value:"80%", note:""},
+      {label:"Resets",            value:"$95", note:""},
+      {label:"Activation fee",    value:"No requerida", note:"good"},
+      {label:"Consistency rule",  value:"40%", note:"good"},
+      {label:"Max allocation",    value:"5 cuentas", note:""},
+      {label:"Precio mensual",    value:"$99/mes", note:""},
+      {label:"Drawdown type",     value:"End of day", note:""},
+      {label:"Min trading days",  value:"No requerido*", note:""},
+      {label:"News trading",      value:"Permitido*", note:"good"},
+      {label:"Plataformas",       value:"Rithmic / Topstep*", note:""},
+      {label:"Años operando",     value:"~3 años*", note:""},
+      {label:"Payment cycle",     value:"Bi-weekly*", note:""},
+    ], scores:{"Profit split":80,"Condiciones":80,"Precio":75,"Flexibilidad":75,"Reputación":70}},
+    lucid: { name:"Lucid Trading", tier:"s", fields:[
+      {label:"Profit target",     value:"$3,000", note:""},
+      {label:"Max position size", value:"4 minis / 40 micros", note:""},
+      {label:"Max drawdown",      value:"$2,000 (EOD)", note:""},
+      {label:"Max daily loss",    value:"No especificado*", note:"warn"},
+      {label:"Profit split",      value:"90%", note:"good"},
+      {label:"Resets",            value:"$129.50", note:""},
+      {label:"Activation fee",    value:"No requerida", note:"good"},
+      {label:"Consistency rule",  value:"50%", note:""},
+      {label:"Max allocation",    value:"5 cuentas", note:""},
+      {label:"Precio mensual",    value:"$98/mes", note:""},
+      {label:"Drawdown type",     value:"End of day", note:""},
+      {label:"Min trading days",  value:"No requerido*", note:""},
+      {label:"News trading",      value:"Permitido*", note:"good"},
+      {label:"Plataformas",       value:"Rithmic / TopstepX*", note:""},
+      {label:"Años operando",     value:"~2 años*", note:""},
+      {label:"Payment cycle",     value:"Bi-weekly*", note:""},
+    ], scores:{"Profit split":90,"Condiciones":75,"Precio":70,"Flexibilidad":70,"Reputación":65}},
+    takeprofit: { name:"Takeprofit Trader", tier:"a", fields:[
+      {label:"Profit target",     value:"$3,000", note:""},
+      {label:"Max position size", value:"5 minis / 60 micros", note:""},
+      {label:"Max drawdown",      value:"$2,000 (EOD)", note:""},
+      {label:"Max daily loss",    value:"No especificado*", note:"warn"},
+      {label:"Profit split",      value:"80%", note:""},
+      {label:"Resets",            value:"$99", note:""},
+      {label:"Activation fee",    value:"$130", note:""},
+      {label:"Consistency rule",  value:"50%", note:""},
+      {label:"Max allocation",    value:"5 cuentas", note:""},
+      {label:"Precio mensual",    value:"$170/mes", note:""},
+      {label:"Drawdown type",     value:"End of day", note:""},
+      {label:"Min trading days",  value:"No requerido*", note:""},
+      {label:"News trading",      value:"Permitido*", note:"good"},
+      {label:"Plataformas",       value:"Rithmic / TopstepX*", note:""},
+      {label:"Años operando",     value:"~3 años*", note:""},
+      {label:"Payment cycle",     value:"Bi-weekly*", note:""},
+    ], scores:{"Profit split":80,"Condiciones":60,"Precio":40,"Flexibilidad":65,"Reputación":60}},
+    alpha: { name:"Alpha Futures", tier:"a", fields:[
+      {label:"Profit target",     value:"$3,000", note:""},
+      {label:"Max position size", value:"4 contratos", note:""},
+      {label:"Max drawdown",      value:"$2,000 (EOD)", note:""},
+      {label:"Max daily loss",    value:"No especificado*", note:"warn"},
+      {label:"Profit split",      value:"90%", note:"good"},
+      {label:"Resets",            value:"$69", note:"good"},
+      {label:"Activation fee",    value:"$149", note:""},
+      {label:"Consistency rule",  value:"50%", note:""},
+      {label:"Max allocation",    value:"5 cuentas", note:""},
+      {label:"Precio mensual",    value:"$79/mes", note:"good"},
+      {label:"Drawdown type",     value:"End of day", note:""},
+      {label:"Min trading days",  value:"No requerido*", note:""},
+      {label:"News trading",      value:"Permitido*", note:"good"},
+      {label:"Plataformas",       value:"Rithmic*", note:""},
+      {label:"Años operando",     value:"~2 años*", note:""},
+      {label:"Payment cycle",     value:"Bi-weekly*", note:""},
+    ], scores:{"Profit split":90,"Condiciones":65,"Precio":80,"Flexibilidad":60,"Reputación":55}},
+    topone: { name:"Top One Futures", tier:"b", fields:[
+      {label:"Profit target",     value:"$3,000", note:""},
+      {label:"Max position size", value:"5 minis (50 micros)", note:""},
+      {label:"Max drawdown",      value:"$2,000 (EOD)", note:""},
+      {label:"Max daily loss",    value:"No especificado*", note:"warn"},
+      {label:"Profit split",      value:"90%", note:"good"},
+      {label:"Resets",            value:"$35", note:"good"},
+      {label:"Activation fee",    value:"$189", note:"warn"},
+      {label:"Consistency rule",  value:"40%", note:"good"},
+      {label:"Max allocation",    value:"5 cuentas", note:""},
+      {label:"Precio mensual",    value:"$39/mes", note:"good"},
+      {label:"Drawdown type",     value:"End of day", note:""},
+      {label:"Min trading days",  value:"No requerido*", note:""},
+      {label:"News trading",      value:"Permitido*", note:"good"},
+      {label:"Plataformas",       value:"Rithmic*", note:""},
+      {label:"Años operando",     value:"~1-2 años*", note:""},
+      {label:"Payment cycle",     value:"Bi-weekly*", note:""},
+    ], scores:{"Profit split":90,"Condiciones":65,"Precio":90,"Flexibilidad":60,"Reputación":40}},
+  },
+  cfd: {
+    ftmo: { name:"FTMO", tier:"s", fields:[
+      {label:"Profit target",        value:"10% Ph.1 / 5% Ph.2", note:""},
+      {label:"Max drawdown",         value:"10% estático", note:""},
+      {label:"Max daily loss",       value:"5%", note:""},
+      {label:"Profit split",         value:"90%", note:"good"},
+      {label:"Fee refund",           value:"Reembolsable al 1er pago", note:"good"},
+      {label:"Activation fee",       value:"N/A (challenge)", note:""},
+      {label:"Consistency rule",     value:"No especificada*", note:""},
+      {label:"Max allocation",       value:"Hasta $400k / escala $2M", note:"good"},
+      {label:"Precio challenge 50k", value:"~€345 (pago único)", note:""},
+      {label:"Drawdown type",        value:"Estático (balance)", note:""},
+      {label:"Min trading days",     value:"4 días", note:""},
+      {label:"News trading",         value:"Sí", note:"good"},
+      {label:"Plataformas",          value:"MT4, MT5, cTrader", note:""},
+      {label:"Años operando",        value:"11 años (desde 2015)", note:"good"},
+      {label:"Payment cycle",        value:"Bi-weekly", note:""},
+    ], scores:{"Profit split":90,"Condiciones":85,"Precio":55,"Flexibilidad":80,"Reputación":98}},
+    the5ers: { name:"The 5ers", tier:"s", fields:[
+      {label:"Profit target",        value:"6–10% según programa", note:""},
+      {label:"Max drawdown",         value:"10%", note:""},
+      {label:"Max daily loss",       value:"5%", note:""},
+      {label:"Profit split",         value:"80% (hasta 100% escalando)", note:"good"},
+      {label:"Fee refund",           value:"Sin reset; sin reembolso*", note:""},
+      {label:"Activation fee",       value:"N/A (challenge)", note:""},
+      {label:"Consistency rule",     value:"0.5% profit mín. por día*", note:""},
+      {label:"Max allocation",       value:"Escala hasta $4M", note:"good"},
+      {label:"Precio challenge 50k", value:"~$245 (pago único)*", note:""},
+      {label:"Drawdown type",        value:"Estático (EOD)", note:""},
+      {label:"Min trading days",     value:"3 días", note:""},
+      {label:"News trading",         value:"Sí", note:"good"},
+      {label:"Plataformas",          value:"MT5, cTrader (desde 2025)", note:""},
+      {label:"Años operando",        value:"10 años (desde 2016)", note:"good"},
+      {label:"Payment cycle",        value:"Bi-weekly", note:""},
+    ], scores:{"Profit split":80,"Condiciones":80,"Precio":65,"Flexibilidad":85,"Reputación":92}},
+    fundinpips: { name:"FundinPips", tier:"a", fields:[
+      {label:"Profit target",        value:"8% Ph.1 / 5% Ph.2", note:""},
+      {label:"Max drawdown",         value:"10%", note:""},
+      {label:"Max daily loss",       value:"5%", note:""},
+      {label:"Profit split",         value:"80–100%", note:"good"},
+      {label:"Fee refund",           value:"Sin datos oficiales*", note:""},
+      {label:"Max allocation",       value:"Escala hasta $2M*", note:""},
+      {label:"Precio challenge 50k", value:"~$198 (pago único)*", note:""},
+      {label:"Drawdown type",        value:"10% estático", note:""},
+      {label:"Min trading days",     value:"3 días", note:""},
+      {label:"News trading",         value:"Sí", note:"good"},
+      {label:"Plataformas",          value:"MT4, MT5, cTrader, Matchtrader", note:""},
+      {label:"Años operando",        value:"3 años", note:""},
+      {label:"Payment cycle",        value:"Bi-weekly", note:""},
+    ], scores:{"Profit split":90,"Condiciones":70,"Precio":75,"Flexibilidad":70,"Reputación":65}},
+    fundednext: { name:"Funded Next", tier:"a", fields:[
+      {label:"Profit target",        value:"8% Ph.1 / 5% Ph.2", note:""},
+      {label:"Max drawdown",         value:"10%", note:""},
+      {label:"Max daily loss",       value:"5%", note:""},
+      {label:"Profit split",         value:"Hasta 95%", note:"good"},
+      {label:"Fee refund",           value:"120% de fee reembolso*", note:"good"},
+      {label:"Max allocation",       value:"Escala hasta $4M", note:"good"},
+      {label:"Precio challenge 50k", value:"~$270 (pago único)*", note:""},
+      {label:"Drawdown type",        value:"10% estático", note:""},
+      {label:"Min trading days",     value:"5 días", note:""},
+      {label:"News trading",         value:"Sí", note:"good"},
+      {label:"Plataformas",          value:"MT4, MT5, cTrader, Matchtrader", note:""},
+      {label:"Años operando",        value:"4 años (desde 2022)", note:""},
+      {label:"Payment cycle",        value:"Bi-weekly", note:""},
+    ], scores:{"Profit split":95,"Condiciones":75,"Precio":60,"Flexibilidad":80,"Reputación":75}},
+    goat: { name:"Goat Funded Trader", tier:"b", fields:[
+      {label:"Profit target",        value:"8% Ph.1 / 6% Ph.2", note:""},
+      {label:"Max drawdown",         value:"10%", note:""},
+      {label:"Max daily loss",       value:"4%", note:""},
+      {label:"Profit split",         value:"80–100%", note:"good"},
+      {label:"Consistency rule",     value:"15–20% best day cap", note:""},
+      {label:"Max allocation",       value:"Escala hasta $800k", note:""},
+      {label:"Precio challenge 50k", value:"~$179 (pago único)*", note:""},
+      {label:"Drawdown type",        value:"10% estático", note:""},
+      {label:"Min trading days",     value:"3 días", note:""},
+      {label:"News trading",         value:"Sí", note:"good"},
+      {label:"Plataformas",          value:"Rithmic, Matchtrader, TraderLocker", note:""},
+      {label:"Años operando",        value:"2 años", note:""},
+      {label:"Payment cycle",        value:"Bi-weekly", note:""},
+    ], scores:{"Profit split":90,"Condiciones":65,"Precio":80,"Flexibilidad":70,"Reputación":55}},
+  },
+  kyc: {
+    binance: { name:"Binance", tier:"s", fields:[
+      {label:"KYC",            value:"Obligatorio", note:""},
+      {label:"Spot trading",   value:"Sí — mayor liquidez mundial", note:"good"},
+      {label:"Futuros",        value:"Sí (USDT-M y COIN-M)", note:"good"},
+      {label:"Copy trading",   value:"Sí", note:"good"},
+      {label:"Acepta EE.UU.", value:"No (binance.us separado)", note:"warn"},
+      {label:"Volumen 24h",    value:"~$50B+ (aprox.)*", note:"good"},
+      {label:"Años operando",  value:"Desde 2017 (~8 años)", note:""},
+      {label:"Sede",           value:"Islas Caimán / descentralizado*", note:""},
+    ], scores:{"Liquidez":100,"Seguridad":78,"Costos":82,"Productos":98,"Reputación":85}},
+    bybit: { name:"Bybit", tier:"s", fields:[
+      {label:"KYC",            value:"Obligatorio", note:""},
+      {label:"Spot trading",   value:"Sí", note:"good"},
+      {label:"Futuros",        value:"Sí (perp y entrega)", note:"good"},
+      {label:"Copy trading",   value:"Sí", note:"good"},
+      {label:"Acepta EE.UU.", value:"No*", note:"warn"},
+      {label:"Volumen 24h",    value:"~$15B–30B (aprox.)*", note:"good"},
+      {label:"Años operando",  value:"Desde 2018 (~7 años)", note:""},
+      {label:"Sede",           value:"Dubái*", note:""},
+    ], scores:{"Liquidez":92,"Seguridad":82,"Costos":85,"Productos":92,"Reputación":88}},
+    okx: { name:"OKX", tier:"a", fields:[
+      {label:"KYC",            value:"Obligatorio", note:""},
+      {label:"Spot trading",   value:"Sí", note:"good"},
+      {label:"Futuros",        value:"Sí", note:"good"},
+      {label:"DeFi / Web3",    value:"Sí (wallet integrado)", note:"good"},
+      {label:"Copy trading",   value:"Sí*", note:"good"},
+      {label:"Acepta EE.UU.", value:"No*", note:"warn"},
+      {label:"Volumen 24h",    value:"~$5B–15B (aprox.)*", note:""},
+      {label:"Años operando",  value:"Desde 2017 (~8 años)", note:""},
+    ], scores:{"Liquidez":88,"Seguridad":82,"Costos":80,"Productos":90,"Reputación":82}},
+    bitget: { name:"Bitget", tier:"a", fields:[
+      {label:"KYC",            value:"Obligatorio", note:""},
+      {label:"Spot trading",   value:"Sí", note:"good"},
+      {label:"Futuros",        value:"Sí", note:"good"},
+      {label:"Copy trading",   value:"Sí — especialidad", note:"good"},
+      {label:"Acepta EE.UU.", value:"No*", note:"warn"},
+      {label:"Volumen 24h",    value:"~$3B–8B (aprox.)*", note:""},
+      {label:"Años operando",  value:"Desde 2018 (~7 años)", note:""},
+      {label:"Sede",           value:"Singapur*", note:""},
+    ], scores:{"Liquidez":82,"Seguridad":78,"Costos":80,"Productos":82,"Reputación":78}},
+    bingx: { name:"BingX", tier:"a", url:"https://bingxdao.com/partner/AnonimusTrade/", fields:[
+      {label:"KYC",            value:"Obligatorio", note:""},
+      {label:"Spot trading",   value:"Sí", note:"good"},
+      {label:"Futuros",        value:"Sí (estándar y grid)", note:"good"},
+      {label:"Copy trading",   value:"Sí — fuerte en copy", note:"good"},
+      {label:"Acepta EE.UU.", value:"No*", note:"warn"},
+      {label:"Volumen 24h",    value:"~$1B–3B (aprox.)*", note:""},
+      {label:"Años operando",  value:"Desde 2018 (~7 años)", note:""},
+      {label:"Sede",           value:"Singapur*", note:""},
+    ], scores:{"Liquidez":72,"Seguridad":75,"Costos":80,"Productos":78,"Reputación":72}},
+    kraken: { name:"Kraken", tier:"b", fields:[
+      {label:"KYC",            value:"Obligatorio", note:""},
+      {label:"Spot trading",   value:"Sí", note:"good"},
+      {label:"Futuros",        value:"Sí (Kraken Futures)", note:"good"},
+      {label:"Copy trading",   value:"No*", note:""},
+      {label:"Acepta EE.UU.", value:"Sí (regulado)", note:"good"},
+      {label:"Volumen 24h",    value:"~$1B–3B (aprox.)*", note:""},
+      {label:"Años operando",  value:"Desde 2011 (~14 años)", note:"good"},
+      {label:"Sede",           value:"San Francisco, EE.UU.", note:""},
+    ], scores:{"Liquidez":70,"Seguridad":92,"Costos":68,"Productos":72,"Reputación":85}},
+    gate: { name:"Gate", tier:"b", fields:[
+      {label:"KYC",            value:"Obligatorio", note:""},
+      {label:"Spot trading",   value:"Sí — +3,000 tokens", note:"good"},
+      {label:"Futuros",        value:"Sí", note:"good"},
+      {label:"Copy trading",   value:"Sí*", note:"good"},
+      {label:"Acepta EE.UU.", value:"No*", note:"warn"},
+      {label:"Volumen 24h",    value:"~$1B–4B (aprox.)*", note:""},
+      {label:"Años operando",  value:"Desde 2013 (~12 años)", note:"good"},
+      {label:"Sede",           value:"Islas Caimán*", note:""},
+    ], scores:{"Liquidez":72,"Seguridad":68,"Costos":72,"Productos":82,"Reputación":68}},
+    kucoin: { name:"KuCoin", tier:"c", fields:[
+      {label:"KYC",                value:"Obligatorio (post-regulación)", note:""},
+      {label:"Spot trading",       value:"Sí", note:"good"},
+      {label:"Futuros",            value:"Sí", note:"good"},
+      {label:"Acepta EE.UU.",     value:"No (bloqueado)", note:"warn"},
+      {label:"Problema regulatorio",value:"Multa DOJ $297M (2024)", note:"warn"},
+      {label:"Volumen 24h",        value:"~$500M–2B (aprox.)*", note:""},
+      {label:"Años operando",      value:"Desde 2017 (~8 años)", note:""},
+    ], scores:{"Liquidez":68,"Seguridad":45,"Costos":72,"Productos":78,"Reputación":45}},
+  },
+  nokyc: {
+    mexc: { name:"MEXC", tier:"s", fields:[
+      {label:"KYC",            value:"Opcional (límites sin verificar)", note:"good"},
+      {label:"Spot trading",   value:"Sí — +2,000 tokens", note:"good"},
+      {label:"Futuros",        value:"Sí", note:"good"},
+      {label:"Copy trading",   value:"Sí*", note:"good"},
+      {label:"Acepta EE.UU.", value:"No (bloqueado)*", note:"warn"},
+      {label:"Volumen 24h",    value:"~$2B–6B (aprox.)*", note:""},
+      {label:"Años operando",  value:"Desde 2018 (~7 años)", note:""},
+      {label:"Sede",           value:"Seychelles*", note:""},
+    ], scores:{"Liquidez":80,"Seguridad":68,"Costos":82,"Productos":88,"Reputación":72}},
+    bitunix: { name:"Bitunix", tier:"a", url:"https://www.bitunix.com/register?vipCode=KMrN", fields:[
+      {label:"KYC",            value:"No requerido", note:"good"},
+      {label:"Spot trading",   value:"Sí*", note:"good"},
+      {label:"Futuros",        value:"Sí — enfoque principal", note:"good"},
+      {label:"Copy trading",   value:"Sí*", note:"good"},
+      {label:"Acepta EE.UU.", value:"No*", note:"warn"},
+      {label:"Volumen 24h",    value:"~$500M–2B (aprox.)*", note:""},
+      {label:"Años operando",  value:"Relativamente nuevo*", note:""},
+      {label:"Referido",       value:"Código KMrN activo", note:"good"},
+    ], scores:{"Liquidez":65,"Seguridad":65,"Costos":80,"Productos":72,"Reputación":65}},
+    coinex: { name:"CoinEx", tier:"a", fields:[
+      {label:"KYC",            value:"Opcional (límites sin verificar)", note:"good"},
+      {label:"Spot trading",   value:"Sí — +700 tokens", note:"good"},
+      {label:"Futuros",        value:"Sí", note:"good"},
+      {label:"Acepta EE.UU.", value:"No*", note:"warn"},
+      {label:"Volumen 24h",    value:"~$200M–600M (aprox.)*", note:""},
+      {label:"Años operando",  value:"Desde 2017 (~8 años)", note:""},
+      {label:"Sede",           value:"Hong Kong*", note:""},
+    ], scores:{"Liquidez":58,"Seguridad":68,"Costos":78,"Productos":72,"Reputación":65}},
+    xtcom: { name:"XT.com", tier:"b", fields:[
+      {label:"KYC",            value:"Opcional (límites sin verificar)", note:"good"},
+      {label:"Spot trading",   value:"Sí — +800 tokens", note:"good"},
+      {label:"Futuros",        value:"Sí", note:"good"},
+      {label:"Copy trading",   value:"Sí*", note:"good"},
+      {label:"Acepta EE.UU.", value:"No*", note:"warn"},
+      {label:"Volumen 24h",    value:"~$200M–500M (aprox.)*", note:""},
+      {label:"Años operando",  value:"Desde 2018 (~7 años)*", note:""},
+    ], scores:{"Liquidez":55,"Seguridad":62,"Costos":72,"Productos":72,"Reputación":58}},
+    pionex: { name:"Pionex", tier:"c", fields:[
+      {label:"KYC",            value:"Obligatorio (cambió política)", note:"warn"},
+      {label:"Especialidad",   value:"Grid bots automatizados", note:""},
+      {label:"Spot trading",   value:"Sí (limitado)", note:""},
+      {label:"Futuros",        value:"Sí (limitado)*", note:""},
+      {label:"Copy trading",   value:"Solo bots grid*", note:""},
+      {label:"Acepta EE.UU.", value:"Sí (con licencia)*", note:"good"},
+      {label:"Volumen 24h",    value:"~$100M–400M (aprox.)*", note:""},
+      {label:"Años operando",  value:"Desde 2019 (~6 años)", note:""},
+    ], scores:{"Liquidez":40,"Seguridad":62,"Costos":68,"Productos":48,"Reputación":55}},
+  },
+};
+
+function tlTab(tabKey, btn) {
+  const wrap = btn.closest('.tl-wrap');
+  wrap.querySelectorAll('.tl-tab-btn').forEach(b => b.classList.remove('active'));
+  wrap.querySelectorAll('.tl-tab-content').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  wrap.querySelector('#tl-tab-' + tabKey).classList.add('active');
+  wrap.querySelectorAll('.tl-card').forEach(c => c.classList.remove('selected'));
+}
+
+function tlShow(tabKey, firmKey) {
+  const d = TL_DATA[tabKey][firmKey];
+  if (!d) return;
+  const panel = document.getElementById('tl-detail-' + tabKey);
+  if (!panel) return;
+  panel.parentElement.querySelectorAll('.tl-card').forEach(c => c.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  const fieldsHtml = d.fields.map(f => `
+    <div>
+      <div class="tl-field-label">${f.label}</div>
+      <div class="tl-field-value ${f.note==='good'?'good':f.note==='warn'?'warn':''}">${f.value}</div>
+    </div>`).join('');
+  const scoresHtml = Object.entries(d.scores).map(([k,v]) => `
+    <div class="tl-score-row">
+      <div class="tl-score-label">${k}</div>
+      <div class="tl-score-track"><div class="tl-score-fill ${d.tier}" style="width:${v}%"></div></div>
+      <div class="tl-score-num">${v}</div>
+    </div>`).join('');
+  const ctaHtml = d.url ? `<a class="tl-cta" href="${d.url}" target="_blank" rel="noopener">Abrir cuenta →</a>` : '';
+  panel.className = 'tl-detail';
+  panel.innerHTML = `
+    <div class="tl-detail-header">
+      <span class="tl-detail-name">${d.name}</span>
+      <span class="tl-detail-badge ${d.tier}">Tier ${d.tier.toUpperCase()}</span>
+    </div>
+    <div class="tl-grid">${fieldsHtml}</div>
+    <div class="tl-scores">
+      <div class="tl-scores-label">Puntuación por criterio</div>
+      ${scoresHtml}
+    </div>
+    ${ctaHtml}`;
+}
 </script>
 
 </body>
