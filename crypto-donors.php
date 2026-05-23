@@ -6,7 +6,8 @@ header('Access-Control-Allow-Origin: *');
 $ETHERSCAN_KEY = 'ZDC3DG6M2YYXF2K6G6RXP5JG2VGTRP7QZQ';
 // ─────────────────────────────────────────────────────────────────────────────
 
-$WALLET    = '0x20332BD20d55cc85282AFFe05BcC473bb8D18D91';
+$WALLET        = '0x20332BD20d55cc85282AFFe05BcC473bb8D18D91';
+$START_TS      = 1779494400; // 2026-05-23 00:00:00 UTC
 $USDT_BSC  = '0x55d398326f99059fF775485246999027B3197955';
 $USDC_BASE = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
 
@@ -50,6 +51,7 @@ $url = "{$API_BASE}?chainid={$BSC_CHAIN_ID}&module=account&action=tokentx"
      . "&sort=desc&apikey={$ETHERSCAN_KEY}";
 foreach (fetchTxs($url) as $tx) {
     if (strtolower($tx['to']) !== strtolower($WALLET)) continue;
+    if ((int)($tx['timeStamp'] ?? 0) < $START_TS) continue;
     $from   = strtolower($tx['from']);
     $amount = fromTokenUnits($tx['value'], (int)($tx['tokenDecimal'] ?? 18));
     $donors[$from] = ($donors[$from] ?? 0) + $amount;
@@ -61,6 +63,7 @@ $url = "{$API_BASE}?chainid={$BASE_CHAIN_ID}&module=account&action=tokentx"
      . "&sort=desc&apikey={$ETHERSCAN_KEY}";
 foreach (fetchTxs($url) as $tx) {
     if (strtolower($tx['to']) !== strtolower($WALLET)) continue;
+    if ((int)($tx['timeStamp'] ?? 0) < $START_TS) continue;
     $from   = strtolower($tx['from']);
     $amount = fromTokenUnits($tx['value'], (int)($tx['tokenDecimal'] ?? 6));
     $donors[$from] = ($donors[$from] ?? 0) + $amount;
