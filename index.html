@@ -512,7 +512,88 @@
     .host-photo { width: 100%; height: 200px; }
     .session-row { grid-template-columns: 100px 1fr 80px; }
     .nav-links { display: none; }
+    .don-grid { grid-template-columns: 1fr; }
   }
+
+  /* ── DONACIONES ── */
+  .don-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  .don-card {
+    background: var(--black3);
+    border: 1px solid var(--gray);
+    border-radius: 16px;
+    padding: 1.75rem;
+  }
+  .don-card-title {
+    font-size: 0.75rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--purple-light); margin-bottom: 1.25rem;
+  }
+  .don-net-tabs { display: flex; gap: 6px; margin-bottom: 1.25rem; }
+  .don-net-btn {
+    flex: 1; padding: 0.45rem 0;
+    background: transparent; border: 1px solid var(--gray2);
+    border-radius: 6px; color: var(--text-muted);
+    font-family: 'Montserrat', sans-serif; font-size: 0.7rem; font-weight: 700;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .don-net-btn.active { background: var(--purple-glow); border-color: var(--purple); color: var(--purple-light); }
+  .don-address-wrap {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--black2); border: 1px solid var(--gray);
+    border-radius: 8px; padding: 0.6rem 0.9rem;
+    margin-bottom: 0.5rem; cursor: pointer; transition: border-color 0.2s;
+  }
+  .don-address-wrap:hover { border-color: var(--purple); }
+  .don-address {
+    font-size: 0.62rem; font-family: monospace;
+    color: var(--white); flex: 1;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .don-copy-btn {
+    background: none; border: none; color: var(--text-muted);
+    cursor: pointer; font-size: 0.8rem; padding: 0; flex-shrink: 0;
+  }
+  .don-copy-feedback { font-size: 0.65rem; color: var(--green); min-height: 1.1rem; margin-bottom: 0.6rem; }
+  .don-disclaimer {
+    font-size: 0.62rem; color: var(--text-muted); line-height: 1.6;
+    margin-bottom: 1.25rem; padding: 0.6rem 0.75rem;
+    background: rgba(192,17,43,0.06); border-left: 2px solid var(--red);
+    border-radius: 0 6px 6px 0;
+  }
+  .don-amount-input {
+    width: 100%; background: var(--black2); border: 1px solid var(--gray2);
+    border-radius: 8px; color: var(--white);
+    font-family: 'Montserrat', sans-serif; font-size: 0.82rem;
+    padding: 0.55rem 0.75rem; outline: none; margin-bottom: 0.75rem;
+  }
+  .don-amount-input:focus { border-color: var(--purple); }
+  .don-amount-input::placeholder { color: var(--text-muted); }
+  .don-web3-btn {
+    width: 100%; padding: 0.65rem 1rem;
+    background: var(--purple-glow); border: 1px solid var(--purple);
+    border-radius: 8px; color: var(--purple-light);
+    font-family: 'Montserrat', sans-serif; font-size: 0.75rem; font-weight: 700;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .don-web3-btn:hover { background: rgba(124,58,237,0.3); }
+  .don-web3-status { font-size: 0.65rem; margin-top: 0.5rem; min-height: 1.1rem; color: var(--text-muted); }
+  .don-kofi-desc {
+    font-size: 0.82rem; color: var(--text-muted);
+    line-height: 1.6; margin-bottom: 1.5rem;
+  }
+  .don-kofi-btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 0.7rem 1.5rem; background: #FF5E5B;
+    border: none; border-radius: 8px; color: #fff;
+    font-family: 'Montserrat', sans-serif; font-size: 0.78rem; font-weight: 700;
+    text-decoration: none; transition: opacity 0.2s; width: 100%;
+  }
+  .don-kofi-btn:hover { opacity: 0.88; }
 </style>
 </head>
 <body>
@@ -531,6 +612,7 @@
     <li><a href="#exchanges">exchanges</a></li>
     <li><a href="#indicadores">indicadores</a></li>
     <li><a href="#comunidad">comunidad</a></li>
+    <li><a href="#donaciones">donar</a></li>
   </ul>
   <a class="nav-cta" href="https://wa.me/18495683020?text=Hola%2C%20estoy%20interesado%20en%20entrar%20a%20la%20comunidad%20de%20AnonimusTrade%20Live." target="_blank" rel="noopener">únete</a>
 </nav>
@@ -1052,6 +1134,44 @@
         <span class="social-name">TikTok</span>
         <span class="social-handle">@anonimustradelive</span>
       </a>
+    </div>
+  </div>
+</section>
+
+<!-- DONACIONES -->
+<section id="donaciones">
+  <div class="max-w">
+    <p class="section-label">Apóyanos</p>
+    <h2 class="section-title">Dona y ayúdanos<br>a seguir.</h2>
+    <div class="divider" style="margin:1.5rem auto;"></div>
+    <p class="section-sub" style="margin:0 auto 3rem; text-align:center;">Si el contenido te ha aportado valor, considera apoyarnos directamente. Cada donación nos ayuda a mantener las sesiones en vivo y seguir creando herramientas gratuitas para la comunidad.</p>
+    <div class="don-grid">
+
+      <!-- CRIPTO -->
+      <div class="don-card">
+        <p class="don-card-title">⬡ Cripto directo</p>
+        <div class="don-net-tabs">
+          <button class="don-net-btn active" id="don-tab-bsc" onclick="donSelectNet('bsc')">USDT · BSC</button>
+          <button class="don-net-btn" id="don-tab-base" onclick="donSelectNet('base')">USDC · Base</button>
+        </div>
+        <div class="don-address-wrap" onclick="donCopy()" title="Clic para copiar dirección">
+          <span class="don-address">0x20332BD20d55cc85282AFFe05BcC473bb8D18D91</span>
+          <button class="don-copy-btn" tabindex="-1">⎘</button>
+        </div>
+        <div class="don-copy-feedback" id="don-copy-feedback"></div>
+        <div class="don-disclaimer" id="don-disclaimer">⚠️ Envía únicamente <strong>USDT en la red BEP-20 (Binance Smart Chain)</strong>. Cualquier otro token o red puede resultar en pérdida permanente de fondos.</div>
+        <input class="don-amount-input" id="don-amount" type="number" placeholder="Monto a donar (ej: 10)" min="1" step="any">
+        <button class="don-web3-btn" onclick="donWeb3()">Conectar cartera y donar →</button>
+        <div class="don-web3-status" id="don-web3-status"></div>
+      </div>
+
+      <!-- KO-FI -->
+      <div class="don-card" style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;">
+        <p class="don-card-title">☕ Ko-fi</p>
+        <p class="don-kofi-desc">¿Prefieres donar con tarjeta de crédito o PayPal? Ko-fi lo hace fácil, sin necesidad de cripto ni billetera Web3.</p>
+        <a class="don-kofi-btn" href="https://ko-fi.com/anonimustradelive" target="_blank" rel="noopener">☕ Apoyar en Ko-fi →</a>
+      </div>
+
     </div>
   </div>
 </section>
@@ -1756,6 +1876,82 @@ function tlShow(tabKey, firmKey) {
       ${scoresHtml}
     </div>
     ${ctaHtml}`;
+}
+
+// ── DONACIONES ──
+const DON_WALLET = '0x20332BD20d55cc85282AFFe05BcC473bb8D18D91';
+const DON_NETS = {
+  bsc: {
+    chainId: '0x38', name: 'BNB Smart Chain',
+    rpc: 'https://bsc-dataseed.binance.org/', symbol: 'BNB',
+    explorer: 'https://bscscan.com',
+    token: '0x55d398326f99059fF775485246999027B3197955',
+    tokenSymbol: 'USDT', decimals: 18,
+    disclaimer: '⚠️ Envía únicamente <strong>USDT en la red BEP-20 (Binance Smart Chain)</strong>. Cualquier otro token o red puede resultar en pérdida permanente de fondos.',
+  },
+  base: {
+    chainId: '0x2105', name: 'Base',
+    rpc: 'https://mainnet.base.org', symbol: 'ETH',
+    explorer: 'https://basescan.org',
+    token: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+    tokenSymbol: 'USDC', decimals: 6,
+    disclaimer: '⚠️ Envía únicamente <strong>USDC en la red Base</strong>. Cualquier otro token o red puede resultar en pérdida permanente de fondos.',
+  },
+};
+let donActiveNet = 'bsc';
+
+function donSelectNet(net) {
+  donActiveNet = net;
+  document.getElementById('don-tab-bsc').classList.toggle('active', net === 'bsc');
+  document.getElementById('don-tab-base').classList.toggle('active', net === 'base');
+  document.getElementById('don-disclaimer').innerHTML = DON_NETS[net].disclaimer;
+  const s = document.getElementById('don-web3-status');
+  s.textContent = ''; s.style.color = 'var(--text-muted)';
+}
+
+function donCopy() {
+  navigator.clipboard.writeText(DON_WALLET).then(() => {
+    const fb = document.getElementById('don-copy-feedback');
+    fb.textContent = '¡Dirección copiada al portapapeles!';
+    setTimeout(() => { fb.textContent = ''; }, 2500);
+  });
+}
+
+async function donWeb3() {
+  const status = document.getElementById('don-web3-status');
+  const amountRaw = parseFloat(document.getElementById('don-amount').value);
+  status.style.color = 'var(--text-muted)';
+  if (!amountRaw || amountRaw <= 0) { status.textContent = 'Ingresa un monto válido.'; return; }
+  if (!window.ethereum) { status.textContent = 'No se detectó cartera Web3. Instala MetaMask o Trust Wallet.'; return; }
+  const net = DON_NETS[donActiveNet];
+  try {
+    status.textContent = 'Conectando cartera...';
+    await window.ethereum.request({ method: 'eth_requestAccounts' });
+    status.textContent = 'Cambiando a red ' + net.name + '...';
+    try {
+      await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: net.chainId }] });
+    } catch (e) {
+      if (e.code === 4902) {
+        await window.ethereum.request({ method: 'wallet_addEthereumChain', params: [{
+          chainId: net.chainId, chainName: net.name, rpcUrls: [net.rpc],
+          nativeCurrency: { name: net.symbol, symbol: net.symbol, decimals: 18 },
+          blockExplorerUrls: [net.explorer]
+        }]});
+      } else throw e;
+    }
+    status.textContent = 'Preparando transacción...';
+    const amount = BigInt(Math.round(amountRaw * 10 ** net.decimals));
+    const paddedTo = DON_WALLET.slice(2).padStart(64, '0');
+    const paddedAmt = amount.toString(16).padStart(64, '0');
+    const data = '0xa9059cbb' + paddedTo + paddedAmt;
+    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+    await window.ethereum.request({ method: 'eth_sendTransaction', params: [{ from: accounts[0], to: net.token, data }] });
+    status.style.color = 'var(--green)';
+    status.textContent = '¡Transacción enviada! Gracias por tu apoyo 🙏';
+  } catch (err) {
+    status.style.color = 'var(--red-light)';
+    status.textContent = err.code === 4001 ? 'Transacción cancelada.' : 'Error: ' + (err.message || 'Inténtalo de nuevo.');
+  }
 }
 </script>
 
