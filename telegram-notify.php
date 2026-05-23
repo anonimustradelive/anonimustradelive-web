@@ -1,18 +1,10 @@
 <?php
-// ── CONFIGURACIÓN ─────────────────────────────────────────────────────────────
-$TG_TOKEN      = '8937136752:AAE7U1bxG5eIvCteE5F0ESPm7wTUrhsMzas';
-$TG_CHAT_ID    = '-1001517888411';
-$TG_THREAD_ID  = '4936';
-
-$MORALIS_KEY   = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6IjNkNjQyOGUxLWM4ODAtNGI4NC05MThlLTY1YzZkOWJmNGVjYyIsIm9yZ0lkIjoiNTE3MTg3IiwidXNlcklkIjoiNTMyMjQ4IiwidHlwZUlkIjoiZjdmNDVmYzEtMzhjNi00MmFkLWFkMDAtMDRiNTgyOTEzMTQ1IiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3Nzk1NTUxMTQsImV4cCI6NDkzNTMxNTExNH0.8ZCUayjERVc5LpO0P_GFbbeQdI6dOEOKO8q18say5ys';
-$WALLET        = '0x20332BD20d55cc85282AFFe05BcC473bb8D18D91';
-$USDT_BSC      = '0x55d398326f99059fF775485246999027B3197955';
-$USDC_BASE     = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
-$FROM_DATE     = '2026-05-23T00:00:00Z';
-
-// Archivo que guarda los tx hash ya notificados
-$SEEN_FILE     = __DIR__ . '/crypto_seen_txs.json';
-// ─────────────────────────────────────────────────────────────────────────────
+require_once __DIR__ . '/config.php';
+$WALLET    = '0x20332BD20d55cc85282AFFe05BcC473bb8D18D91';
+$USDT_BSC  = '0x55d398326f99059fF775485246999027B3197955';
+$USDC_BASE = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
+$FROM_DATE = '2026-05-23T00:00:00Z';
+$SEEN_FILE = __DIR__ . '/crypto_seen_txs.json';
 
 function moralisGet(string $url, string $key): ?array {
     $ctx = stream_context_create([

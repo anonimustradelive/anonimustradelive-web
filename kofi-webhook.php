@@ -4,13 +4,8 @@
 
 header('Content-Type: application/json');
 
-$KOFI_TOKEN   = '86b319d1-e49e-4fbc-adb4-c3f0e51dd04d';
+require_once __DIR__ . '/config.php';
 $DONORS_FILE  = __DIR__ . '/donors.json';
-
-// Telegram
-$TG_TOKEN     = '8937136752:AAE7U1bxG5eIvCteE5F0ESPm7wTUrhsMzas';
-$TG_CHAT_ID   = '-1001517888411';
-$TG_THREAD_ID = '4936';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);

@@ -1,0 +1,4 @@
+config.php
+crypto_donors_cache.json
+crypto_seen_txs.json
+*.backup.html
