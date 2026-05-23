@@ -594,6 +594,35 @@
     text-decoration: none; transition: opacity 0.2s; width: 100%;
   }
   .don-kofi-btn:hover { opacity: 0.88; }
+  .don-modal-overlay {
+    position: fixed; inset: 0; z-index: 9999;
+    background: rgba(8,8,16,0.85); backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .don-modal {
+    background: var(--black3); border: 1px solid var(--gray2);
+    border-radius: 16px; padding: 1.75rem; min-width: 280px;
+    display: flex; flex-direction: column; gap: 0.75rem;
+  }
+  .don-modal-title {
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--purple-light); margin-bottom: 0.25rem;
+  }
+  .don-wallet-btn {
+    display: flex; align-items: center; gap: 12px;
+    padding: 0.75rem 1rem; background: var(--black2);
+    border: 1px solid var(--gray); border-radius: 10px;
+    color: var(--white); font-family: 'Montserrat', sans-serif;
+    font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: border-color 0.2s;
+    width: 100%;
+  }
+  .don-wallet-btn:hover { border-color: var(--purple); }
+  .don-modal-cancel {
+    font-size: 0.7rem; color: var(--text-muted); background: none;
+    border: none; cursor: pointer; font-family: 'Montserrat', sans-serif;
+    text-align: center; padding: 0.25rem;
+  }
+  .don-modal-cancel:hover { color: var(--white); }
 </style>
 </head>
 <body>
@@ -1917,22 +1946,82 @@ function donCopy() {
   });
 }
 
+function donGetProviders() {
+  if (!window.ethereum) return [];
+  if (window.ethereum.providers && window.ethereum.providers.length > 0)
+    return window.ethereum.providers;
+  return [window.ethereum];
+}
+
+function donProviderName(p) {
+  if (p.isTrust || p.isTrustWallet) return 'Trust Wallet';
+  if (p.isMetaMask) return 'MetaMask';
+  if (p.isBraveWallet) return 'Brave Wallet';
+  if (p.isCoinbaseWallet) return 'Coinbase Wallet';
+  return 'Cartera Web3';
+}
+
+function donProviderIcon(p) {
+  if (p.isTrust || p.isTrustWallet) return '🔵';
+  if (p.isMetaMask) return '🦊';
+  if (p.isBraveWallet) return '🦁';
+  if (p.isCoinbaseWallet) return '🔵';
+  return '👛';
+}
+
+function donShowPicker(providers) {
+  document.getElementById('don-picker-overlay')?.remove();
+  const overlay = document.createElement('div');
+  overlay.id = 'don-picker-overlay';
+  overlay.className = 'don-modal-overlay';
+  overlay.innerHTML = `
+    <div class="don-modal">
+      <div class="don-modal-title">Elegir cartera</div>
+      ${providers.map((p, i) => `
+        <button class="don-wallet-btn" onclick="donPickWallet(${i})">
+          <span>${donProviderIcon(p)}</span>
+          <span>${donProviderName(p)}</span>
+        </button>`).join('')}
+      <button class="don-modal-cancel" onclick="donClosePicker()">Cancelar</button>
+    </div>`;
+  overlay.addEventListener('click', e => { if (e.target === overlay) donClosePicker(); });
+  document.body.appendChild(overlay);
+  window._donProviders = providers;
+}
+
+function donClosePicker() {
+  document.getElementById('don-picker-overlay')?.remove();
+}
+
+function donPickWallet(index) {
+  donClosePicker();
+  donConnectWith(window._donProviders[index]);
+}
+
 async function donWeb3() {
   const status = document.getElementById('don-web3-status');
   const amountRaw = parseFloat(document.getElementById('don-amount').value);
   status.style.color = 'var(--text-muted)';
   if (!amountRaw || amountRaw <= 0) { status.textContent = 'Ingresa un monto válido.'; return; }
   if (!window.ethereum) { status.textContent = 'No se detectó cartera Web3. Instala MetaMask o Trust Wallet.'; return; }
+  const providers = donGetProviders();
+  if (providers.length > 1) { donShowPicker(providers); } else { donConnectWith(providers[0]); }
+}
+
+async function donConnectWith(provider) {
+  const status = document.getElementById('don-web3-status');
+  const amountRaw = parseFloat(document.getElementById('don-amount').value);
   const net = DON_NETS[donActiveNet];
+  status.style.color = 'var(--text-muted)';
   try {
     status.textContent = 'Conectando cartera...';
-    await window.ethereum.request({ method: 'eth_requestAccounts' });
+    await provider.request({ method: 'eth_requestAccounts' });
     status.textContent = 'Cambiando a red ' + net.name + '...';
     try {
-      await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: net.chainId }] });
+      await provider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: net.chainId }] });
     } catch (e) {
       if (e.code === 4902) {
-        await window.ethereum.request({ method: 'wallet_addEthereumChain', params: [{
+        await provider.request({ method: 'wallet_addEthereumChain', params: [{
           chainId: net.chainId, chainName: net.name, rpcUrls: [net.rpc],
           nativeCurrency: { name: net.symbol, symbol: net.symbol, decimals: 18 },
           blockExplorerUrls: [net.explorer]
@@ -1944,8 +2033,8 @@ async function donWeb3() {
     const paddedTo = DON_WALLET.slice(2).padStart(64, '0');
     const paddedAmt = amount.toString(16).padStart(64, '0');
     const data = '0xa9059cbb' + paddedTo + paddedAmt;
-    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-    await window.ethereum.request({ method: 'eth_sendTransaction', params: [{ from: accounts[0], to: net.token, data }] });
+    const accounts = await provider.request({ method: 'eth_accounts' });
+    await provider.request({ method: 'eth_sendTransaction', params: [{ from: accounts[0], to: net.token, data }] });
     status.style.color = 'var(--green)';
     status.textContent = '¡Transacción enviada! Gracias por tu apoyo 🙏';
   } catch (err) {
