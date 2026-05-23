@@ -2177,9 +2177,7 @@ async function donLoadTop() {
     const ranks = ['🥇','🥈','🥉'];
     container.innerHTML = donors.slice(0, 20).map((d, i) => {
       const rank = ranks[i] || `#${i + 1}`;
-      const avatar = d.email_hash
-        ? `<img class="don-top-avatar" src="https://www.gravatar.com/avatar/${d.email_hash}?s=72&d=404" alt="" onerror="donAvatarFallback(this,${JSON.stringify(d.name)},${i})">`
-        : donLetterAvatar(d.name, i);
+      const avatar = donLetterAvatar(d.name, i);
       return `<div class="don-top-item">
         <span class="don-top-rank">${rank}</span>
         ${avatar}
