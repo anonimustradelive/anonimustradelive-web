@@ -610,7 +610,17 @@
     font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em;
     text-transform: uppercase; color: var(--purple-light); margin-bottom: 1rem; text-align: center;
   }
-  .don-top-list { display: flex; flex-direction: column; gap: 0.5rem; max-width: 560px; margin: 0 auto; }
+  .don-top-list {
+    display: flex; flex-direction: column; gap: 0.5rem;
+    max-width: 560px; margin: 0 auto;
+    max-height: 320px; overflow-y: auto;
+    padding-right: 4px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--purple) var(--black2);
+  }
+  .don-top-list::-webkit-scrollbar { width: 4px; }
+  .don-top-list::-webkit-scrollbar-track { background: var(--black2); border-radius: 2px; }
+  .don-top-list::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 2px; }
   .don-top-item {
     display: flex; align-items: center; gap: 0.9rem;
     background: var(--black3); border: 1px solid var(--gray);
@@ -2144,7 +2154,7 @@ async function donLoadTop() {
       return;
     }
     const ranks = ['🥇','🥈','🥉'];
-    container.innerHTML = donors.slice(0, 10).map((d, i) => {
+    container.innerHTML = donors.slice(0, 20).map((d, i) => {
       const rank = ranks[i] || `#${i + 1}`;
       const avatar = d.email_hash
         ? `<img class="don-top-avatar" src="https://www.gravatar.com/avatar/${d.email_hash}?s=72&d=404" alt="${d.name}" onerror="this.outerHTML=\`${donLetterAvatar(d.name, i)}\`;">`
