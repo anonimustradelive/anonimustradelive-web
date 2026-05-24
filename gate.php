@@ -187,7 +187,7 @@ function showAccessPage(): void {
       Contactar por WhatsApp
     </a>
     <div class="divider"><hr><span>o también</span><hr></div>
-    <a class="btn btn-tg" href="https://t.me/+18495683020" target="_blank" rel="noopener">
+    <a class="btn btn-tg" href="https://t.me/+18495683020?text=Hola%2C%20estoy%20interesado%20en%20unirme%20a%20la%20comunidad%20de%20AnonimusTrade%20Live." target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-2.016 9.506c-.148.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.08 14.4l-2.95-.924c-.641-.203-.654-.641.136-.949l11.521-4.442c.535-.194 1.002.131.775.163z"/></svg>
       Escribir por Telegram
     </a>
