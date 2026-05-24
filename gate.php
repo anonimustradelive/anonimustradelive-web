@@ -90,6 +90,10 @@ function showAccessPage(): void {
     background: rgba(124,58,237,0.12); border: 1px solid rgba(124,58,237,0.25);
     border-radius: 4px; padding: 2px 8px; font-size: 0.82rem;
     color: #A78BFA; font-family: monospace;
+    cursor: pointer; user-select: none; transition: background 0.2s;
+  }
+  .step-text code.copied {
+    background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.35); color: #22C55E;
   }
 
   /* Botones */
@@ -152,7 +156,7 @@ function showAccessPage(): void {
       <div class="step">
         <div class="step-num">2</div>
         <div class="step-text">
-          Envía el comando <code>/acceso</code><br>
+          Envía el comando <code onclick="copyAcceso(this)" title="Clic para copiar">/acceso</code> <span id="copy-hint" style="font-size:0.7rem;color:#7070A0;">· toca para copiar</span><br>
           El bot verificará que eres miembro.
         </div>
       </div>
@@ -194,6 +198,13 @@ function showAccessPage(): void {
 
 </div>
 <script>
+function copyAcceso(el) {
+  navigator.clipboard.writeText('/acceso').then(() => {
+    el.textContent = '✓ copiado'; el.classList.add('copied');
+    document.getElementById('copy-hint').style.display = 'none';
+    setTimeout(() => { el.textContent = '/acceso'; el.classList.remove('copied'); document.getElementById('copy-hint').style.display = ''; }, 2000);
+  });
+}
 function showTab(id) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
