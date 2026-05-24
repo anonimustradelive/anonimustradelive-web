@@ -84,13 +84,52 @@
       text-shadow: 0 0 10px rgba(192,17,43,0.8), 0 0 20px rgba(192,17,43,0.6), 0 0 30px rgba(192,17,43,0.4);
     }
   }
-  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
   .nav-links a {
     color: var(--text-muted); text-decoration: none;
     font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
     transition: color 0.2s;
   }
   .nav-links a:hover { color: var(--purple-light); }
+
+  /* ── DROPDOWN ── */
+  .nav-dropdown { position: relative; }
+  .nav-dropdown-btn {
+    color: var(--text-muted); font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    background: none; border: none; cursor: pointer;
+    display: flex; align-items: center; gap: 5px;
+    transition: color 0.2s; padding: 0; font-family: 'Montserrat', sans-serif;
+  }
+  .nav-dropdown-btn:hover,
+  .nav-dropdown:hover .nav-dropdown-btn { color: var(--purple-light); }
+  .nav-dropdown-btn svg {
+    width: 9px; height: 9px; stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    transition: transform 0.2s;
+  }
+  .nav-dropdown:hover .nav-dropdown-btn svg { transform: rotate(180deg); }
+  .nav-dropdown-menu {
+    position: absolute; top: calc(100% + 18px); left: 50%;
+    transform: translateX(-50%) translateY(-4px);
+    background: rgba(8,8,16,0.97); backdrop-filter: blur(14px);
+    border: 1px solid rgba(124,58,237,0.22); border-radius: 8px;
+    padding: 5px; min-width: 148px;
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity 0.15s, visibility 0.15s, transform 0.15s;
+    z-index: 1000;
+  }
+  .nav-dropdown:hover .nav-dropdown-menu {
+    opacity: 1; visibility: visible; pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+  .nav-dropdown-menu a {
+    display: block; padding: 8px 14px; border-radius: 5px;
+    color: var(--text-muted); text-decoration: none;
+    font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    transition: background 0.15s, color 0.15s; white-space: nowrap;
+  }
+  .nav-dropdown-menu a:hover { background: rgba(124,58,237,0.12); color: var(--purple-light); }
   .nav-cta {
     background: var(--purple); color: var(--white);
     padding: 8px 20px; border-radius: 3px;
@@ -140,6 +179,38 @@
   .nav-mobile-actions { display: flex; gap: 8px; margin-top: 1.25rem; }
   .nav-mobile-actions .nav-cta-red,
   .nav-mobile-actions .nav-cta { flex: 1; text-align: center; }
+  .nav-mobile-toggle {
+    width: 100%; background: none; border: none; cursor: pointer;
+    color: var(--text-muted); text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.9rem 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex; align-items: center; justify-content: space-between;
+    transition: color 0.2s;
+  }
+  .nav-mobile-toggle:hover { color: var(--purple-light); }
+  .nav-mobile-toggle svg {
+    width: 12px; height: 12px; stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    transition: transform 0.25s; flex-shrink: 0;
+  }
+  .nav-mobile-toggle.open { color: var(--purple-light); }
+  .nav-mobile-toggle.open svg { transform: rotate(180deg); }
+  .nav-mobile-sub {
+    display: none; flex-direction: column;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: rgba(124,58,237,0.04);
+  }
+  .nav-mobile-sub.open { display: flex; }
+  .nav-mobile-sublink {
+    color: var(--text-muted); text-decoration: none;
+    font-size: 0.74rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 0.75rem 0 0.75rem 1.25rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    transition: color 0.2s;
+  }
+  .nav-mobile-sublink:last-child { border-bottom: none; }
+  .nav-mobile-sublink:hover { color: var(--purple-light); }
 
   /* ── HERO ── */
   #hero {
@@ -759,9 +830,17 @@
   <ul class="nav-links">
     <li><a href="#nosotros">nosotros</a></li>
     <li><a href="#sesiones">sesiones</a></li>
-    <li><a href="#brokers">brokers</a></li>
-    <li><a href="#propfirms">prop firms</a></li>
-    <li><a href="#exchanges">exchanges</a></li>
+    <li class="nav-dropdown">
+      <button class="nav-dropdown-btn">
+        Tier list's
+        <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="nav-dropdown-menu">
+        <a href="#brokers">Brokers</a>
+        <a href="#propfirms">Prop Firms</a>
+        <a href="#exchanges">Exchanges</a>
+      </div>
+    </li>
     <li><a href="#indicadores">indicadores</a></li>
     <li><a href="#comunidad">comunidad</a></li>
     <li><a href="/utilidades">herramientas</a></li>
@@ -779,9 +858,15 @@
 <div class="nav-mobile" id="nav-mobile">
   <a class="nav-mobile-link" href="#nosotros"   onclick="navClose()">nosotros</a>
   <a class="nav-mobile-link" href="#sesiones"   onclick="navClose()">sesiones</a>
-  <a class="nav-mobile-link" href="#brokers"    onclick="navClose()">brokers</a>
-  <a class="nav-mobile-link" href="#propfirms"  onclick="navClose()">prop firms</a>
-  <a class="nav-mobile-link" href="#exchanges"  onclick="navClose()">exchanges</a>
+  <button class="nav-mobile-toggle" id="tierToggle" onclick="toggleTierSub()">
+    Tier list's
+    <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+  </button>
+  <div class="nav-mobile-sub" id="tierSub">
+    <a class="nav-mobile-sublink" href="#brokers"   onclick="navClose()">Brokers</a>
+    <a class="nav-mobile-sublink" href="#propfirms" onclick="navClose()">Prop Firms</a>
+    <a class="nav-mobile-sublink" href="#exchanges" onclick="navClose()">Exchanges</a>
+  </div>
   <a class="nav-mobile-link" href="#indicadores" onclick="navClose()">indicadores</a>
   <a class="nav-mobile-link" href="#comunidad"  onclick="navClose()">comunidad</a>
   <a class="nav-mobile-link" href="/utilidades">herramientas</a>
@@ -2323,6 +2408,15 @@ function navToggle() {
 function navClose() {
   document.getElementById('nav-mobile').classList.remove('open');
   document.getElementById('nav-hamburger').classList.remove('open');
+  // Cerrar también el sub-menú Tier list's
+  document.getElementById('tierSub').classList.remove('open');
+  document.getElementById('tierToggle').classList.remove('open');
+}
+function toggleTierSub() {
+  const sub    = document.getElementById('tierSub');
+  const toggle = document.getElementById('tierToggle');
+  sub.classList.toggle('open');
+  toggle.classList.toggle('open');
 }
 // Cerrar al hacer scroll
 window.addEventListener('scroll', navClose, { passive: true });
