@@ -13,4 +13,5 @@ deployment:
     - /bin/cp verify.php /home/ntpsrnlfrg/anonimustradelive.com/
     - /bin/cp telegram-auth-webhook.php /home/ntpsrnlfrg/anonimustradelive.com/
     - /bin/mkdir -p /home/ntpsrnlfrg/anonimustradelive.com/utilidades
+    - /bin/rm -f /home/ntpsrnlfrg/anonimustradelive.com/utilidades/index.html
     - /bin/cp utilidades/index.php /home/ntpsrnlfrg/anonimustradelive.com/utilidades/
