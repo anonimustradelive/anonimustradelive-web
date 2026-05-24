@@ -100,6 +100,13 @@
     background: none; border: none; cursor: pointer;
     display: flex; align-items: center; gap: 5px;
     transition: color 0.2s; padding: 0; font-family: 'Montserrat', sans-serif;
+    position: relative; /* necesario para el puente */
+  }
+  /* Puente invisible: extiende la zona hover 20px hacia abajo,
+     cubriendo el hueco entre el botón y el menú flotante */
+  .nav-dropdown-btn::after {
+    content: ''; position: absolute;
+    top: 100%; left: -12px; right: -12px; height: 22px;
   }
   .nav-dropdown-btn:hover,
   .nav-dropdown:hover .nav-dropdown-btn { color: var(--purple-light); }
