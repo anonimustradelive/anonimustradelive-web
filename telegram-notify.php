@@ -3,6 +3,8 @@ require_once __DIR__ . '/config.php';
 $WALLET    = '0x20332BD20d55cc85282AFFe05BcC473bb8D18D91';
 $USDT_BSC  = '0x55d398326f99059fF775485246999027B3197955';
 $USDC_BASE = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
+$USDT_ETH  = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
+$USDC_ETH  = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
 $FROM_DATE = '2026-05-23T00:00:00Z';
 $SEEN_FILE = __DIR__ . '/crypto_seen_txs.json';
 
@@ -79,6 +81,8 @@ $notified = 0;
 $chains = [
     ['token' => $USDT_BSC,  'chain' => 'bsc',  'symbol' => 'USDT', 'decimals' => 18],
     ['token' => $USDC_BASE, 'chain' => 'base', 'symbol' => 'USDC', 'decimals' => 6],
+    ['token' => $USDT_ETH,  'chain' => 'eth',  'symbol' => 'USDT', 'decimals' => 6],
+    ['token' => $USDC_ETH,  'chain' => 'eth',  'symbol' => 'USDC', 'decimals' => 6],
 ];
 
 foreach ($chains as $c) {
