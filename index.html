@@ -1178,6 +1178,15 @@
             </div>
           </div>
         </div>
+        <div class="tl-row">
+          <div class="tl-label c">C</div>
+          <div class="tl-cards">
+            <div class="tl-card" onclick="tlShow('cfd','moneta')">
+              <div class="tl-card-name">Moneta Funded</div>
+              <div class="tl-card-meta"><span>88% split</span><span>Nueva firma</span><span>~$249*</span></div>
+            </div>
+          </div>
+        </div>
         <div id="tl-detail-cfd" class="tl-no-select">Selecciona una firma para ver sus métricas completas</div>
       </div>
       <div class="tl-legend">
@@ -1988,6 +1997,19 @@ const TL_DATA = {
       {label:"Años operando",        value:"2 años", note:""},
       {label:"Payment cycle",        value:"Bi-weekly", note:""},
     ], scores:{"Profit split":90,"Condiciones":65,"Precio":80,"Flexibilidad":70,"Reputación":55}},
+    moneta: { name:"Moneta Funded", tier:"c", fields:[
+      {label:"Profit target",        value:"5% Ph.1 / 10% Ph.2", note:""},
+      {label:"Max drawdown",         value:"10%", note:""},
+      {label:"Max daily loss",       value:"5%", note:""},
+      {label:"Profit split",         value:"88%", note:"good"},
+      {label:"Precio challenge 50k", value:"~$249 (pago único)*", note:""},
+      {label:"Drawdown type",        value:"10% estático", note:""},
+      {label:"Min trading days",     value:"3 días", note:""},
+      {label:"News trading",         value:"No", note:"warn"},
+      {label:"Plataformas",          value:"MT5, Matchtrader", note:""},
+      {label:"Años operando",        value:"Firma nueva (2025)*", note:"warn"},
+      {label:"Payment cycle",        value:"Bi-weekly", note:""},
+    ], scores:{"Profit split":80,"Condiciones":60,"Precio":65,"Flexibilidad":50,"Reputación":30}},
   },
   kyc: {
     binance: { name:"Binance", tier:"s", fields:[
