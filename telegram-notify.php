@@ -44,14 +44,22 @@ function parseAmount(array $tx, int $fallbackDecimals): float {
     return (float)(substr($val, 0, strlen($val) - $dec) . '.' . substr($val, -$dec));
 }
 
-function sendTelegram(string $token, string $chatId, string $threadId, string $text): void {
+function sendTelegram(string $token, string $chatId, string $threadId, string $text, string $donateUrl = ''): void {
     $url = "https://api.telegram.org/bot{$token}/sendMessage";
-    $payload = json_encode([
+    $body = [
         'chat_id'           => $chatId,
         'message_thread_id' => (int)$threadId,
         'text'              => $text,
         'parse_mode'        => 'HTML',
-    ]);
+    ];
+    if ($donateUrl) {
+        $body['reply_markup'] = [
+            'inline_keyboard' => [[
+                ['text' => '💜 Apoyar a AnonimusTrade Live', 'url' => $donateUrl],
+            ]]
+        ];
+    }
+    $payload = json_encode($body);
     $ctx = stream_context_create([
         'http' => [
             'method'        => 'POST',
@@ -105,7 +113,7 @@ foreach ($chains as $c) {
              . "👛 Desde: <code>{$from}</code>\n\n"
              . "¡Gracias por apoyar a AnonimusTrade Live! 🙏";
 
-        sendTelegram($TG_TOKEN, $TG_CHAT_ID, $TG_THREAD_ID, $msg);
+        sendTelegram($TG_TOKEN, $TG_CHAT_ID, $TG_THREAD_ID, $msg, $SITE_URL . '/#donaciones');
         $newSeen[$key] = time();
         $notified++;
     }
