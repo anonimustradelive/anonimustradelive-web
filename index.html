@@ -594,17 +594,16 @@
   /* ── SOCIALS ── */
   #comunidad { background: var(--black); text-align: center; }
   .social-grid {
-    display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin-top: 3rem;
+    display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-top: 3rem;
   }
   .social-card {
-    display: flex; flex-direction: column; align-items: center; gap: 0.75rem;
-    padding: 2rem 2.5rem; border: 1px solid var(--gray); border-radius: 4px;
-    text-decoration: none; color: var(--white); transition: all 0.3s; min-width: 140px;
+    display: flex; flex-direction: column; align-items: center; gap: 0.55rem;
+    padding: 1.25rem 1rem; border: 1px solid var(--gray); border-radius: 8px;
+    text-decoration: none; color: var(--white); transition: all 0.3s; width: 100px;
   }
   .social-card:hover { border-color: var(--red); transform: translateY(-4px); }
-  .social-icon { width: 2.5rem; height: 2.5rem; object-fit: contain; }
-  .social-name { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
-  .social-handle { font-size: 0.65rem; color: var(--text-muted); }
+  .social-icon { width: 2.25rem; height: 2.25rem; object-fit: contain; }
+  .social-name { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
 
   /* ── FOOTER ── */
   footer {
@@ -640,6 +639,8 @@
     .nav-hamburger { display: flex; }
     .don-grid { grid-template-columns: 1fr; }
     .don-tops-grid { grid-template-columns: 1fr; }
+    .social-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+    .social-card { width: auto; padding: 1rem 0.5rem; }
   }
 
   /* ── DONACIONES ── */
@@ -1372,32 +1373,26 @@
       <a class="social-card" href="https://t.me/+18495683020" target="_blank" rel="noopener">
         <img class="social-icon" src="images/Telegram_logo.svg.png" alt="Telegram">
         <span class="social-name">Telegram</span>
-        <span class="social-handle">+1 (849) 568-3020</span>
       </a>
       <a class="social-card" href="https://www.youtube.com/@anonimustradelive?sub_confirmation=1" target="_blank" rel="noopener">
         <img class="social-icon" src="images/YouTube_full-color_icon_(2017).svg.png" alt="YouTube">
         <span class="social-name">YouTube</span>
-        <span class="social-handle">@anonimustradelive</span>
       </a>
       <a class="social-card" href="https://www.instagram.com/anonimustradelive/" target="_blank" rel="noopener">
         <img class="social-icon" src="images/Instagram_logo_2022.svg" alt="Instagram">
         <span class="social-name">Instagram</span>
-        <span class="social-handle">@anonimustradelive</span>
       </a>
       <a class="social-card" href="https://x.com/anonimustradelv" target="_blank" rel="noopener">
         <img class="social-icon" src="images/X_logo.jpg" alt="X">
         <span class="social-name">X</span>
-        <span class="social-handle">@anonimustradelv</span>
       </a>
       <a class="social-card" href="https://www.tiktok.com/@anonimustradelive" target="_blank" rel="noopener">
         <img class="social-icon" src="images/tiktok-6338432_1280.webp" alt="TikTok">
         <span class="social-name">TikTok</span>
-        <span class="social-handle">@anonimustradelive</span>
       </a>
       <a class="social-card" href="mailto:anonimustradelive@outlook.com">
         <svg class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
         <span class="social-name">Email</span>
-        <span class="social-handle">anonimustradelive@outlook.com</span>
       </a>
     </div>
     <div class="mentoria-cta">
