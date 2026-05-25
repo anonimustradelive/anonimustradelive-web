@@ -7,6 +7,8 @@ require_once __DIR__ . '/config.php';
 $WALLET    = '0x20332BD20d55cc85282AFFe05BcC473bb8D18D91';
 $USDT_BSC  = '0x55d398326f99059fF775485246999027B3197955';
 $USDC_BASE = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
+$USDT_ETH  = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
+$USDC_ETH  = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
 $FROM_DATE = '2026-05-23T00:00:00Z';
 
 $CACHE_FILE = __DIR__ . '/crypto_donors_cache.json';
@@ -74,6 +76,22 @@ foreach (fetchTransfers($WALLET, $USDT_BSC, 'bsc', $FROM_DATE, $MORALIS_KEY) as 
 
 // Base — USDC
 foreach (fetchTransfers($WALLET, $USDC_BASE, 'base', $FROM_DATE, $MORALIS_KEY) as $tx) {
+    if (strtolower($tx['to_address'])   !== $walletLower) continue;
+    if (strtolower($tx['from_address']) === $walletLower) continue;
+    $from = strtolower($tx['from_address']);
+    $donors[$from] = ($donors[$from] ?? 0) + parseAmount($tx, 6);
+}
+
+// Ethereum — USDT
+foreach (fetchTransfers($WALLET, $USDT_ETH, 'eth', $FROM_DATE, $MORALIS_KEY) as $tx) {
+    if (strtolower($tx['to_address'])   !== $walletLower) continue;
+    if (strtolower($tx['from_address']) === $walletLower) continue;
+    $from = strtolower($tx['from_address']);
+    $donors[$from] = ($donors[$from] ?? 0) + parseAmount($tx, 6);
+}
+
+// Ethereum — USDC
+foreach (fetchTransfers($WALLET, $USDC_ETH, 'eth', $FROM_DATE, $MORALIS_KEY) as $tx) {
     if (strtolower($tx['to_address'])   !== $walletLower) continue;
     if (strtolower($tx['from_address']) === $walletLower) continue;
     $from = strtolower($tx['from_address']);
