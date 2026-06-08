@@ -1527,7 +1527,8 @@ function toggleDST() {
 function savePrefs() {
   localStorage.setItem('at_use12h',   use12h     ? '1' : '0');
   localStorage.setItem('at_dst',      dstEnabled ? '1' : '0');
-  localStorage.setItem('at_tz', document.getElementById('tzSelect').value);
+  const tzEl = document.getElementById('tzSelect');
+  if (tzEl) localStorage.setItem('at_tz', tzEl.value);
 }
 
 function loadPrefs() {
@@ -1664,10 +1665,13 @@ function updateClock() {
   }
 }
 
-loadPrefs();
-recomputeSessions();
-updateClock();
-setInterval(updateClock, 1000);
+// Solo ejecutar el reloj si los elementos existen en esta página
+if (document.getElementById('clockDisplay')) {
+  loadPrefs();
+  recomputeSessions();
+  updateClock();
+  setInterval(updateClock, 1000);
+}
 
 /* ── TIER LIST ENGINE ── */
 const TL_DATA = {
