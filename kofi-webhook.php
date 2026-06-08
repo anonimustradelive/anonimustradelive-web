@@ -115,6 +115,11 @@ $tgPayload = json_encode([
     'message_thread_id' => (int)$TG_THREAD_ID,
     'text'              => $msg,
     'parse_mode'        => 'HTML',
+    'reply_markup'      => [
+        'inline_keyboard' => [[
+            ['text' => '💜 Apoyar a AnonimusTrade Live', 'url' => 'https://ko-fi.com/anonimustradelive'],
+        ]]
+    ],
 ]);
 $ctx = stream_context_create([
     'http' => [
