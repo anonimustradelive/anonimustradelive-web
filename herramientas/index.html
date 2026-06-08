@@ -251,8 +251,8 @@
     letter-spacing: 0.03em;
   }
   /* Ajuste individual de columnas para alinear con TradingView */
-  .calendar-fake-header span:nth-child(2) { width: 385px; } /* Actual */
-  .calendar-fake-header span:nth-child(3) { width: 353px; } /* Previsión */
+  .cfh-actual   { width: 385px !important; }
+  .cfh-prevision { width: 353px !important; }
   /* Widget encima del header falso */
   .tradingview-widget-container {
     position: relative;
@@ -419,8 +419,8 @@
         <!-- Header falso detrás del widget transparente -->
         <div class="calendar-fake-header">
           <span class="cfh-spacer"></span>
-          <span class="cfh-col">Actual</span>
-          <span class="cfh-col">Previsión</span>
+          <span class="cfh-col cfh-actual">Actual</span>
+          <span class="cfh-col cfh-prevision">Previsión</span>
           <span class="cfh-col">Anterior</span>
         </div>
         <!-- TradingView Widget BEGIN -->
