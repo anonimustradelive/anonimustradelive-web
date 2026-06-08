@@ -748,7 +748,8 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 0.85rem; font-weight: 800; color: var(--white);
   }
-  .don-top-name { flex: 1; font-size: 0.8rem; font-weight: 700; }
+  .don-top-name { flex: 1; font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+  .don-sub-badge { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 7px; border-radius: 2px; background: rgba(124,58,237,0.18); color: var(--purple-light); border: 1px solid rgba(124,58,237,0.3); }
   .don-top-amount { font-size: 0.78rem; color: var(--green); font-weight: 700; flex-shrink: 0; }
   .don-modal-overlay {
     position: fixed; inset: 0; z-index: 9999;
@@ -2354,10 +2355,11 @@ async function donLoadTop() {
     container.innerHTML = donors.slice(0, 20).map((d, i) => {
       const rank = ranks[i] || `#${i + 1}`;
       const avatar = donLetterAvatar(d.name, i);
+      const badge = d.is_subscriber ? '<span class="don-sub-badge">⭐ suscriptor</span>' : '';
       return `<div class="don-top-item">
         <span class="don-top-rank">${rank}</span>
         ${avatar}
-        <span class="don-top-name">${d.name}</span>
+        <span class="don-top-name">${d.name}${badge}</span>
         <span class="don-top-amount">$${Number(d.total).toFixed(2)}</span>
       </div>`;
     }).join('');

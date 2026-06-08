@@ -34,12 +34,17 @@ if (($data['verification_token'] ?? '') !== $KOFI_TOKEN) {
     exit;
 }
 
-// Solo procesar donaciones (no suscripciones ni shop orders)
-if (($data['type'] ?? '') !== 'Donation') {
+// Procesar donaciones y suscripciones
+$type = $data['type'] ?? '';
+if (!in_array($type, ['Donation', 'Subscription'])) {
     http_response_code(200);
-    echo json_encode(['status' => 'ignored', 'type' => $data['type'] ?? 'unknown']);
+    echo json_encode(['status' => 'ignored', 'type' => $type]);
     exit;
 }
+
+$is_subscription = ($type === 'Subscription');
+$is_first_sub    = (bool)($data['is_first_subscription_payment'] ?? false);
+$tier_name       = trim($data['tier_name'] ?? '');
 
 $name      = trim($data['from_name'] ?? 'Anónimo');
 $amount    = floatval($data['amount'] ?? 0);
@@ -59,10 +64,11 @@ if (file_exists($DONORS_FILE)) {
 $found = false;
 foreach ($donors as &$donor) {
     if (strtolower($donor['name']) === strtolower($name)) {
-        $donor['total'] += $amount;
+        $donor['total']  += $amount;
         $donor['count']  += 1;
         $donor['last']    = $timestamp;
         if (!empty($message)) $donor['last_message'] = $message;
+        if ($is_subscription) $donor['is_subscriber'] = true;
         $found = true;
         break;
     }
@@ -71,13 +77,14 @@ unset($donor);
 
 if (!$found) {
     $donors[] = [
-        'name'         => $name,
-        'total'        => $amount,
-        'count'        => 1,
-        'currency'     => $currency,
-        'last'         => $timestamp,
-        'last_message' => $message,
-        'email_hash'   => $email_hash,
+        'name'          => $name,
+        'total'         => $amount,
+        'count'         => 1,
+        'currency'      => $currency,
+        'last'          => $timestamp,
+        'last_message'  => $message,
+        'email_hash'    => $email_hash,
+        'is_subscriber' => $is_subscription,
     ];
 }
 
@@ -87,11 +94,21 @@ usort($donors, fn($a, $b) => $b['total'] <=> $a['total']);
 file_put_contents($DONORS_FILE, json_encode($donors, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
 // Notificar en Telegram
-$msg = "☕ <b>¡Nueva donación Ko-fi!</b>\n\n"
-     . "💰 <b>\${$amount} {$currency}</b>\n"
-     . "👤 De: <b>{$name}</b>"
-     . (!empty($message) ? "\n💬 \"" . htmlspecialchars($message) . "\"" : '')
-     . "\n\n¡Gracias por apoyar a AnonimusTrade Live! 🙏";
+if ($is_subscription) {
+    $sub_label = $is_first_sub ? '¡Nuevo suscriptor!' : 'Renovación de suscripción';
+    $msg = "⭐ <b>{$sub_label}</b>\n\n"
+         . "💰 <b>\${$amount} {$currency}</b>/mes\n"
+         . "👤 De: <b>{$name}</b>"
+         . (!empty($tier_name) ? "\n🏅 Tier: <b>{$tier_name}</b>" : '')
+         . (!empty($message) ? "\n💬 \"" . htmlspecialchars($message) . "\"" : '')
+         . "\n\n¡Gracias por el apoyo continuo a AnonimusTrade Live! 🙏";
+} else {
+    $msg = "☕ <b>¡Nueva donación Ko-fi!</b>\n\n"
+         . "💰 <b>\${$amount} {$currency}</b>\n"
+         . "👤 De: <b>{$name}</b>"
+         . (!empty($message) ? "\n💬 \"" . htmlspecialchars($message) . "\"" : '')
+         . "\n\n¡Gracias por apoyar a AnonimusTrade Live! 🙏";
+}
 
 $tgPayload = json_encode([
     'chat_id'           => $TG_CHAT_ID,
