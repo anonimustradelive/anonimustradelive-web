@@ -284,7 +284,8 @@
   }
   .btn-ghost:hover { border-color: var(--red); color: var(--red); }
   .hero-visual {
-    position: relative; display: flex; justify-content: center; align-items: flex-end;
+    position: relative; display: flex; flex-direction: column;
+    justify-content: center; align-items: center; gap: 2.5rem;
   }
   .hero-photos {
     display: flex; gap: 1.5rem; align-items: flex-end;
@@ -294,12 +295,12 @@
     position: relative;
   }
   .hero-photo-wrap img {
-    width: 220px; height: 320px; object-fit: cover; object-position: top;
+    width: 200px; height: 290px; object-fit: cover; object-position: top;
     border-radius: 4px;
     filter: grayscale(20%);
   }
   .hero-photo-wrap:first-child {
-    transform: translateY(20px);
+    transform: translateY(10px);
   }
   .hero-photo-wrap .photo-label {
     position: absolute; bottom: -28px; left: 0; right: 0;
@@ -308,6 +309,31 @@
     color: var(--text-muted);
   }
   .hero-photo-wrap .photo-label span { color: var(--red); }
+
+  /* ── HERO MENTORÍA CARD ── */
+  .hero-mentoria {
+    width: 100%; max-width: 440px;
+    background: rgba(124,58,237,0.08);
+    border: 1px solid rgba(124,58,237,0.25);
+    border-radius: 6px; padding: 1.25rem 1.5rem;
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  }
+  .hero-mentoria-text { }
+  .hero-mentoria-label {
+    font-size: 0.58rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--purple-light); margin-bottom: 0.3rem;
+  }
+  .hero-mentoria-title {
+    font-size: 0.88rem; font-weight: 800; color: var(--white); line-height: 1.3;
+  }
+  .hero-mentoria-btn {
+    flex-shrink: 0; padding: 0.6rem 1.2rem;
+    background: var(--purple); border: none; border-radius: 4px;
+    color: var(--white); font-family: 'Montserrat', sans-serif;
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    cursor: pointer; transition: background 0.2s; white-space: nowrap;
+  }
+  .hero-mentoria-btn:hover { background: var(--purple-mid); }
 
   /* ── SECTION BASE ── */
   section { padding: 100px 5vw; }
@@ -923,10 +949,17 @@
           <img src="images/img_03.png" alt="Richard">
           <p class="photo-label">richard <span>cejas</span></p>
         </div>
-        <div class="hero-photo-wrap" style="transform:translateY(-20px);">
+        <div class="hero-photo-wrap" style="transform:translateY(-10px);">
           <img src="images/img_04.png" alt="Ridolfi">
           <p class="photo-label">ridolfi <span>mosquea</span></p>
         </div>
+      </div>
+      <div class="hero-mentoria">
+        <div class="hero-mentoria-text">
+          <p class="hero-mentoria-label">Mentoría 1:1</p>
+          <p class="hero-mentoria-title">¿Quieres avanzar<br>más rápido?</p>
+        </div>
+        <button class="hero-mentoria-btn" onclick="Calendly.showPopupWidget('https://calendly.com/anonimustradelive/mentoria1a1?hide_gdpr_banner=1'); return false;">Agendar →</button>
       </div>
     </div>
   </div>
@@ -1364,12 +1397,6 @@
         <svg class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
         <span class="social-name">Email</span>
       </a>
-    </div>
-    <div class="mentoria-cta">
-      <p class="mentoria-cta-label">Mentoría personalizada</p>
-      <h3 class="mentoria-cta-title">¿Quieres avanzar más rápido?</h3>
-      <p class="mentoria-cta-desc">Sesiones 1:1 de una hora con Richard y Ridolfi. Cuéntanos tu problema y saldrás con un plan claro para resolverlo.</p>
-      <button class="mentoria-cta-btn" onclick="Calendly.showPopupWidget('https://calendly.com/anonimustradelive/mentoria1a1?hide_gdpr_banner=1'); return false;">Agendar mentoría →</button>
     </div>
   </div>
 </section>
