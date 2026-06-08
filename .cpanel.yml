@@ -5,6 +5,8 @@ deployment:
     - /bin/cp -r images /home/ntpsrnlfrg/anonimustradelive.com/
     - /bin/mkdir -p /home/ntpsrnlfrg/anonimustradelive.com/bio
     - /bin/cp bio/index.html /home/ntpsrnlfrg/anonimustradelive.com/bio/
+    - /bin/mkdir -p /home/ntpsrnlfrg/anonimustradelive.com/herramientas
+    - /bin/cp herramientas/index.html /home/ntpsrnlfrg/anonimustradelive.com/herramientas/
     - /bin/cp kofi-webhook.php /home/ntpsrnlfrg/anonimustradelive.com/
     - /bin/cp crypto-donors.php /home/ntpsrnlfrg/anonimustradelive.com/
     - /bin/cp telegram-notify.php /home/ntpsrnlfrg/anonimustradelive.com/

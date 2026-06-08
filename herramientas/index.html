@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas — AnonimusTrade Live</title>
+<link rel="icon" type="image/png" href="../images/fab icon anonimustradelive.png">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #C0112B;
+    --red-dark: #8B0D1F;
+    --red-light: #E8153A;
+    --black: #080810;
+    --black2: #0E0E18;
+    --black3: #14141F;
+    --black4: #1A1A28;
+    --white: #F0EFFF;
+    --purple: #7C3AED;
+    --purple-dark: #4C1D95;
+    --purple-mid: #6D28D9;
+    --purple-light: #A78BFA;
+    --purple-glow: rgba(124,58,237,0.18);
+    --gray: #252535;
+    --gray2: #333348;
+    --text-muted: #7070A0;
+    --green: #22C55E;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: var(--black);
+    color: var(--white);
+    overflow-x: hidden;
+  }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 2px; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 5vw; height: 64px;
+    background: rgba(8,8,16,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(124,58,237,0.18);
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .nav-logo img { height: 32px; }
+  .nav-logo span { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--white); }
+  .live-glow { color: var(--red); animation: liveGlow 2s ease-in-out infinite; }
+  @keyframes liveGlow {
+    0%,100% { color:var(--red); text-shadow:0 0 8px rgba(192,17,43,.6),0 0 16px rgba(192,17,43,.4); }
+    50%      { color:var(--red-light); text-shadow:0 0 12px rgba(192,17,43,.9),0 0 24px rgba(192,17,43,.6); }
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+  .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--purple-light); }
+
+  /* ── DROPDOWN ── */
+  .nav-dropdown { position: relative; }
+  .nav-dropdown-btn {
+    color: var(--text-muted); font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    background: none; border: none; cursor: pointer;
+    display: flex; align-items: center; gap: 5px;
+    transition: color 0.2s; padding: 0; font-family: 'Montserrat', sans-serif;
+    position: relative;
+  }
+  .nav-dropdown-btn::after {
+    content: ''; position: absolute;
+    bottom: -20px; left: 0; right: 0; height: 20px;
+  }
+  .nav-dropdown-btn svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.2s; }
+  .nav-dropdown:hover .nav-dropdown-btn { color: var(--purple-light); }
+  .nav-dropdown:hover .nav-dropdown-btn svg { transform: rotate(180deg); }
+  .nav-dropdown-menu {
+    display: none; position: absolute; top: calc(100% + 20px); left: 50%;
+    transform: translateX(-50%);
+    background: rgba(14,14,24,0.98); border: 1px solid rgba(124,58,237,0.2);
+    border-radius: 4px; min-width: 200px; overflow: hidden;
+    backdrop-filter: blur(12px);
+  }
+  .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+  .nav-dropdown-menu a {
+    display: block; padding: 10px 16px;
+    color: var(--text-muted); text-decoration: none;
+    font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    border-bottom: 1px solid rgba(255,255,255,0.04); transition: all 0.15s;
+  }
+  .nav-dropdown-menu a:last-child { border-bottom: none; }
+  .nav-dropdown-menu a:hover { background: rgba(124,58,237,0.12); color: var(--purple-light); }
+  .nav-dropdown-menu a.active-tool { color: var(--purple-light); background: rgba(124,58,237,0.08); }
+
+  .nav-actions { display: flex; align-items: center; gap: 8px; }
+  .nav-cta {
+    background: var(--purple); color: var(--white);
+    padding: 8px 20px; border-radius: 3px;
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    text-decoration: none; transition: background 0.2s;
+  }
+  .nav-cta:hover { background: var(--purple-mid); }
+  .nav-cta-red {
+    background: var(--red); color: var(--white);
+    padding: 8px 20px; border-radius: 3px;
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    text-decoration: none; transition: background 0.2s; white-space: nowrap;
+  }
+  .nav-cta-red:hover { background: var(--red-dark); }
+
+  /* ── HAMBURGER ── */
+  .nav-hamburger {
+    display: none; flex-direction: column; gap: 5px;
+    background: none; border: none; cursor: pointer; padding: 4px;
+  }
+  .nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--white); border-radius: 2px; transition: all 0.3s; }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .nav-mobile {
+    display: none; position: fixed; top: 64px; left: 0; right: 0;
+    background: rgba(8,8,16,0.98); backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(124,58,237,0.18); z-index: 998;
+    flex-direction: column;
+  }
+  .nav-mobile.open { display: flex; }
+  .nav-mobile a.nav-mobile-link {
+    color: var(--text-muted); text-decoration: none;
+    font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 14px 5vw; border-bottom: 1px solid rgba(255,255,255,0.06); transition: color 0.2s;
+  }
+  .nav-mobile a.nav-mobile-link:hover { color: var(--purple-light); }
+  .nav-mobile-actions { display: flex; gap: 8px; margin-top: 1.25rem; padding: 0 5vw 1.5rem; }
+  .nav-mobile-actions .nav-cta-red, .nav-mobile-actions .nav-cta { flex: 1; text-align: center; }
+  .nav-mobile-toggle {
+    width: 100%; background: none; border: none; cursor: pointer;
+    color: var(--text-muted); text-decoration: none;
+    font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 14px 5vw; border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'Montserrat', sans-serif; transition: color 0.2s;
+  }
+  .nav-mobile-toggle:hover { color: var(--purple-light); }
+  .nav-mobile-toggle svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.25s; }
+  .nav-mobile-toggle.open { color: var(--purple-light); }
+  .nav-mobile-toggle.open svg { transform: rotate(180deg); }
+  .nav-mobile-sub { display: none; flex-direction: column; border-bottom: 1px solid rgba(255,255,255,0.06); background: rgba(124,58,237,0.04); }
+  .nav-mobile-sub.open { display: flex; }
+  .nav-mobile-sublink {
+    color: var(--text-muted); text-decoration: none;
+    font-size: 0.74rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 12px 5vw 12px calc(5vw + 1rem); border-bottom: 1px solid rgba(255,255,255,0.04); transition: color 0.2s;
+  }
+  .nav-mobile-sublink:last-child { border-bottom: none; }
+  .nav-mobile-sublink:hover { color: var(--purple-light); }
+
+  /* ── PAGE HERO ── */
+  .page-hero {
+    padding: 120px 5vw 60px;
+    background: var(--black2);
+    border-bottom: 1px solid var(--gray);
+    position: relative; overflow: hidden;
+  }
+  .page-hero-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 50% 80% at 100% 50%, rgba(124,58,237,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .page-hero .max-w { position: relative; z-index: 1; }
+  .page-hero-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--purple-light); margin-bottom: 0.75rem; }
+  .page-hero-title { font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 900; line-height: 1.1; letter-spacing: -0.02em; }
+  .page-hero-title span { color: var(--red); }
+  .page-hero-sub { font-size: 0.88rem; color: var(--text-muted); line-height: 1.8; max-width: 560px; margin-top: 1rem; }
+
+  /* ── SECTIONS ── */
+  section { padding: 80px 5vw; }
+  .section-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--purple-light); margin-bottom: 0.75rem; }
+  .section-title { font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 900; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 1.5rem; }
+  .section-sub { font-size: 0.88rem; color: var(--text-muted); line-height: 1.8; max-width: 600px; }
+  .divider { width: 40px; height: 3px; background: var(--purple); margin: 1.5rem 0; }
+  .max-w { max-width: 1200px; margin: 0 auto; }
+
+  /* ── FOREX CLOCK ── */
+  #reloj { background: var(--black); }
+  .clock-container { margin-top: 3rem; border: 1px solid var(--gray); border-radius: 6px; overflow: hidden; }
+  .clock-header { background: var(--black3); padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--gray); flex-wrap: wrap; gap: 1rem; }
+  .clock-time-display { font-size: 1.8rem; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .clock-time-display span { color: var(--red); }
+  .clock-date { font-size: 0.72rem; color: var(--text-muted); font-weight: 500; margin-top: 2px; }
+  .tz-selector { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+  .tz-selector label { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; }
+  .tz-selector select { background: var(--gray); color: var(--white); border: 1px solid var(--gray2); padding: 6px 12px; border-radius: 3px; font-family: inherit; font-size: 0.75rem; cursor: pointer; }
+  .clock-controls { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+  .btn-time-format { background: transparent; color: var(--text-muted); border: 1px solid var(--gray2); border-radius: 3px; padding: 6px 14px; font-family: inherit; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; cursor: pointer; transition: all 0.2s; }
+  .btn-time-format:hover { border-color: var(--purple-light); color: var(--purple-light); }
+  .btn-time-format.active { background: var(--purple); border-color: var(--purple); color: var(--white); }
+  .sessions-list { padding: 1.5rem 2rem; display: flex; flex-direction: column; gap: 1rem; }
+  .session-row { display: grid; grid-template-columns: 140px 1fr 120px; align-items: center; gap: 1.5rem; }
+  .session-name { font-size: 0.85rem; font-weight: 700; }
+  .session-local-time { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+  .session-bar-wrap { position: relative; height: 28px; background-color: var(--black3); background-image: linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px); background-size: calc(100% / 24) 100%; border-radius: 3px; overflow: hidden; }
+  .session-bar { position: absolute; height: 100%; border-radius: 3px; transition: all 0.3s; opacity: 0.85; }
+  .session-bar.sydney  { background: linear-gradient(90deg, #3B82F6, #1D4ED8); }
+  .session-bar.tokyo   { background: linear-gradient(90deg, #A855F7, #7C3AED); }
+  .session-bar.london  { background: linear-gradient(90deg, #EAB308, #CA8A04); }
+  .session-bar.ny      { background: linear-gradient(90deg, #22C55E, #15803D); }
+  .session-current-time { position: absolute; top: 0; width: 2px; height: 100%; background: var(--red); z-index: 2; box-shadow: 0 0 6px rgba(192,17,43,0.8); }
+  .session-status { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border-radius: 2px; text-align: center; }
+  .status-open   { background: rgba(34,197,94,0.15); color: #22C55E; border: 1px solid rgba(34,197,94,0.3); }
+  .status-closed { background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid var(--gray); }
+  .timeline-hours { padding: 0 2rem 0.75rem; display: grid; grid-template-columns: 140px 1fr 120px; gap: 1.5rem; }
+  .hours-track { display: grid; grid-template-columns: repeat(24, 1fr); border-top: 1px solid var(--gray); padding-top: 0.4rem; }
+  .hours-track span { font-size: 0.55rem; color: var(--text-muted); font-weight: 600; font-variant-numeric: tabular-nums; text-align: left; }
+  .overlap-banner { margin: 0 2rem 1.5rem; background: rgba(192,17,43,0.08); border: 1px solid rgba(192,17,43,0.2); border-radius: 3px; padding: 0.75rem 1.25rem; display: flex; gap: 1rem; align-items: center; }
+  .overlap-banner .ob-dot { width: 8px; height: 8px; background: var(--red); border-radius: 50%; flex-shrink: 0; animation: pulse 1.5s infinite; }
+  .overlap-banner p { font-size: 0.72rem; color: var(--text-muted); line-height: 1.6; }
+  .overlap-banner strong { color: var(--white); }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* ── CALENDARIO ── */
+  #calendario { background: var(--black2); }
+  .calendar-wrap {
+    margin-top: 2.5rem;
+    border: 1px solid var(--gray); border-radius: 6px; overflow: hidden;
+  }
+
+  /* ── FOOTER ── */
+  footer { background: var(--black2); border-top: 1px solid var(--gray); padding: 3rem 5vw; text-align: center; }
+  .footer-logo { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 1.5rem; }
+  .footer-logo img { height: 28px; }
+  .footer-logo span { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; }
+  .footer-text { font-size: 0.7rem; color: var(--text-muted); line-height: 1.8; }
+  .footer-disclaimer { font-size: 0.62rem; color: #555; margin-top: 1.5rem; line-height: 1.6; max-width: 600px; margin-left: auto; margin-right: auto; }
+
+  /* ── RESPONSIVE ── */
+  @media(max-width: 768px) {
+    .nav-links, .nav-actions { display: none; }
+    .nav-hamburger { display: flex; }
+    .session-row { grid-template-columns: 100px 1fr 80px; }
+    .timeline-hours { grid-template-columns: 100px 1fr 80px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="/">
+    <img src="../images/logo.png" alt="AT Logo">
+    <span>AnonimusTrade<span class="live-glow"> Live</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/#nosotros">nosotros</a></li>
+    <li class="nav-dropdown">
+      <button class="nav-dropdown-btn">
+        herramientas
+        <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="nav-dropdown-menu">
+        <a href="/herramientas/" class="active-tool">🕐 Reloj Forex</a>
+        <a href="/herramientas/#calendario">📅 Calendario económico</a>
+      </div>
+    </li>
+    <li class="nav-dropdown">
+      <button class="nav-dropdown-btn">
+        Tier list's
+        <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="nav-dropdown-menu">
+        <a href="/#brokers">Brokers</a>
+        <a href="/#propfirms">Prop Firms</a>
+        <a href="/#exchanges">Exchanges</a>
+      </div>
+    </li>
+    <li><a href="/#indicadores">indicadores</a></li>
+    <li><a href="/#comunidad">comunidad</a></li>
+    <li><a href="/utilidades">🔒 herramientas vip</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a class="nav-cta-red" href="/#donaciones">🤍 donar</a>
+    <a class="nav-cta" href="https://wa.me/18495683020?text=Hola%2C%20estoy%20interesado%20en%20entrar%20a%20la%20comunidad%20de%20AnonimusTrade%20Live." target="_blank" rel="noopener">únete</a>
+  </div>
+  <button class="nav-hamburger" id="nav-hamburger" onclick="navToggle()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="nav-mobile" id="nav-mobile">
+  <a class="nav-mobile-link" href="/#nosotros" onclick="navClose()">nosotros</a>
+  <button class="nav-mobile-toggle" id="toolsToggle" onclick="toggleToolsSub()">
+    herramientas
+    <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+  </button>
+  <div class="nav-mobile-sub" id="toolsSub">
+    <a class="nav-mobile-sublink" href="/herramientas/">🕐 Reloj Forex</a>
+    <a class="nav-mobile-sublink" href="/herramientas/#calendario">📅 Calendario económico</a>
+  </div>
+  <button class="nav-mobile-toggle" id="tierToggle" onclick="toggleTierSub()">
+    Tier list's
+    <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+  </button>
+  <div class="nav-mobile-sub" id="tierSub">
+    <a class="nav-mobile-sublink" href="/#brokers"   onclick="navClose()">Brokers</a>
+    <a class="nav-mobile-sublink" href="/#propfirms" onclick="navClose()">Prop Firms</a>
+    <a class="nav-mobile-sublink" href="/#exchanges" onclick="navClose()">Exchanges</a>
+  </div>
+  <a class="nav-mobile-link" href="/#indicadores" onclick="navClose()">indicadores</a>
+  <a class="nav-mobile-link" href="/#comunidad"  onclick="navClose()">comunidad</a>
+  <a class="nav-mobile-link" href="/utilidades">🔒 herramientas vip</a>
+  <div class="nav-mobile-actions">
+    <a class="nav-cta-red" href="/#donaciones" onclick="navClose()">🤍 donar</a>
+    <a class="nav-cta" href="https://wa.me/18495683020?text=Hola%2C%20estoy%20interesado%20en%20entrar%20a%20la%20comunidad%20de%20AnonimusTrade%20Live." target="_blank" rel="noopener" onclick="navClose()">únete</a>
+  </div>
+</div>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="max-w">
+    <p class="page-hero-label">Herramientas gratuitas</p>
+    <h1 class="page-hero-title">Herramientas para<br><span>el trader.</span></h1>
+    <p class="page-hero-sub">Reloj de sesiones Forex en tiempo real y calendario económico actualizado. Sin registro, sin costo. Para que operes con contexto.</p>
+  </div>
+</div>
+
+<!-- RELOJ FOREX -->
+<section id="reloj">
+  <div class="max-w">
+    <p class="section-label">¿Cuándo opera el mundo?</p>
+    <h2 class="section-title">Reloj de<br>sesiones Forex.</h2>
+    <div class="divider"></div>
+    <p class="section-sub">Visualiza en tiempo real qué sesiones están abiertas ahora mismo y cuándo se producen los solapamientos de mayor volumen. Ajusta tu zona horaria.</p>
+    <div class="clock-container">
+      <div class="clock-header">
+        <div>
+          <div class="clock-time-display" id="clockDisplay">--<span>:</span>--<span>:</span>--</div>
+          <div class="clock-date" id="clockDate">cargando...</div>
+        </div>
+        <div class="clock-controls">
+          <div class="tz-selector">
+            <label>zona horaria:</label>
+            <select id="tzSelect" onchange="savePrefs(); updateClock()">
+              <option value="America/New_York">Nueva York (ET)</option>
+              <option value="America/Santo_Domingo" selected>Santo Domingo (AST)</option>
+              <option value="Europe/London">Londres (GMT/BST)</option>
+              <option value="Europe/Madrid">Madrid (CET/CEST)</option>
+              <option value="America/Mexico_City">Ciudad de México (CST)</option>
+              <option value="America/Bogota">Bogotá (COT)</option>
+              <option value="America/Lima">Lima (PET)</option>
+              <option value="America/Santiago">Santiago (CLT)</option>
+              <option value="America/Buenos_Aires">Buenos Aires (ART)</option>
+              <option value="Asia/Tokyo">Tokio (JST)</option>
+              <option value="Australia/Sydney">Sídney (AEST)</option>
+            </select>
+          </div>
+          <button class="btn-time-format active" id="timeFormatBtn" onclick="toggleTimeFormat()">24H</button>
+          <button class="btn-time-format active" id="dstBtn" onclick="toggleDST()">DST ON</button>
+        </div>
+      </div>
+      <div class="sessions-list" id="sessionsList"></div>
+      <div class="timeline-hours">
+        <div></div>
+        <div class="hours-track" id="hoursTrack"></div>
+        <div></div>
+      </div>
+      <div class="overlap-banner">
+        <div class="ob-dot"></div>
+        <p id="overlapText">cargando estado de sesiones...</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CALENDARIO ECONÓMICO -->
+<section id="calendario">
+  <div class="max-w">
+    <p class="section-label">Noticias de alto impacto</p>
+    <h2 class="section-title">Calendario<br>económico.</h2>
+    <div class="divider"></div>
+    <p class="section-sub">Eventos macroeconómicos de Estados Unidos y la Eurozona. Filtra por importancia para enfocarte solo en lo que puede mover el mercado.</p>
+    <div class="calendar-wrap">
+      <!-- TradingView Widget BEGIN -->
+      <div class="tradingview-widget-container" style="height:600px;">
+        <div class="tradingview-widget-container__widget" style="height:100%;"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>
+        {
+          "colorTheme": "dark",
+          "isTransparent": true,
+          "width": "100%",
+          "height": "600",
+          "locale": "es",
+          "importanceFilter": "-1,0,1",
+          "countryFilter": "us,eu"
+        }
+        </script>
+      </div>
+      <!-- TradingView Widget END -->
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <img src="../images/logo.png" alt="AT">
+    <span>AnonimusTrade Live</span>
+  </div>
+  <p class="footer-text">Richard Cejas Rodríguez & Ridolfi Mosquea de Aza · República Dominicana</p>
+  <p class="footer-disclaimer">
+    El contenido de esta página es únicamente con fines educativos e informativos. El trading implica riesgo de pérdida.
+    Nada de lo publicado aquí constituye asesoramiento financiero. Opera siempre con capital que estés dispuesto a perder.
+  </p>
+</footer>
+
+<script>
+// ── NAV ──
+function navToggle() {
+  document.getElementById('nav-mobile').classList.toggle('open');
+  document.getElementById('nav-hamburger').classList.toggle('open');
+}
+function navClose() {
+  document.getElementById('nav-mobile').classList.remove('open');
+  document.getElementById('nav-hamburger').classList.remove('open');
+  document.getElementById('tierSub').classList.remove('open');
+  document.getElementById('tierToggle').classList.remove('open');
+  document.getElementById('toolsSub').classList.remove('open');
+  document.getElementById('toolsToggle').classList.remove('open');
+}
+function toggleTierSub() {
+  document.getElementById('tierSub').classList.toggle('open');
+  document.getElementById('tierToggle').classList.toggle('open');
+}
+function toggleToolsSub() {
+  document.getElementById('toolsSub').classList.toggle('open');
+  document.getElementById('toolsToggle').classList.toggle('open');
+}
+window.addEventListener('scroll', navClose, { passive: true });
+
+// ── FOREX SESSION CLOCK ──
+function tzOffset(tz) {
+  const now = new Date();
+  const utcH = now.getUTCHours();
+  let locH = parseInt(now.toLocaleTimeString('en-GB', { timeZone: tz, hour: '2-digit', hour12: false }).slice(0, 2));
+  if (locH === 24) locH = 0;
+  let d = locH - utcH;
+  if (d > 12) d -= 24;
+  if (d < -12) d += 24;
+  return d;
+}
+const STANDARD_OFFSETS = {
+  'Australia/Sydney': 10, 'Asia/Tokyo': 9, 'Europe/London': 0, 'America/New_York': -5,
+};
+let dstEnabled = true;
+function getOffset(tz) { return dstEnabled ? tzOffset(tz) : STANDARD_OFFSETS[tz]; }
+function localToUTC(localH, tz) { return (localH - getOffset(tz) + 24) % 24; }
+function recomputeSessions() {
+  SESSIONS.forEach(s => { s.openUTC = localToUTC(8, s.tz); s.closeUTC = localToUTC(16, s.tz); });
+}
+function toggleDST() {
+  dstEnabled = !dstEnabled;
+  const btn = document.getElementById('dstBtn');
+  btn.textContent = dstEnabled ? 'DST ON' : 'DST OFF';
+  btn.classList.toggle('active', dstEnabled);
+  savePrefs(); recomputeSessions(); updateClock();
+}
+function savePrefs() {
+  localStorage.setItem('at_use12h', use12h ? '1' : '0');
+  localStorage.setItem('at_dst', dstEnabled ? '1' : '0');
+  localStorage.setItem('at_tz', document.getElementById('tzSelect').value);
+}
+function loadPrefs() {
+  const s12 = localStorage.getItem('at_use12h');
+  const sDst = localStorage.getItem('at_dst');
+  const sTz = localStorage.getItem('at_tz');
+  if (s12 !== null) {
+    use12h = s12 === '1';
+    const btn = document.getElementById('timeFormatBtn');
+    btn.textContent = use12h ? 'AM/PM' : '24H';
+    btn.classList.toggle('active', !use12h);
+  }
+  if (sDst !== null) {
+    dstEnabled = sDst === '1';
+    const btn = document.getElementById('dstBtn');
+    btn.textContent = dstEnabled ? 'DST ON' : 'DST OFF';
+    btn.classList.toggle('active', dstEnabled);
+  }
+  if (sTz !== null) {
+    const sel = document.getElementById('tzSelect');
+    if ([...sel.options].some(o => o.value === sTz)) sel.value = sTz;
+  }
+}
+const SESSIONS = [
+  { name: 'Sydney',     flag: '🇦🇺', color: 'sydney', tz: 'Australia/Sydney'  },
+  { name: 'Tokyo',      flag: '🇯🇵', color: 'tokyo',  tz: 'Asia/Tokyo'        },
+  { name: 'Londres',    flag: '🇬🇧', color: 'london', tz: 'Europe/London'     },
+  { name: 'Nueva York', flag: '🇺🇸', color: 'ny',     tz: 'America/New_York'  },
+];
+recomputeSessions();
+let use12h = false;
+function toggleTimeFormat() {
+  use12h = !use12h;
+  const btn = document.getElementById('timeFormatBtn');
+  btn.textContent = use12h ? 'AM/PM' : '24H';
+  btn.classList.toggle('active', !use12h);
+  savePrefs(); updateClock();
+}
+function getUTCHour() { return new Date().getUTCHours() + new Date().getUTCMinutes() / 60; }
+function isOpen(session, utcNow) {
+  const o = session.openUTC, c = session.closeUTC;
+  if (o > c) return utcNow >= o || utcNow < c;
+  return utcNow >= o && utcNow < c;
+}
+function barDivs(session, currentPct) {
+  const pct = h => (h / 24) * 100;
+  const o = session.openUTC, c = session.closeUTC;
+  let html = '';
+  if (o < c) {
+    html += `<div class="session-bar ${session.color}" style="left:${pct(o)}%;width:${pct(c-o)}%;"></div>`;
+  } else {
+    html += `<div class="session-bar ${session.color}" style="left:${pct(o)}%;width:${pct(24-o)}%;"></div>`;
+    html += `<div class="session-bar ${session.color}" style="left:0%;width:${pct(c)}%;"></div>`;
+  }
+  html += `<div class="session-current-time" style="left:${currentPct}%"></div>`;
+  return html;
+}
+function formatLocalTime(session, tz) {
+  const now = new Date();
+  const d = new Date(now); d.setUTCHours(session.openUTC, 0, 0, 0);
+  const openStr = d.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit', timeZone: tz, hour12: use12h });
+  const d2 = new Date(now); d2.setUTCHours(session.closeUTC, 0, 0, 0);
+  const closeStr = d2.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit', timeZone: tz, hour12: use12h });
+  return `${openStr} – ${closeStr}`;
+}
+function updateClock() {
+  const tz = document.getElementById('tzSelect').value;
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('es', { timeZone: tz, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: use12h });
+  const dateStr = now.toLocaleDateString('es', { timeZone: tz, weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  document.getElementById('clockDisplay').innerHTML = timeStr.replace(/:/g, '<span style="color:var(--red)">:</span>');
+  document.getElementById('clockDate').textContent = dateStr;
+  const utcNow = getUTCHour();
+  const currentPct = (utcNow / 24) * 100;
+  let html = ''; let openSessions = [];
+  SESSIONS.forEach(s => {
+    const open = isOpen(s, utcNow);
+    if (open) openSessions.push(s.name);
+    html += `<div class="session-row">
+      <div class="session-info">
+        <div class="session-name">${s.flag} ${s.name}</div>
+        <div class="session-local-time">${formatLocalTime(s, tz)}</div>
+      </div>
+      <div class="session-bar-wrap">${barDivs(s, currentPct)}</div>
+      <div class="session-status ${open ? 'status-open' : 'status-closed'}">${open ? '● Abierta' : '● Cerrada'}</div>
+    </div>`;
+  });
+  document.getElementById('sessionsList').innerHTML = html;
+  let hoursHTML = '';
+  for (let i = 0; i < 24; i++) {
+    const d = new Date(); d.setUTCHours(i, 0, 0, 0);
+    const h24 = parseInt(d.toLocaleTimeString('en', { timeZone: tz, hour: '2-digit', hour12: false }));
+    hoursHTML += `<span>${use12h ? (h24 % 12 || 12) : h24}</span>`;
+  }
+  document.getElementById('hoursTrack').innerHTML = hoursHTML;
+  const ob = document.getElementById('overlapText');
+  if (openSessions.length === 0) {
+    ob.innerHTML = '<strong>Mercado inactivo.</strong> El mercado Forex está cerrado en este momento (fin de semana o fuera de horario).';
+  } else if (openSessions.length >= 2) {
+    ob.innerHTML = `<strong>Solapamiento activo:</strong> ${openSessions.join(' + ')} están abiertas simultáneamente — mayor volumen y volatilidad.`;
+  } else {
+    ob.innerHTML = `<strong>Sesión ${openSessions[0]} abierta.</strong> Mercado en movimiento. Atentos a los niveles clave del día.`;
+  }
+}
+loadPrefs(); recomputeSessions(); updateClock();
+setInterval(updateClock, 1000);
+</script>
+
+</body>
+</html>
