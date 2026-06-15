@@ -55,6 +55,23 @@ function handleMessage(PDO $pdo, array $user, int $chat_id, string $text): void 
     $uid = $user['id'];
 
     if (str_starts_with($text, '/start')) {
+        if (isGroupMember($uid)) {
+            tgSend($chat_id, "✅ Ya eres miembro de la comunidad AnonimusTrade Live\\. ¡Nos vemos adentro\\! 🎉");
+            return;
+        }
+        $existing = $pdo->prepare("SELECT status FROM registrations WHERE telegram_user_id = ? ORDER BY created_at DESC LIMIT 1");
+        $existing->execute([$uid]);
+        $reg = $existing->fetch(PDO::FETCH_ASSOC);
+        if ($reg) {
+            if ($reg['status'] === 'pending') {
+                tgSend($chat_id, "⏳ Tu registro está *pendiente de aprobación*\\. Te notificaremos en cuanto sea revisado\\. ¡Gracias por tu paciencia\\!");
+                return;
+            }
+            if ($reg['status'] === 'accepted') {
+                tgSend($chat_id, "✅ Tu registro ya fue *aprobado*\\. Si no recibiste el link de invitación, contáctanos directamente\\.");
+                return;
+            }
+        }
         sendWelcome($chat_id);
         setState($pdo, $uid, 'awaiting_type');
         return;
@@ -279,6 +296,13 @@ function sendWelcome(int $chat_id): void {
             [['text' => '📈 Ya soy trader',   'callback_data' => 'tipo_trader']],
         ]],
     ]);
+}
+
+function isGroupMember(int $uid): bool {
+    if (!COMMUNITY_CHAT_ID) return false;
+    $res = tgAPI('getChatMember', ['chat_id' => COMMUNITY_CHAT_ID, 'user_id' => $uid]);
+    if (!($res['ok'] ?? false)) return false;
+    return in_array($res['result']['status'] ?? '', ['creator', 'administrator', 'member', 'restricted']);
 }
 
 function tgSend(int $chat_id, string $text): void {
