@@ -96,10 +96,12 @@ function handleMessage(PDO $pdo, array $user, int $chat_id, string $text): void 
         setState($pdo, $uid, 'completed');
 
         tgSend($chat_id,
-            "✅ *¡Registro recibido!*\n\n" .
-            "Hemos recibido tu solicitud de acceso a la comunidad privada de AnonimusTrade Live.\n\n" .
-            "Nuestro equipo verificará tu registro manualmente y te enviaremos el link de invitación en breve.\n\n" .
-            "¡Gracias por tu paciencia\\! 🙏"
+            "✅ *¡Registro recibido\\!*\n\n" .
+            "Hemos recibido tu solicitud de acceso a la comunidad privada de AnonimusTrade Live\\.\n\n" .
+            "Este es un proceso de verificación *manual*, por lo que puede tomar algunas horas\\. " .
+            "En cuanto revisemos tu registro te enviaremos el link de invitación directamente aquí\\.\n\n" .
+            "_Por favor sé paciente y no envíes tu ID nuevamente\\._\n\n" .
+            "¡Gracias por tu interés en AnonimusTrade Live\\! 🙏"
         );
 
         $plabels = ['pepperstone' => 'Pepperstone', 'bingx' => 'BingX', 'bitunix' => 'Bitunix'];
