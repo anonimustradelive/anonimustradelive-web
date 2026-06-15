@@ -61,9 +61,23 @@ function handleMessage(PDO $pdo, array $user, int $chat_id, string $text): void 
 
     $session = getSession($pdo, $uid);
 
+    if ($session['state'] === 'awaiting_email') {
+        if (!filter_var($text, FILTER_VALIDATE_EMAIL)) {
+            tgSend($chat_id, "Por favor escribe un correo electrónico válido\\.");
+            return;
+        }
+        $d = $session['data'];
+        $d['email'] = $text;
+        $platform_names = ['pepperstone' => 'Pepperstone', 'bingx' => 'BingX', 'bitunix' => 'Bitunix'];
+        $pname = $platform_names[$d['platform']] ?? $d['platform'];
+        setState($pdo, $uid, 'awaiting_platform_id', $d);
+        tgSend($chat_id, "✅ Correo registrado\\.\n\nAhora escribe tu *ID de usuario* de *$pname* \\(solo texto, sin fotos\\):");
+        return;
+    }
+
     if ($session['state'] === 'awaiting_platform_id') {
         if (empty($text)) {
-            tgSend($chat_id, "Por favor escribe tu ID de usuario de la plataforma como texto (sin fotos ni archivos).");
+            tgSend($chat_id, "Por favor escribe tu ID de usuario de la plataforma como texto \\(sin fotos ni archivos\\)\\.");
             return;
         }
 
@@ -71,12 +85,13 @@ function handleMessage(PDO $pdo, array $user, int $chat_id, string $text): void 
         $platform = $d['platform'] ?? 'pepperstone';
         $profile  = $d['profile']  ?? 'principiante';
         $asset    = $d['asset']    ?? null;
+        $email    = $d['email']    ?? null;
         $name     = trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? ''));
 
         $pdo->prepare("INSERT INTO registrations
-            (telegram_user_id, telegram_name, telegram_username, profile_type, asset_type, platform, platform_user_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?)")
-            ->execute([$uid, $name, $user['username'] ?? null, $profile, $asset, $platform, $text]);
+            (telegram_user_id, telegram_name, telegram_username, profile_type, asset_type, platform, email, platform_user_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
+            ->execute([$uid, $name, $user['username'] ?? null, $profile, $asset, $platform, $email, $text]);
 
         setState($pdo, $uid, 'completed');
 
@@ -126,13 +141,13 @@ function handleCallback(PDO $pdo, array $user, int $chat_id, string $cb, int $ms
                 "Todo valorado en *más de \\$1,500 USD* — completamente *GRATIS* para nuestra comunidad\\.\n\n" .
                 "⚠️ *Si estás en EE\\.UU\\. o la Unión Europea:* regístrate con las credenciales de tu país de origen, ya que nuestro partnership no aplica para residentes de esas regiones\\.\n" .
                 "🔒 Además, necesitarás un VPN seguro para operar sin inconvenientes\\. Te recomendamos [Surfshark](https://surfshark.club/friend/2EHfq785) — hasta 3 meses gratis con nuestro enlace\\.\n\n" .
-                "👇 Abre tu cuenta y luego escribe aquí tu *ID de usuario* de Pepperstone \\(solo texto, sin fotos\\):",
+                "👇 Abre tu cuenta y luego escribe aquí el *correo electrónico* con el que te registraste en Pepperstone:",
                 [[[
                     'text' => '📈 Abrir cuenta en Pepperstone',
                     'url'  => 'https://trk.pepperstonepartners.com/aff_c?offer_id=367&aff_id=45363'
                 ]]]
             );
-            setState($pdo, $uid, 'awaiting_platform_id', ['profile' => 'principiante', 'platform' => 'pepperstone']);
+            setState($pdo, $uid, 'awaiting_email', ['profile' => 'principiante', 'platform' => 'pepperstone']);
             break;
 
         case 'tipo_trader':
@@ -163,37 +178,37 @@ function handleCallback(PDO $pdo, array $user, int $chat_id, string $cb, int $ms
                 "Para operar Forex, índices y commodities te recomendamos *Pepperstone*, nuestro broker regulado oficial\\.\n\n" .
                 "⚠️ *Si estás en EE\\.UU\\. o la Unión Europea:* regístrate con las credenciales de tu país de origen, ya que nuestro partnership no aplica para residentes de esas regiones\\.\n" .
                 "🔒 Además, necesitarás un VPN seguro para operar sin inconvenientes\\. Te recomendamos [Surfshark](https://surfshark.club/friend/2EHfq785) — hasta 3 meses gratis con nuestro enlace\\.\n\n" .
-                "👇 Abre tu cuenta y luego escribe aquí tu *ID de usuario* de Pepperstone \\(solo texto, sin fotos\\):",
+                "👇 Abre tu cuenta y luego escribe aquí el *correo electrónico* con el que te registraste en Pepperstone:",
                 [[[
                     'text' => '📈 Abrir cuenta en Pepperstone',
                     'url'  => 'https://trk.pepperstonepartners.com/aff_c?offer_id=367&aff_id=45363'
                 ]]]
             );
-            setState($pdo, $uid, 'awaiting_platform_id', ['profile' => 'trader', 'asset' => 'tradicional', 'platform' => 'pepperstone']);
+            setState($pdo, $uid, 'awaiting_email', ['profile' => 'trader', 'asset' => 'tradicional', 'platform' => 'pepperstone']);
             break;
 
         case 'platform_bingx':
             tgEdit($chat_id, $msg_id,
                 "🏦 *BingX — Con verificación KYC*\n\n" .
-                "Abre tu cuenta con nuestro enlace y luego escribe aquí tu *ID de usuario* de BingX \\(solo texto, sin fotos\\):",
+                "Abre tu cuenta con nuestro enlace y luego escribe aquí el *correo electrónico* con el que te registraste en BingX:",
                 [[[
                     'text' => '🏦 Registrarse en BingX',
                     'url'  => 'https://bingxdao.com/partner/AnonimusTrade/'
                 ]]]
             );
-            setState($pdo, $uid, 'awaiting_platform_id', ['profile' => 'trader', 'asset' => 'crypto', 'platform' => 'bingx']);
+            setState($pdo, $uid, 'awaiting_email', ['profile' => 'trader', 'asset' => 'crypto', 'platform' => 'bingx']);
             break;
 
         case 'platform_bitunix':
             tgEdit($chat_id, $msg_id,
                 "🔒 *Bitunix — Sin verificación KYC*\n\n" .
-                "Abre tu cuenta con nuestro enlace y luego escribe aquí tu *ID de usuario* de Bitunix \\(solo texto, sin fotos\\):",
+                "Abre tu cuenta con nuestro enlace y luego escribe aquí el *correo electrónico* con el que te registraste en Bitunix:",
                 [[[
                     'text' => '🔒 Registrarse en Bitunix',
                     'url'  => 'https://www.bitunix.com/register?vipCode=KMrN'
                 ]]]
             );
-            setState($pdo, $uid, 'awaiting_platform_id', ['profile' => 'trader', 'asset' => 'crypto', 'platform' => 'bitunix']);
+            setState($pdo, $uid, 'awaiting_email', ['profile' => 'trader', 'asset' => 'crypto', 'platform' => 'bitunix']);
             break;
     }
 }

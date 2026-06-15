@@ -232,6 +232,7 @@ function tgSend(int $chat_id, string $text): void {
           <th>Telegram</th>
           <th>Perfil</th>
           <th>Plataforma</th>
+          <th>Email</th>
           <th>ID Usuario</th>
           <th>Estado</th>
           <th>Fecha</th>
@@ -251,6 +252,7 @@ function tgSend(int $chat_id, string $text): void {
             </span>
           </td>
           <td><?= $plabels[$r['platform']] ?? $r['platform'] ?></td>
+          <td style="font-size:0.74rem"><?= htmlspecialchars($r['email'] ?? '—') ?></td>
           <td><span class="uid"><?= htmlspecialchars($r['platform_user_id']) ?></span></td>
           <td><span class="badge badge-<?= $r['status'] ?>"><?= ucfirst($r['status'] === 'pending' ? 'Pendiente' : ($r['status'] === 'accepted' ? 'Aceptado' : 'Rechazado')) ?></span></td>
           <td style="color:var(--text-muted); white-space:nowrap"><?= date('d/m/Y H:i', strtotime($r['created_at'])) ?></td>
