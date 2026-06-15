@@ -32,11 +32,13 @@ CREATE TABLE IF NOT EXISTS registrations (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ");
 
-// Agregar columna email si no existe
+// Agregar columnas si no existen
 try {
     $pdo->exec("ALTER TABLE registrations ADD COLUMN email VARCHAR(255) NULL AFTER platform;");
-} catch (PDOException $e) {
-    // Columna ya existe, ignorar
-}
+} catch (PDOException $e) {}
+
+try {
+    $pdo->exec("ALTER TABLE registrations ADD COLUMN is_migration TINYINT(1) NOT NULL DEFAULT 0 AFTER email;");
+} catch (PDOException $e) {}
 
 echo "✅ Tablas y columnas verificadas correctamente. Elimina este archivo del servidor.";

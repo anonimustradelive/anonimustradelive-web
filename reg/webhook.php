@@ -81,35 +81,46 @@ function handleMessage(PDO $pdo, array $user, int $chat_id, string $text): void 
             return;
         }
 
-        $d        = $session['data'];
-        $platform = $d['platform'] ?? 'pepperstone';
-        $profile  = $d['profile']  ?? 'principiante';
-        $asset    = $d['asset']    ?? null;
-        $email    = $d['email']    ?? null;
-        $name     = trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? ''));
+        $d            = $session['data'];
+        $platform     = $d['platform']     ?? 'pepperstone';
+        $profile      = $d['profile']      ?? 'principiante';
+        $asset        = $d['asset']        ?? null;
+        $email        = $d['email']        ?? null;
+        $is_migration = !empty($d['is_migration']) ? 1 : 0;
+        $name         = trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? ''));
 
         $pdo->prepare("INSERT INTO registrations
-            (telegram_user_id, telegram_name, telegram_username, profile_type, asset_type, platform, email, platform_user_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
-            ->execute([$uid, $name, $user['username'] ?? null, $profile, $asset, $platform, $email, $text]);
+            (telegram_user_id, telegram_name, telegram_username, profile_type, asset_type, platform, email, platform_user_id, is_migration)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")
+            ->execute([$uid, $name, $user['username'] ?? null, $profile, $asset, $platform, $email, $text, $is_migration]);
 
         setState($pdo, $uid, 'completed');
 
-        tgSend($chat_id,
-            "✅ *¡Registro recibido\\!*\n\n" .
-            "Hemos recibido tu solicitud de acceso a la comunidad privada de AnonimusTrade Live\\.\n\n" .
-            "Este es un proceso de verificación *manual*, por lo que puede tomar algunas horas\\. " .
-            "En cuanto revisemos tu registro te enviaremos el link de invitación directamente aquí\\.\n\n" .
-            "_Por favor sé paciente y no envíes tu ID nuevamente\\._\n\n" .
-            "¡Gracias por tu interés en AnonimusTrade Live\\! 🙏"
-        );
+        if ($is_migration) {
+            tgSend($chat_id,
+                "✅ *¡Solicitud de migración recibida\\!*\n\n" .
+                "Hemos registrado tu solicitud\\. Esperaremos a que Pepperstone procese el cambio de referido a AnonimusTrade Live\\.\n\n" .
+                "En cuanto la migración culmine, te agregaremos a la comunidad de inmediato\\. ⚡\n\n" .
+                "_Este proceso depende de los tiempos de Pepperstone \\(generalmente 24 a 48 horas\\)\\._\n\n" .
+                "¡Gracias por tu paciencia\\! 🙏"
+            );
+        } else {
+            tgSend($chat_id,
+                "✅ *¡Registro recibido\\!*\n\n" .
+                "Hemos recibido tu solicitud de acceso a la comunidad privada de AnonimusTrade Live\\.\n\n" .
+                "Este es un proceso de verificación *manual*, por lo que puede tomar algunas horas\\. " .
+                "En cuanto revisemos tu registro te enviaremos el link de invitación directamente aquí\\.\n\n" .
+                "_Por favor sé paciente y no envíes tu ID nuevamente\\._\n\n" .
+                "¡Gracias por tu interés en AnonimusTrade Live\\! 🙏"
+            );
+        }
 
         $plabels = ['pepperstone' => 'Pepperstone', 'bingx' => 'BingX', 'bitunix' => 'Bitunix'];
-        $notif = "🔔 *Nueva solicitud de registro*\n\n" .
+        $notif = "🔔 *Nueva solicitud de registro*" . ($is_migration ? " \\— _migración_" : "") . "\n\n" .
             "👤 " . htmlspecialchars($name) . "\n" .
             "🆔 @" . ($user['username'] ?? 'sin username') . "\n" .
             "📋 " . ucfirst($profile) . ($asset ? " · " . ucfirst($asset) : '') . "\n" .
-            "🏦 " . ($plabels[$platform] ?? $platform) . "\n" .
+            "🏦 " . ($plabels[$platform] ?? $platform) . ($is_migration ? " \\(migración\\)" : "") . "\n" .
             "🔑 `" . htmlspecialchars($text) . "`\n\n" .
             "👉 https://reg\\.anonimustradelive\\.com";
         tgAPI('sendMessage', ['chat_id' => ADMIN_TG_ID, 'text' => $notif, 'parse_mode' => 'MarkdownV2']);
@@ -144,10 +155,10 @@ function handleCallback(PDO $pdo, array $user, int $chat_id, string $cb, int $ms
                 "⚠️ *Si estás en EE\\.UU\\. o la Unión Europea:* regístrate con las credenciales de tu país de origen, ya que nuestro partnership no aplica para residentes de esas regiones\\.\n" .
                 "🔒 Además, necesitarás un VPN seguro para operar sin inconvenientes\\. Te recomendamos [Surfshark](https://surfshark.club/friend/2EHfq785) — hasta 3 meses gratis con nuestro enlace\\.\n\n" .
                 "👇 Abre tu cuenta y luego escribe aquí el *correo electrónico* con el que te registraste en Pepperstone:",
-                [[[
-                    'text' => '📈 Abrir cuenta en Pepperstone',
-                    'url'  => 'https://trk.pepperstonepartners.com/aff_c?offer_id=367&aff_id=45363'
-                ]]]
+                [
+                    [['text' => '📈 Abrir cuenta en Pepperstone', 'url' => 'https://trk.pepperstonepartners.com/aff_c?offer_id=367&aff_id=45363']],
+                    [['text' => '🔄 Ya tengo cuenta en Pepperstone', 'callback_data' => 'ya_tengo_pepperstone']],
+                ]
             );
             setState($pdo, $uid, 'awaiting_email', ['profile' => 'principiante', 'platform' => 'pepperstone']);
             break;
@@ -181,10 +192,10 @@ function handleCallback(PDO $pdo, array $user, int $chat_id, string $cb, int $ms
                 "⚠️ *Si estás en EE\\.UU\\. o la Unión Europea:* regístrate con las credenciales de tu país de origen, ya que nuestro partnership no aplica para residentes de esas regiones\\.\n" .
                 "🔒 Además, necesitarás un VPN seguro para operar sin inconvenientes\\. Te recomendamos [Surfshark](https://surfshark.club/friend/2EHfq785) — hasta 3 meses gratis con nuestro enlace\\.\n\n" .
                 "👇 Abre tu cuenta y luego escribe aquí el *correo electrónico* con el que te registraste en Pepperstone:",
-                [[[
-                    'text' => '📈 Abrir cuenta en Pepperstone',
-                    'url'  => 'https://trk.pepperstonepartners.com/aff_c?offer_id=367&aff_id=45363'
-                ]]]
+                [
+                    [['text' => '📈 Abrir cuenta en Pepperstone', 'url' => 'https://trk.pepperstonepartners.com/aff_c?offer_id=367&aff_id=45363']],
+                    [['text' => '🔄 Ya tengo cuenta en Pepperstone', 'callback_data' => 'ya_tengo_pepperstone']],
+                ]
             );
             setState($pdo, $uid, 'awaiting_email', ['profile' => 'trader', 'asset' => 'tradicional', 'platform' => 'pepperstone']);
             break;
@@ -211,6 +222,42 @@ function handleCallback(PDO $pdo, array $user, int $chat_id, string $cb, int $ms
                 ]]]
             );
             setState($pdo, $uid, 'awaiting_email', ['profile' => 'trader', 'asset' => 'crypto', 'platform' => 'bitunix']);
+            break;
+
+        case 'ya_tengo_pepperstone':
+            $session = getSession($pdo, $uid);
+            $d = $session['data'];
+            $d['is_migration'] = true;
+            setState($pdo, $uid, 'awaiting_migration_confirm', $d);
+            tgEdit($chat_id, $msg_id,
+                "🔄 *Migración de cuenta a nuestro referido*\n\n" .
+                "Para vincular tu cuenta existente al referido de AnonimusTrade Live, envía un correo a:\n" .
+                "📧 *\\[CORREO DE PEPPERSTONE AQUÍ\\]*\n\n" .
+                "━━━━━━━━━━━━━━━\n\n" .
+                "📋 *Copia y envía este mensaje:*\n\n" .
+                "```\n" .
+                "Asunto: Solicitud de cambio de IB referido\n\n" .
+                "Estimado equipo de Pepperstone,\n\n" .
+                "Solicito que mi cuenta sea migrada al referido\n" .
+                "de AnonimusTrade Live con efecto inmediato.\n\n" .
+                "Referido: https://trk.pepperstonepartners.com/aff_c?offer_id=367&aff_id=45363\n\n" .
+                "Atentamente,\n" .
+                "[Tu nombre completo]\n" .
+                "```\n\n" .
+                "━━━━━━━━━━━━━━━\n\n" .
+                "Una vez enviado el correo, presiona el botón para continuar con tu registro\\.",
+                [[['text' => '✅ Ya envié el correo', 'callback_data' => 'migr_confirmado']]]
+            );
+            break;
+
+        case 'migr_confirmado':
+            $session = getSession($pdo, $uid);
+            $d = $session['data'];
+            setState($pdo, $uid, 'awaiting_email', $d);
+            tgEdit($chat_id, $msg_id,
+                "✅ *Perfecto\\.*\n\n" .
+                "Continuemos con tu registro\\. Escribe el *correo electrónico* de tu cuenta de Pepperstone:"
+            );
             break;
     }
 }

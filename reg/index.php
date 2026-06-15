@@ -161,6 +161,7 @@ function tgSend(int $chat_id, string $text): void {
   .badge-rejected { background:var(--red-light);    color:#FF6B6B;       border:1px solid rgba(192,17,43,0.3); }
   .badge-trader   { background:var(--purple-glow);  color:var(--purple-light); border:1px solid rgba(124,58,237,0.3); }
   .badge-prin     { background:rgba(255,255,255,0.06); color:var(--text-muted); border:1px solid var(--gray); }
+  .badge-migration { background:rgba(14,165,233,0.12); color:#38BDF8; border:1px solid rgba(14,165,233,0.3); margin-left:4px; }
 
   .uid { font-family:monospace; font-size:0.75rem; color:var(--purple-light); background:var(--purple-glow); padding:2px 6px; border-radius:3px; }
 
@@ -251,7 +252,10 @@ function tgSend(int $chat_id, string $text): void {
               <?php if ($r['asset_type']): ?> · <?= ucfirst($r['asset_type']) ?><?php endif; ?>
             </span>
           </td>
-          <td><?= $plabels[$r['platform']] ?? $r['platform'] ?></td>
+          <td>
+            <?= $plabels[$r['platform']] ?? $r['platform'] ?>
+            <?php if (!empty($r['is_migration'])): ?><span class="badge badge-migration">Migración</span><?php endif; ?>
+          </td>
           <td style="font-size:0.74rem"><?= htmlspecialchars($r['email'] ?? '—') ?></td>
           <td><span class="uid"><?= htmlspecialchars($r['platform_user_id']) ?></span></td>
           <td><span class="badge badge-<?= $r['status'] ?>"><?= ucfirst($r['status'] === 'pending' ? 'Pendiente' : ($r['status'] === 'accepted' ? 'Aceptado' : 'Rechazado')) ?></span></td>
