@@ -124,7 +124,8 @@ function handleCallback(PDO $pdo, array $user, int $chat_id, string $cb, int $ms
                 "✅ Curso de trading desde cero\n" .
                 "✅ Estrategia rentable comprobada\n\n" .
                 "Todo valorado en *más de \\$1,500 USD* — completamente *GRATIS* para nuestra comunidad\\.\n\n" .
-                "⚠️ *Si estás en EE\\.UU\\. o la Unión Europea:* regístrate con las credenciales de tu país de origen, ya que nuestro partnership no aplica para residentes de esas regiones\\.\n\n" .
+                "⚠️ *Si estás en EE\\.UU\\. o la Unión Europea:* regístrate con las credenciales de tu país de origen, ya que nuestro partnership no aplica para residentes de esas regiones\\.\n" .
+                "🔒 Además, necesitarás un VPN seguro para operar sin inconvenientes\\. Te recomendamos [Surfshark](https://surfshark.club/friend/2EHfq785) — hasta 3 meses gratis con nuestro enlace\\.\n\n" .
                 "👇 Abre tu cuenta y luego escribe aquí tu *ID de usuario* de Pepperstone \\(solo texto, sin fotos\\):",
                 [[[
                     'text' => '📈 Abrir cuenta en Pepperstone',
@@ -160,7 +161,8 @@ function handleCallback(PDO $pdo, array $user, int $chat_id, string $cb, int $ms
             tgEdit($chat_id, $msg_id,
                 "💹 *Forex y activos tradicionales*\n\n" .
                 "Para operar Forex, índices y commodities te recomendamos *Pepperstone*, nuestro broker regulado oficial\\.\n\n" .
-                "⚠️ *Si estás en EE\\.UU\\. o la Unión Europea:* regístrate con las credenciales de tu país de origen, ya que nuestro partnership no aplica para residentes de esas regiones\\.\n\n" .
+                "⚠️ *Si estás en EE\\.UU\\. o la Unión Europea:* regístrate con las credenciales de tu país de origen, ya que nuestro partnership no aplica para residentes de esas regiones\\.\n" .
+                "🔒 Además, necesitarás un VPN seguro para operar sin inconvenientes\\. Te recomendamos [Surfshark](https://surfshark.club/friend/2EHfq785) — hasta 3 meses gratis con nuestro enlace\\.\n\n" .
                 "👇 Abre tu cuenta y luego escribe aquí tu *ID de usuario* de Pepperstone \\(solo texto, sin fotos\\):",
                 [[[
                     'text' => '📈 Abrir cuenta en Pepperstone',
