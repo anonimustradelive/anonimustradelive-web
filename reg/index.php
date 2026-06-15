@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['id'
                     "🎉 *¡Felicidades\\! Tu registro fue aprobado\\.*\n\n" .
                     "El equipo de AnonimusTrade Live ha verificado tu cuenta en *$pl*\\.\n\n" .
                     "Aquí está tu invitación de un solo uso a la comunidad privada:\n\n" .
-                    "👉 $link\n\n" .
+                    "👉 [Unirse al grupo]($link)\n\n" .
                     "⚠️ Este link es de uso único y expira en 24 horas\\. No lo compartas\\."
                 );
                 $flash = "✅ Registro #$id aceptado. Link enviado al usuario.";
