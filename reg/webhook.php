@@ -221,7 +221,7 @@ function tgSend(int $chat_id, string $text): void {
 }
 
 function tgEdit(int $chat_id, int $msg_id, string $text, array $keyboard = []): void {
-    $p = ['chat_id' => $chat_id, 'message_id' => $msg_id, 'text' => $text, 'parse_mode' => 'MarkdownV2'];
+    $p = ['chat_id' => $chat_id, 'message_id' => $msg_id, 'text' => $text, 'parse_mode' => 'MarkdownV2', 'link_preview_options' => ['is_disabled' => true]];
     if ($keyboard) $p['reply_markup'] = ['inline_keyboard' => $keyboard];
     tgAPI('editMessageText', $p);
 }
