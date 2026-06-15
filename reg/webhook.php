@@ -25,6 +25,7 @@ if ($callback) {
     tgAPI('answerCallbackQuery', ['callback_query_id' => $callback['id']]);
     handleCallback($pdo, $user, $chat_id, $data, $msg_id);
 } elseif ($message) {
+    if (($message['chat']['type'] ?? '') !== 'private') exit;
     $user    = $message['from'];
     $chat_id = $message['chat']['id'];
     $text    = trim($message['text'] ?? '');
