@@ -151,8 +151,8 @@ function handleMessage(PDO $pdo, array $user, int $chat_id, string $text): void 
 
         $plabels = ['pepperstone' => 'Pepperstone', 'bingx' => 'BingX', 'bitunix' => 'Bitunix'];
         $notif = "🔔 *Nueva solicitud de registro*" . ($is_migration ? " — _migración_" : "") . "\n\n" .
-            "👤 " . htmlspecialchars($name) . "\n" .
-            "🆔 @" . ($user['username'] ?? 'sin username') . "\n" .
+            "👤 " . mdEscape($name) . "\n" .
+            "🆔 @" . mdEscape($user['username'] ?? 'sin username') . "\n" .
             "📋 " . ucfirst($profile) . ($asset ? " · " . ucfirst($asset) : '') . "\n" .
             "🏦 " . ($plabels[$platform] ?? $platform) . ($is_migration ? " \\(migración\\)" : "") . "\n" .
             "🔑 `" . htmlspecialchars($text) . "`\n\n" .
@@ -308,8 +308,8 @@ function handleCallback(PDO $pdo, array $user, int $chat_id, string $cb, int $ms
                 tgAPI('sendMessage', [
                     'chat_id' => ADMIN_TG_ID,
                     'text' => "✅ *KYC completado*\n\n" .
-                        "👤 " . htmlspecialchars($name) . "\n" .
-                        "🆔 @" . ($user['username'] ?? 'sin username') . "\n" .
+                        "👤 " . mdEscape($name) . "\n" .
+                        "🆔 @" . mdEscape($user['username'] ?? 'sin username') . "\n" .
                         "🏦 BingX · ID \\#" . $reg['id'] . "\n\n" .
                         "👉 https://reg\\.anonimustradelive\\.com",
                     'parse_mode' => 'MarkdownV2',
@@ -331,8 +331,8 @@ function handleCallback(PDO $pdo, array $user, int $chat_id, string $cb, int $ms
                 tgAPI('sendMessage', [
                     'chat_id' => ADMIN_TG_ID,
                     'text' => "🔄 *Confirmación de migración Pepperstone*\n\n" .
-                        "👤 " . htmlspecialchars($name) . "\n" .
-                        "🆔 @" . ($user['username'] ?? 'sin username') . "\n" .
+                        "👤 " . mdEscape($name) . "\n" .
+                        "🆔 @" . mdEscape($user['username'] ?? 'sin username') . "\n" .
                         "🏦 Pepperstone · ID \\#" . $reg['id'] . "\n\n" .
                         "Verifica si ya aparece bajo nuestro referido\\.\n\n" .
                         "👉 https://reg\\.anonimustradelive\\.com",
@@ -366,6 +366,10 @@ function isGroupMember(int $uid): bool {
     $res = tgAPI('getChatMember', ['chat_id' => COMMUNITY_CHAT_ID, 'user_id' => $uid]);
     if (!($res['ok'] ?? false)) return false;
     return in_array($res['result']['status'] ?? '', ['creator', 'administrator', 'member', 'restricted']);
+}
+
+function mdEscape(string $text): string {
+    return preg_replace('/([_*\[\]()~`>#+\-=|{}.!\\\\])/', '\\\\$1', $text);
 }
 
 function tgSend(int $chat_id, string $text, array $keyboard = []): void {
