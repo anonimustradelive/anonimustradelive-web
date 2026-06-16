@@ -257,7 +257,7 @@ function handleCallback(PDO $pdo, array $user, int $chat_id, string $cb, int $ms
             tgEdit($chat_id, $msg_id,
                 "🔄 *Migración de cuenta a nuestro referido*\n\n" .
                 "Para vincular tu cuenta existente al referido de AnonimusTrade Live, envía un correo a:\n" .
-                "📧 *\\[CORREO DE PEPPERSTONE AQUÍ\\]*\n\n" .
+                "📧 *support@pepperstonepartners\\.com*\n\n" .
                 "━━━━━━━━━━━━━━━\n\n" .
                 "📋 *Copia y envía este mensaje:*\n\n" .
                 "```\n" .
