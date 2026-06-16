@@ -50,16 +50,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['id'
             );
             $flash = "Registro #$id rechazado.";
         } elseif ($act === 'kyc' && $reg['platform'] === 'bingx') {
-            $pdo->prepare("UPDATE registrations SET kyc_status='pending', updated_at=NOW() WHERE id=?")
-                ->execute([$id]);
-            tgSend((int)$reg['telegram_user_id'],
-                "⚠️ *Falta un paso para completar tu registro*\n\n" .
-                "Notamos que tu cuenta de BingX todavía *no tiene el KYC completado*\\. Es un requisito obligatorio del exchange para poder operar y para que podamos darte acceso a la comunidad\\.\n\n" .
-                "👉 Completa tu verificación de identidad \\(KYC\\) directamente en la app o web de BingX\\.\n\n" .
-                "Cuando termines, presiona el botón de abajo para avisarnos:",
-                [[['text' => '✅ Ya completé mi KYC', 'callback_data' => 'kyc_done']]]
-            );
-            $flash = "📋 Aviso de KYC enviado al usuario #$id.";
+            $attempts = (int)$reg['kyc_attempts'] + 1;
+
+            if ($attempts >= 3) {
+                $pdo->prepare("UPDATE registrations SET status='rejected', kyc_attempts=?, updated_at=NOW() WHERE id=?")
+                    ->execute([$attempts, $id]);
+                tgSend((int)$reg['telegram_user_id'],
+                    "❌ *Tu solicitud ha sido rechazada\\.*\n\n" .
+                    "Confirmaste tu verificación de KYC en varias ocasiones, pero al revisar tu cuenta de BingX notamos que aún no estaba completada\\.\n\n" .
+                    "Si en algún momento la completas y deseas intentarlo de nuevo, puedes volver a escribirnos con /start\\.\n\n" .
+                    "Si crees que esto es un error, [contáctanos directamente](https://t.me/+18495683020)\\."
+                );
+                $flash = "❌ Registro #$id rechazado automáticamente tras 3 intentos de KYC sin completar.";
+            } else {
+                $pdo->prepare("UPDATE registrations SET kyc_status='pending', kyc_attempts=?, updated_at=NOW() WHERE id=?")
+                    ->execute([$attempts, $id]);
+
+                if ($attempts === 1) {
+                    tgSend((int)$reg['telegram_user_id'],
+                        "⚠️ *Falta un paso para completar tu registro*\n\n" .
+                        "Notamos que tu cuenta de BingX todavía *no tiene el KYC completado*\\. Es un requisito obligatorio del exchange para poder operar y para que podamos darte acceso a la comunidad\\.\n\n" .
+                        "👉 Completa tu verificación de identidad \\(KYC\\) directamente en la app o web de BingX\\.\n\n" .
+                        "Cuando termines, presiona el botón de abajo para avisarnos:",
+                        [[['text' => '✅ Ya completé mi KYC', 'callback_data' => 'kyc_done']]]
+                    );
+                    $flash = "📋 Aviso de KYC enviado al usuario #$id (intento 1/3).";
+                } else {
+                    tgSend((int)$reg['telegram_user_id'],
+                        "⚠️ *Advertencia: verificación de KYC pendiente*\n\n" .
+                        "Confirmaste que completaste tu KYC, pero al revisar tu cuenta de BingX notamos que *aún no está completado*\\.\n\n" .
+                        "Esta es tu *segunda* confirmación sin completarlo realmente\\. Por favor finaliza tu verificación antes de volver a presionar el botón\\.\n\n" .
+                        "⚠️ *Si confirmas una tercera vez sin haberlo completado, perderás la oportunidad de entrar a la comunidad\\.*\n\n" .
+                        "Cuando termines, presiona el botón de abajo:",
+                        [[['text' => '✅ Ya completé mi KYC', 'callback_data' => 'kyc_done']]]
+                    );
+                    $flash = "⚠️ Advertencia de KYC enviada al usuario #$id (intento 2/3).";
+                }
+            }
         }
     }
 }
@@ -272,8 +299,8 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
           <td>
             <?= $plabels[$r['platform']] ?? $r['platform'] ?>
             <?php if (!empty($r['is_migration'])): ?><span class="badge badge-migration">Migración</span><?php endif; ?>
-            <?php if ($r['kyc_status'] === 'pending'): ?><span class="badge badge-kyc-pending">Esperando KYC</span><?php endif; ?>
-            <?php if ($r['kyc_status'] === 'completed'): ?><span class="badge badge-kyc-completed">KYC completado</span><?php endif; ?>
+            <?php if ($r['kyc_status'] === 'pending'): ?><span class="badge badge-kyc-pending">Esperando KYC (<?= $r['kyc_attempts'] ?>/3)</span><?php endif; ?>
+            <?php if ($r['kyc_status'] === 'completed'): ?><span class="badge badge-kyc-completed">KYC completado (<?= $r['kyc_attempts'] ?>/3)</span><?php endif; ?>
           </td>
           <td style="font-size:0.74rem"><?= htmlspecialchars($r['email'] ?? '—') ?></td>
           <td><span class="uid"><?= htmlspecialchars($r['platform_user_id']) ?></span></td>

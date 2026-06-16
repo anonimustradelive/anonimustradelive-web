@@ -45,4 +45,8 @@ try {
     $pdo->exec("ALTER TABLE registrations ADD COLUMN kyc_status ENUM('none','pending','completed') NOT NULL DEFAULT 'none' AFTER is_migration;");
 } catch (PDOException $e) {}
 
+try {
+    $pdo->exec("ALTER TABLE registrations ADD COLUMN kyc_attempts INT NOT NULL DEFAULT 0 AFTER kyc_status;");
+} catch (PDOException $e) {}
+
 echo "✅ Tablas y columnas verificadas correctamente. Elimina este archivo del servidor.";
