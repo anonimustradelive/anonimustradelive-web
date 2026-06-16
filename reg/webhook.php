@@ -118,6 +118,7 @@ function handleMessage(PDO $pdo, array $user, int $chat_id, string $text): void 
             (telegram_user_id, telegram_name, telegram_username, profile_type, asset_type, platform, email, platform_user_id, is_migration)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")
             ->execute([$uid, $name, $user['username'] ?? null, $profile, $asset, $platform, $email, $text, $is_migration]);
+        $reg_id = $pdo->lastInsertId();
 
         setState($pdo, $uid, 'completed');
 
@@ -128,6 +129,14 @@ function handleMessage(PDO $pdo, array $user, int $chat_id, string $text): void 
                 "En cuanto la migración culmine, te agregaremos a la comunidad de inmediato\\. ⚡\n\n" .
                 "_Este proceso depende de los tiempos de Pepperstone \\(generalmente 24 a 48 horas\\)\\._\n\n" .
                 "¡Gracias por tu paciencia\\! 🙏"
+            );
+
+            $pdo->prepare("UPDATE registrations SET migration_status='pending' WHERE id=?")->execute([$reg_id]);
+            tgSend($chat_id,
+                "📧 *Un último paso*\n\n" .
+                "Cuando recibas el correo de Pepperstone confirmando que tu cuenta ya fue migrada a nuestro referido, avísanos presionando el botón de abajo\\.\n\n" .
+                "⚠️ *Solo podrás presionar este botón una vez*, así que úsalo cuando ya hayas recibido la confirmación real de Pepperstone\\.",
+                [[['text' => '✅ Ya recibí la confirmación de Pepperstone', 'callback_data' => 'migr_notify']]]
             );
         } else {
             tgSend($chat_id,
@@ -307,6 +316,30 @@ function handleCallback(PDO $pdo, array $user, int $chat_id, string $cb, int $ms
                 ]);
             }
             break;
+
+        case 'migr_notify':
+            $stmt = $pdo->prepare("SELECT * FROM registrations WHERE telegram_user_id = ? AND platform = 'pepperstone' AND is_migration = 1 AND status = 'pending' ORDER BY created_at DESC LIMIT 1");
+            $stmt->execute([$uid]);
+            $reg = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($reg && $reg['migration_status'] !== 'notified') {
+                $pdo->prepare("UPDATE registrations SET migration_status='notified', updated_at=NOW() WHERE id=?")->execute([$reg['id']]);
+                tgEdit($chat_id, $msg_id,
+                    "✅ *¡Gracias por avisarnos\\!*\n\n" .
+                    "Vamos a verificar tu migración y te daremos acceso en cuanto confirmemos que ya estás bajo nuestro referido\\."
+                );
+                $name = trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? ''));
+                tgAPI('sendMessage', [
+                    'chat_id' => ADMIN_TG_ID,
+                    'text' => "🔄 *Confirmación de migración Pepperstone*\n\n" .
+                        "👤 " . htmlspecialchars($name) . "\n" .
+                        "🆔 @" . ($user['username'] ?? 'sin username') . "\n" .
+                        "🏦 Pepperstone · ID \\#" . $reg['id'] . "\n\n" .
+                        "Verifica si ya aparece bajo nuestro referido\\.\n\n" .
+                        "👉 https://reg\\.anonimustradelive\\.com",
+                    'parse_mode' => 'MarkdownV2',
+                ]);
+            }
+            break;
     }
 }
 
@@ -335,8 +368,10 @@ function isGroupMember(int $uid): bool {
     return in_array($res['result']['status'] ?? '', ['creator', 'administrator', 'member', 'restricted']);
 }
 
-function tgSend(int $chat_id, string $text): void {
-    tgAPI('sendMessage', ['chat_id' => $chat_id, 'text' => $text, 'parse_mode' => 'MarkdownV2']);
+function tgSend(int $chat_id, string $text, array $keyboard = []): void {
+    $p = ['chat_id' => $chat_id, 'text' => $text, 'parse_mode' => 'MarkdownV2'];
+    if ($keyboard) $p['reply_markup'] = ['inline_keyboard' => $keyboard];
+    tgAPI('sendMessage', $p);
 }
 
 function tgEdit(int $chat_id, int $msg_id, string $text, array $keyboard = []): void {

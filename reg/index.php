@@ -87,6 +87,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['id'
                     $flash = "⚠️ Advertencia de KYC enviada al usuario #$id (intento 2/3).";
                 }
             }
+        } elseif ($act === 'migration' && $reg['platform'] === 'pepperstone' && $reg['is_migration']) {
+            if ($reg['migration_status'] === 'notified') {
+                tgSend((int)$reg['telegram_user_id'],
+                    "🔄 *Tu migración sigue en proceso*\n\n" .
+                    "Verificamos y todavía no apareces bajo nuestro referido en el sistema de Pepperstone\\. A veces este proceso tarda un poco más de lo esperado\\.\n\n" .
+                    "No necesitas hacer nada más — en cuanto confirmemos tu migración, recibirás tu acceso a la comunidad de forma automática\\. Gracias por tu paciencia\\. 🙏"
+                );
+                $flash = "🔄 Mensaje de paciencia enviado al usuario #$id.";
+            } else {
+                $flash = "ℹ️ El usuario #$id todavía no ha confirmado haber recibido el correo de Pepperstone.";
+            }
         }
     }
 }
@@ -204,6 +215,8 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
   .badge-migration { background:rgba(14,165,233,0.12); color:#38BDF8; border:1px solid rgba(14,165,233,0.3); margin-left:4px; }
   .badge-kyc-pending   { background:rgba(245,158,11,0.12); color:var(--yellow); border:1px solid rgba(245,158,11,0.3); margin-left:4px; }
   .badge-kyc-completed { background:rgba(34,197,94,0.12); color:var(--green); border:1px solid rgba(34,197,94,0.3); margin-left:4px; }
+  .badge-migr-pending  { background:rgba(245,158,11,0.12); color:var(--yellow); border:1px solid rgba(245,158,11,0.3); margin-left:4px; }
+  .badge-migr-notified { background:rgba(34,197,94,0.12); color:var(--green); border:1px solid rgba(34,197,94,0.3); margin-left:4px; }
 
   .uid { font-family:monospace; font-size:0.75rem; color:var(--purple-light); background:var(--purple-glow); padding:2px 6px; border-radius:3px; }
 
@@ -213,6 +226,8 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
   .btn-reject:hover { background:rgba(192,17,43,0.22); }
   .btn-kyc { background:var(--purple-glow); border:1px solid rgba(124,58,237,0.4); color:var(--purple-light); font-family:inherit; font-size:0.65rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; padding:5px 12px; border-radius:3px; cursor:pointer; transition:all 0.2s; margin-left:6px; }
   .btn-kyc:hover { background:rgba(124,58,237,0.25); }
+  .btn-migration { background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.4); color:#38BDF8; font-family:inherit; font-size:0.65rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; padding:5px 12px; border-radius:3px; cursor:pointer; transition:all 0.2s; margin-left:6px; }
+  .btn-migration:hover { background:rgba(56,189,248,0.25); }
 
   .empty { padding:3rem; text-align:center; color:var(--text-muted); font-size:0.82rem; }
 
@@ -301,6 +316,8 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
             <?php if (!empty($r['is_migration'])): ?><span class="badge badge-migration">Migración</span><?php endif; ?>
             <?php if ($r['kyc_status'] === 'pending'): ?><span class="badge badge-kyc-pending">Esperando KYC (<?= $r['kyc_attempts'] ?>/3)</span><?php endif; ?>
             <?php if ($r['kyc_status'] === 'completed'): ?><span class="badge badge-kyc-completed">KYC completado (<?= $r['kyc_attempts'] ?>/3)</span><?php endif; ?>
+            <?php if ($r['migration_status'] === 'pending'): ?><span class="badge badge-migr-pending">Esperando confirmación Pepperstone</span><?php endif; ?>
+            <?php if ($r['migration_status'] === 'notified'): ?><span class="badge badge-migr-notified">Usuario confirmó — verificar referido</span><?php endif; ?>
           </td>
           <td style="font-size:0.74rem"><?= htmlspecialchars($r['email'] ?? '—') ?></td>
           <td><span class="uid"><?= htmlspecialchars($r['platform_user_id']) ?></span></td>
@@ -323,6 +340,13 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
               <input type="hidden" name="id" value="<?= $r['id'] ?>">
               <input type="hidden" name="action" value="kyc">
               <button type="submit" class="btn-kyc">📋 KYC</button>
+            </form>
+            <?php endif; ?>
+            <?php if ($r['platform'] === 'pepperstone' && $r['is_migration']): ?>
+            <form method="POST" style="display:inline" onsubmit="return confirm('¿Enviar mensaje de seguimiento de migración al usuario?')">
+              <input type="hidden" name="id" value="<?= $r['id'] ?>">
+              <input type="hidden" name="action" value="migration">
+              <button type="submit" class="btn-migration">🔄 Migración</button>
             </form>
             <?php endif; ?>
             <?php elseif ($r['status'] === 'accepted' && $r['invite_link']): ?>
