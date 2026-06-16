@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['id'
                 ->execute([$id]);
             tgSend((int)$reg['telegram_user_id'],
                 "❌ *Tu solicitud no fue aprobada\\.*\n\n" .
-                "Si crees que esto es un error, contáctanos directamente\\."
+                "Si crees que esto es un error, [contáctanos directamente](https://t.me/+18495683020)\\."
             );
             $flash = "Registro #$id rechazado.";
         }
@@ -88,7 +88,7 @@ function tgSend(int $chat_id, string $text): void {
     $ctx = stream_context_create(['http' => [
         'method'        => 'POST',
         'header'        => "Content-Type: application/json\r\n",
-        'content'       => json_encode(['chat_id' => $chat_id, 'text' => $text, 'parse_mode' => 'MarkdownV2']),
+        'content'       => json_encode(['chat_id' => $chat_id, 'text' => $text, 'parse_mode' => 'MarkdownV2', 'link_preview_options' => ['is_disabled' => true]]),
         'timeout'       => 5,
         'ignore_errors' => true,
     ]]);
