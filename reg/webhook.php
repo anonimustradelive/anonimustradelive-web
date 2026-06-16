@@ -284,6 +284,29 @@ function handleCallback(PDO $pdo, array $user, int $chat_id, string $cb, int $ms
                 "Continuemos con tu registro\\. Escribe el *correo electrónico* de tu cuenta de Pepperstone:"
             );
             break;
+
+        case 'kyc_done':
+            $stmt = $pdo->prepare("SELECT * FROM registrations WHERE telegram_user_id = ? AND platform = 'bingx' AND status = 'pending' ORDER BY created_at DESC LIMIT 1");
+            $stmt->execute([$uid]);
+            $reg = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($reg) {
+                $pdo->prepare("UPDATE registrations SET kyc_status='completed', updated_at=NOW() WHERE id=?")->execute([$reg['id']]);
+                tgEdit($chat_id, $msg_id,
+                    "✅ *¡Gracias\\!*\n\n" .
+                    "Hemos recibido tu confirmación de KYC completado\\. Nuestro equipo revisará tu cuenta y te notificaremos en cuanto se apruebe tu acceso\\."
+                );
+                $name = trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? ''));
+                tgAPI('sendMessage', [
+                    'chat_id' => ADMIN_TG_ID,
+                    'text' => "✅ *KYC completado*\n\n" .
+                        "👤 " . htmlspecialchars($name) . "\n" .
+                        "🆔 @" . ($user['username'] ?? 'sin username') . "\n" .
+                        "🏦 BingX · ID \\#" . $reg['id'] . "\n\n" .
+                        "👉 https://reg\\.anonimustradelive\\.com",
+                    'parse_mode' => 'MarkdownV2',
+                ]);
+            }
+            break;
     }
 }
 

@@ -49,6 +49,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['id'
                 "Si crees que esto es un error, [contáctanos directamente](https://t.me/+18495683020)\\."
             );
             $flash = "Registro #$id rechazado.";
+        } elseif ($act === 'kyc' && $reg['platform'] === 'bingx') {
+            $pdo->prepare("UPDATE registrations SET kyc_status='pending', updated_at=NOW() WHERE id=?")
+                ->execute([$id]);
+            tgSend((int)$reg['telegram_user_id'],
+                "⚠️ *Falta un paso para completar tu registro*\n\n" .
+                "Notamos que tu cuenta de BingX todavía *no tiene el KYC completado*\\. Es un requisito obligatorio del exchange para poder operar y para que podamos darte acceso a la comunidad\\.\n\n" .
+                "👉 Completa tu verificación de identidad \\(KYC\\) directamente en la app o web de BingX\\.\n\n" .
+                "Cuando termines, presiona el botón de abajo para avisarnos:",
+                [[['text' => '✅ Ya completé mi KYC', 'callback_data' => 'kyc_done']]]
+            );
+            $flash = "📋 Aviso de KYC enviado al usuario #$id.";
         }
     }
 }
@@ -84,11 +95,13 @@ function createInviteLink(): ?string {
     return ($d['ok'] ?? false) ? $d['result']['invite_link'] : null;
 }
 
-function tgSend(int $chat_id, string $text): void {
+function tgSend(int $chat_id, string $text, array $keyboard = []): void {
+    $payload = ['chat_id' => $chat_id, 'text' => $text, 'parse_mode' => 'MarkdownV2', 'link_preview_options' => ['is_disabled' => true]];
+    if ($keyboard) $payload['reply_markup'] = ['inline_keyboard' => $keyboard];
     $ctx = stream_context_create(['http' => [
         'method'        => 'POST',
         'header'        => "Content-Type: application/json\r\n",
-        'content'       => json_encode(['chat_id' => $chat_id, 'text' => $text, 'parse_mode' => 'MarkdownV2', 'link_preview_options' => ['is_disabled' => true]]),
+        'content'       => json_encode($payload),
         'timeout'       => 5,
         'ignore_errors' => true,
     ]]);
@@ -162,6 +175,8 @@ function tgSend(int $chat_id, string $text): void {
   .badge-trader   { background:var(--purple-glow);  color:var(--purple-light); border:1px solid rgba(124,58,237,0.3); }
   .badge-prin     { background:rgba(255,255,255,0.06); color:var(--text-muted); border:1px solid var(--gray); }
   .badge-migration { background:rgba(14,165,233,0.12); color:#38BDF8; border:1px solid rgba(14,165,233,0.3); margin-left:4px; }
+  .badge-kyc-pending   { background:rgba(245,158,11,0.12); color:var(--yellow); border:1px solid rgba(245,158,11,0.3); margin-left:4px; }
+  .badge-kyc-completed { background:rgba(34,197,94,0.12); color:var(--green); border:1px solid rgba(34,197,94,0.3); margin-left:4px; }
 
   .uid { font-family:monospace; font-size:0.75rem; color:var(--purple-light); background:var(--purple-glow); padding:2px 6px; border-radius:3px; }
 
@@ -169,6 +184,8 @@ function tgSend(int $chat_id, string $text): void {
   .btn-accept:hover { background:rgba(34,197,94,0.25); }
   .btn-reject { background:var(--red-light); border:1px solid rgba(192,17,43,0.4); color:#FF6B6B; font-family:inherit; font-size:0.65rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; padding:5px 12px; border-radius:3px; cursor:pointer; transition:all 0.2s; margin-left:6px; }
   .btn-reject:hover { background:rgba(192,17,43,0.22); }
+  .btn-kyc { background:var(--purple-glow); border:1px solid rgba(124,58,237,0.4); color:var(--purple-light); font-family:inherit; font-size:0.65rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; padding:5px 12px; border-radius:3px; cursor:pointer; transition:all 0.2s; margin-left:6px; }
+  .btn-kyc:hover { background:rgba(124,58,237,0.25); }
 
   .empty { padding:3rem; text-align:center; color:var(--text-muted); font-size:0.82rem; }
 
@@ -255,6 +272,8 @@ function tgSend(int $chat_id, string $text): void {
           <td>
             <?= $plabels[$r['platform']] ?? $r['platform'] ?>
             <?php if (!empty($r['is_migration'])): ?><span class="badge badge-migration">Migración</span><?php endif; ?>
+            <?php if ($r['kyc_status'] === 'pending'): ?><span class="badge badge-kyc-pending">Esperando KYC</span><?php endif; ?>
+            <?php if ($r['kyc_status'] === 'completed'): ?><span class="badge badge-kyc-completed">KYC completado</span><?php endif; ?>
           </td>
           <td style="font-size:0.74rem"><?= htmlspecialchars($r['email'] ?? '—') ?></td>
           <td><span class="uid"><?= htmlspecialchars($r['platform_user_id']) ?></span></td>
@@ -272,6 +291,13 @@ function tgSend(int $chat_id, string $text): void {
               <input type="hidden" name="action" value="reject">
               <button type="submit" class="btn-reject">❌ Rechazar</button>
             </form>
+            <?php if ($r['platform'] === 'bingx'): ?>
+            <form method="POST" style="display:inline" onsubmit="return confirm('¿Avisar al usuario que falta completar su KYC?')">
+              <input type="hidden" name="id" value="<?= $r['id'] ?>">
+              <input type="hidden" name="action" value="kyc">
+              <button type="submit" class="btn-kyc">📋 KYC</button>
+            </form>
+            <?php endif; ?>
             <?php elseif ($r['status'] === 'accepted' && $r['invite_link']): ?>
             <a href="<?= htmlspecialchars($r['invite_link']) ?>" target="_blank" style="font-size:0.68rem; color:var(--purple-light);">Ver link →</a>
             <?php else: ?>
