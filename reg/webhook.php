@@ -89,13 +89,20 @@ function handleMessage(PDO $pdo, array $user, int $chat_id, string $text): void 
         $platform_names = ['pepperstone' => 'Pepperstone', 'bingx' => 'BingX', 'bitunix' => 'Bitunix'];
         $pname = $platform_names[$d['platform']] ?? $d['platform'];
         setState($pdo, $uid, 'awaiting_platform_id', $d);
-        tgSend($chat_id, "✅ Correo registrado\\.\n\nAhora escribe tu *ID de usuario* de *$pname* \\(solo texto, sin fotos\\):");
+        tgSend($chat_id, "✅ Correo registrado\\.\n\nAhora escribe tu *ID de usuario* de *$pname*\\. Es el número de cuenta que te asigna la plataforma \\(solo números, ejemplo: `12345678`\\):");
         return;
     }
 
     if ($session['state'] === 'awaiting_platform_id') {
-        if (empty($text)) {
-            tgSend($chat_id, "Por favor escribe tu ID de usuario de la plataforma como texto \\(sin fotos ni archivos\\)\\.");
+        if (!preg_match('/^\d{4,20}$/', $text)) {
+            $d2 = $session['data'];
+            $platform_labels = ['pepperstone' => 'Pepperstone', 'bingx' => 'BingX', 'bitunix' => 'Bitunix'];
+            $pname2 = $platform_labels[$d2['platform'] ?? 'pepperstone'] ?? ($d2['platform'] ?? 'la plataforma');
+            tgSend($chat_id,
+                "❌ Eso no es un ID de usuario válido\\.\n\n" .
+                "El ID de usuario es el *número de cuenta* que *$pname2* te asigna automáticamente al crear tu cuenta \\(solo números\\)\\.\n\n" .
+                "Si todavía no has creado tu cuenta, créala primero con el botón que te enviamos, y luego regresa aquí a escribir tu número de cuenta\\."
+            );
             return;
         }
 
