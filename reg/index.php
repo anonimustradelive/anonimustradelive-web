@@ -551,11 +551,13 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
                 <input type="hidden" name="action" value="reject">
                 <button type="submit" class="btn-reject">❌ Rechazar</button>
               </form>
+              <?php if ($r['platform'] !== 'pepperstone'): ?>
               <form method="POST" onsubmit="return confirm('¿Rechazar por UID no referido? Se le enviará al usuario un mensaje con el enlace para crear una cuenta nueva.')">
                 <input type="hidden" name="id" value="<?= $r['id'] ?>">
                 <input type="hidden" name="action" value="reject_uid">
                 <button type="submit" class="btn-reject-uid">⛔ UID no referido</button>
               </form>
+              <?php endif; ?>
               <?php if ($r['platform'] === 'bingx'): ?>
               <?php if ($kyc_sent): ?>
               <button type="button" class="btn-kyc" disabled>📋 KYC enviado</button>
