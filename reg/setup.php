@@ -53,4 +53,12 @@ try {
     $pdo->exec("ALTER TABLE registrations ADD COLUMN migration_status ENUM('none','pending','notified') NOT NULL DEFAULT 'none' AFTER kyc_attempts;");
 } catch (PDOException $e) {}
 
+try {
+    $pdo->exec("ALTER TABLE registrations ADD COLUMN patience_sent TINYINT(1) NOT NULL DEFAULT 0 AFTER migration_status;");
+} catch (PDOException $e) {}
+
+try {
+    $pdo->exec("ALTER TABLE registrations ADD COLUMN notes TEXT NULL AFTER patience_sent;");
+} catch (PDOException $e) {}
+
 echo "✅ Tablas y columnas verificadas correctamente. Elimina este archivo del servidor.";
