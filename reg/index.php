@@ -221,13 +221,20 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
 
   .uid { font-family:monospace; font-size:0.75rem; color:var(--purple-light); background:var(--purple-glow); padding:2px 6px; border-radius:3px; }
 
-  .btn-accept { background:var(--green-light); border:1px solid rgba(34,197,94,0.4); color:var(--green); font-family:inherit; font-size:0.65rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; padding:5px 12px; border-radius:3px; cursor:pointer; transition:all 0.2s; }
-  .btn-accept:hover { background:rgba(34,197,94,0.25); }
-  .btn-reject { background:var(--red-light); border:1px solid rgba(192,17,43,0.4); color:#FF6B6B; font-family:inherit; font-size:0.65rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; padding:5px 12px; border-radius:3px; cursor:pointer; transition:all 0.2s; margin-left:6px; }
-  .btn-reject:hover { background:rgba(192,17,43,0.22); }
-  .btn-kyc { background:var(--purple-glow); border:1px solid rgba(124,58,237,0.4); color:var(--purple-light); font-family:inherit; font-size:0.65rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; padding:5px 12px; border-radius:3px; cursor:pointer; transition:all 0.2s; margin-left:6px; }
-  .btn-kyc:hover { background:rgba(124,58,237,0.25); }
-  .btn-migration { background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.4); color:#38BDF8; font-family:inherit; font-size:0.65rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; padding:5px 12px; border-radius:3px; cursor:pointer; transition:all 0.2s; margin-left:6px; }
+  .action-btns { display:flex; flex-direction:column; gap:5px; min-width:120px; }
+  .action-btns form { display:flex; }
+  .btn-accept, .btn-reject, .btn-kyc, .btn-migration {
+    font-family:inherit; font-size:0.65rem; font-weight:700; letter-spacing:0.06em;
+    text-transform:uppercase; padding:6px 10px; border-radius:3px; cursor:pointer;
+    transition:all 0.2s; width:100%; text-align:center;
+  }
+  .btn-accept    { background:var(--green-light);          border:1px solid rgba(34,197,94,0.4);   color:var(--green);         }
+  .btn-accept:hover    { background:rgba(34,197,94,0.25); }
+  .btn-reject    { background:var(--red-light);            border:1px solid rgba(192,17,43,0.4);   color:#FF6B6B;              }
+  .btn-reject:hover    { background:rgba(192,17,43,0.22); }
+  .btn-kyc       { background:var(--purple-glow);          border:1px solid rgba(124,58,237,0.4);  color:var(--purple-light);  }
+  .btn-kyc:hover       { background:rgba(124,58,237,0.25); }
+  .btn-migration { background:rgba(56,189,248,0.12);       border:1px solid rgba(56,189,248,0.4);  color:#38BDF8;              }
   .btn-migration:hover { background:rgba(56,189,248,0.25); }
 
   .empty { padding:3rem; text-align:center; color:var(--text-muted); font-size:0.82rem; }
@@ -328,30 +335,32 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
           <td style="color:var(--text-muted); white-space:nowrap"><?= date('d/m/Y H:i', strtotime($r['created_at'])) ?></td>
           <td>
             <?php if ($r['status'] === 'pending'): ?>
-            <form method="POST" style="display:inline" onsubmit="return confirm('¿Aceptar y enviar link de invitación?')">
-              <input type="hidden" name="id" value="<?= $r['id'] ?>">
-              <input type="hidden" name="action" value="accept">
-              <button type="submit" class="btn-accept">✅ Aceptar</button>
-            </form>
-            <form method="POST" style="display:inline" onsubmit="return confirm('¿Rechazar este registro?')">
-              <input type="hidden" name="id" value="<?= $r['id'] ?>">
-              <input type="hidden" name="action" value="reject">
-              <button type="submit" class="btn-reject">❌ Rechazar</button>
-            </form>
-            <?php if ($r['platform'] === 'bingx'): ?>
-            <form method="POST" style="display:inline" onsubmit="return confirm('¿Avisar al usuario que falta completar su KYC?')">
-              <input type="hidden" name="id" value="<?= $r['id'] ?>">
-              <input type="hidden" name="action" value="kyc">
-              <button type="submit" class="btn-kyc">📋 KYC</button>
-            </form>
-            <?php endif; ?>
-            <?php if ($r['platform'] === 'pepperstone' && $r['is_migration']): ?>
-            <form method="POST" style="display:inline" onsubmit="return confirm('¿Enviar mensaje de seguimiento de migración al usuario?')">
-              <input type="hidden" name="id" value="<?= $r['id'] ?>">
-              <input type="hidden" name="action" value="migration">
-              <button type="submit" class="btn-migration">🔄 Migración</button>
-            </form>
-            <?php endif; ?>
+            <div class="action-btns">
+              <form method="POST" onsubmit="return confirm('¿Aceptar y enviar link de invitación?')">
+                <input type="hidden" name="id" value="<?= $r['id'] ?>">
+                <input type="hidden" name="action" value="accept">
+                <button type="submit" class="btn-accept">✅ Aceptar</button>
+              </form>
+              <form method="POST" onsubmit="return confirm('¿Rechazar este registro?')">
+                <input type="hidden" name="id" value="<?= $r['id'] ?>">
+                <input type="hidden" name="action" value="reject">
+                <button type="submit" class="btn-reject">❌ Rechazar</button>
+              </form>
+              <?php if ($r['platform'] === 'bingx'): ?>
+              <form method="POST" onsubmit="return confirm('¿Avisar al usuario que falta completar su KYC?')">
+                <input type="hidden" name="id" value="<?= $r['id'] ?>">
+                <input type="hidden" name="action" value="kyc">
+                <button type="submit" class="btn-kyc">📋 KYC</button>
+              </form>
+              <?php endif; ?>
+              <?php if ($r['platform'] === 'pepperstone' && $r['is_migration']): ?>
+              <form method="POST" onsubmit="return confirm('¿Enviar mensaje de seguimiento de migración al usuario?')">
+                <input type="hidden" name="id" value="<?= $r['id'] ?>">
+                <input type="hidden" name="action" value="migration">
+                <button type="submit" class="btn-migration">🔄 Migración</button>
+              </form>
+              <?php endif; ?>
+            </div>
             <?php elseif ($r['status'] === 'accepted' && $r['invite_link']): ?>
             <a href="<?= htmlspecialchars($r['invite_link']) ?>" target="_blank" style="font-size:0.68rem; color:var(--purple-light);">Ver link →</a>
             <?php else: ?>
