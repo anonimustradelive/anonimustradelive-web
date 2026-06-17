@@ -16,11 +16,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['id'
     $id  = (int)$_POST['id'];
     $act = $_POST['action'];
 
-    if ($act === 'save_note') {
-        $notes = trim($_POST['notes'] ?? '') ?: null;
-        $pdo->prepare("UPDATE registrations SET notes=? WHERE id=?")->execute([$notes, $id]);
-        $flash = "📝 Nota guardada para el registro #$id.";
+    // ── AGREGAR NOTA (AJAX-capable) ──────────────────────────────────────────
+    if ($act === 'add_note') {
+        $note_text = trim($_POST['note'] ?? '');
+        if ($note_text && $id) {
+            $pdo->prepare("INSERT INTO registration_notes (registration_id, note) VALUES (?, ?)")
+                ->execute([$id, $note_text]);
+            $new_id = $pdo->lastInsertId();
+
+            if (!empty($_POST['ajax'])) {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'ok'         => true,
+                    'id'         => $new_id,
+                    'note'       => $note_text,
+                    'created_at' => date('d/m/Y H:i'),
+                ]);
+                exit;
+            }
+            $flash = "📝 Nota guardada para el registro #$id.";
+        }
     } else {
+        // ── ACCIONES SOBRE EL REGISTRO ───────────────────────────────────────
         $stmt = $pdo->prepare("SELECT * FROM registrations WHERE id = ?");
         $stmt->execute([$id]);
         $reg = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -109,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['id'
     }
 }
 
-// Filtros
+// ── FILTROS ──────────────────────────────────────────────────────────────────
 $filter          = in_array($_GET['filter']   ?? '', ['all','pending','accepted','rejected'])  ? $_GET['filter']            : 'pending';
 $platform_filter = in_array($_GET['platform'] ?? '', ['all','pepperstone','bingx','bitunix'])  ? ($_GET['platform'] ?? 'all') : 'all';
 
@@ -118,7 +135,27 @@ if ($filter !== 'all')          $where_parts[] = "status = "   . $pdo->quote($fi
 if ($platform_filter !== 'all') $where_parts[] = "platform = " . $pdo->quote($platform_filter);
 $where = $where_parts ? "WHERE " . implode(" AND ", $where_parts) : "";
 
-$regs = $pdo->query("SELECT * FROM registrations $where ORDER BY created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
+// Consulta principal con conteo de notas y última nota
+$regs = $pdo->query("
+    SELECT r.*,
+        (SELECT COUNT(*) FROM registration_notes n WHERE n.registration_id = r.id) AS notes_count,
+        (SELECT n.note FROM registration_notes n WHERE n.registration_id = r.id ORDER BY n.created_at DESC LIMIT 1) AS latest_note
+    FROM registrations r
+    $where
+    ORDER BY r.created_at DESC
+")->fetchAll(PDO::FETCH_ASSOC);
+
+// Cargar todo el historial de notas para los registros visibles
+$all_notes = [];
+if ($regs) {
+    $reg_ids      = array_column($regs, 'id');
+    $placeholders = implode(',', array_fill(0, count($reg_ids), '?'));
+    $stmt = $pdo->prepare("SELECT id, registration_id, note, DATE_FORMAT(created_at, '%d/%m/%Y %H:%i') AS created_at FROM registration_notes WHERE registration_id IN ($placeholders) ORDER BY created_at ASC");
+    $stmt->execute($reg_ids);
+    foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $note) {
+        $all_notes[(int)$note['registration_id']][] = $note;
+    }
+}
 
 $raw_counts = $pdo->query("SELECT status, COUNT(*) n FROM registrations GROUP BY status")->fetchAll(PDO::FETCH_ASSOC);
 $counts = ['pending' => 0, 'accepted' => 0, 'rejected' => 0, 'all' => 0];
@@ -178,7 +215,7 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
   :root {
     --red:#C0112B; --red-light:rgba(192,17,43,0.12);
     --black:#080810; --black2:#0E0E18; --black3:#14141F; --black4:#1A1A28;
-    --white:#F0EFFF; --purple:#7C3AED; --purple-light:#A78BFA; --purple-glow:rgba(124,58,237,0.15);
+    --white:#F0EFFF; --purple:#7C3AED; --purple-mid:#6D28D9; --purple-light:#A78BFA; --purple-glow:rgba(124,58,237,0.15);
     --gray:#252535; --gray2:#333348; --text-muted:#7070A0;
     --green:#22C55E; --green-light:rgba(34,197,94,0.12);
     --yellow:#F59E0B; --yellow-light:rgba(245,158,11,0.12);
@@ -216,22 +253,17 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
 
   /* SEARCH */
   .search-wrap { margin-bottom:1rem; }
-  .search-input {
-    width:100%; padding:10px 16px; border-radius:5px;
-    background:var(--black2); border:1px solid var(--gray);
-    color:var(--white); font-family:inherit; font-size:0.82rem;
-    transition:border-color 0.2s; outline:none;
-  }
+  .search-input { width:100%; padding:10px 16px; border-radius:5px; background:var(--black2); border:1px solid var(--gray); color:var(--white); font-family:inherit; font-size:0.82rem; transition:border-color 0.2s; outline:none; }
   .search-input::placeholder { color:var(--text-muted); }
   .search-input:focus { border-color:var(--purple); }
 
   /* FILTERS */
-  .filter-row { display:flex; align-items:center; gap:0.5rem; margin-bottom:0.75rem; flex-wrap:wrap; }
-  .filter-label { font-size:0.62rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); min-width:70px; }
+  .filters-wrap { margin-bottom:1.5rem; }
+  .filter-row { display:flex; align-items:center; gap:0.5rem; margin-bottom:0.6rem; flex-wrap:wrap; }
+  .filter-label { font-size:0.62rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); min-width:72px; }
   .filter-btn { font-family:inherit; font-size:0.68rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:6px 16px; border-radius:4px; border:1px solid var(--gray); background:transparent; color:var(--text-muted); cursor:pointer; text-decoration:none; transition:all 0.2s; }
   .filter-btn:hover { border-color:var(--purple-light); color:var(--purple-light); }
   .filter-btn.active { background:var(--purple); border-color:var(--purple); color:var(--white); }
-  .filters-wrap { margin-bottom:1.5rem; }
 
   /* TABLE */
   .table-wrap { background:var(--black2); border:1px solid var(--gray); border-radius:6px; overflow:hidden; overflow-x:auto; }
@@ -240,8 +272,6 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
   td { padding:0.9rem 1.25rem; border-bottom:1px solid rgba(255,255,255,0.04); font-size:0.78rem; vertical-align:top; }
   tr:last-child td { border-bottom:none; }
   tr:hover td { background:rgba(255,255,255,0.02); }
-
-  /* STALE ROW */
   tr.row-stale td { background:rgba(245,158,11,0.03) !important; }
   tr.row-stale td:first-child { box-shadow:inset 3px 0 0 var(--yellow); }
 
@@ -263,47 +293,31 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
   /* ACTION BUTTONS */
   .action-btns { display:flex; flex-direction:column; gap:5px; min-width:130px; }
   .action-btns form { display:flex; }
-  .btn-accept, .btn-reject, .btn-kyc, .btn-migration, .btn-sent {
+  .btn-accept, .btn-reject, .btn-kyc, .btn-migration {
     font-family:inherit; font-size:0.65rem; font-weight:700; letter-spacing:0.06em;
     text-transform:uppercase; padding:6px 10px; border-radius:3px; cursor:pointer;
     transition:all 0.2s; width:100%; text-align:center; border:1px solid;
   }
-  .btn-accept    { background:var(--green-light);         border-color:rgba(34,197,94,0.4);   color:var(--green);        }
+  .btn-accept    { background:var(--green-light);        border-color:rgba(34,197,94,0.4);   color:var(--green);        }
   .btn-accept:hover    { background:rgba(34,197,94,0.25); }
-  .btn-reject    { background:var(--red-light);           border-color:rgba(192,17,43,0.4);   color:#FF6B6B;             }
+  .btn-reject    { background:var(--red-light);          border-color:rgba(192,17,43,0.4);   color:#FF6B6B;             }
   .btn-reject:hover    { background:rgba(192,17,43,0.22); }
-  .btn-kyc       { background:var(--purple-glow);         border-color:rgba(124,58,237,0.4);  color:var(--purple-light); }
+  .btn-kyc       { background:var(--purple-glow);        border-color:rgba(124,58,237,0.4);  color:var(--purple-light); }
   .btn-kyc:hover:not(:disabled)       { background:rgba(124,58,237,0.25); }
-  .btn-migration { background:rgba(56,189,248,0.12);      border-color:rgba(56,189,248,0.4);  color:#38BDF8;             }
+  .btn-migration { background:rgba(56,189,248,0.12);     border-color:rgba(56,189,248,0.4);  color:#38BDF8;             }
   .btn-migration:hover:not(:disabled) { background:rgba(56,189,248,0.25); }
-  .btn-sent, button:disabled {
-    background:rgba(255,255,255,0.04) !important; border-color:var(--gray2) !important;
-    color:var(--text-muted) !important; cursor:not-allowed !important; opacity:0.55;
-  }
+  button:disabled { background:rgba(255,255,255,0.04) !important; border-color:var(--gray2) !important; color:var(--text-muted) !important; cursor:not-allowed !important; opacity:0.55; }
 
-  /* NOTES */
+  /* NOTE BUTTON (in table) */
   .note-section { margin-top:8px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.05); }
-  .note-preview { font-size:0.68rem; color:var(--text-muted); line-height:1.4; margin-bottom:5px; font-style:italic; }
-  .note-toggle {
+  .note-preview { font-size:0.68rem; color:var(--text-muted); font-style:italic; margin-bottom:5px; line-height:1.4; }
+  .btn-note {
     font-family:inherit; font-size:0.62rem; font-weight:600; letter-spacing:0.06em; text-transform:uppercase;
     background:transparent; border:1px solid var(--gray); color:var(--text-muted);
     padding:4px 10px; border-radius:3px; cursor:pointer; transition:all 0.2s; width:100%;
   }
-  .note-toggle:hover { border-color:var(--gray2); color:var(--white); }
-  .note-box { display:none; margin-top:6px; }
-  .note-textarea {
-    width:100%; background:var(--black3); border:1px solid var(--gray); border-radius:3px;
-    color:var(--white); font-family:inherit; font-size:0.72rem; padding:6px 8px;
-    resize:vertical; min-height:60px; outline:none;
-  }
-  .note-textarea:focus { border-color:var(--purple); }
-  .note-save {
-    margin-top:5px; font-family:inherit; font-size:0.62rem; font-weight:700;
-    letter-spacing:0.06em; text-transform:uppercase; padding:5px 12px; border-radius:3px;
-    background:var(--purple-glow); border:1px solid rgba(124,58,237,0.4);
-    color:var(--purple-light); cursor:pointer; transition:all 0.2s; width:100%;
-  }
-  .note-save:hover { background:rgba(124,58,237,0.25); }
+  .btn-note:hover { border-color:var(--gray2); color:var(--white); }
+  .btn-note.has-notes { border-color:rgba(124,58,237,0.3); color:var(--purple-light); }
 
   /* DATES */
   .date-stack { display:flex; flex-direction:column; gap:3px; white-space:nowrap; font-size:0.73rem; color:var(--text-muted); }
@@ -313,10 +327,96 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
   .empty { padding:3rem; text-align:center; color:var(--text-muted); font-size:0.82rem; }
   .no-results { padding:3rem; text-align:center; color:var(--text-muted); font-size:0.82rem; display:none; }
 
+  /* ── MODAL ──────────────────────────────────────────────────────────────── */
+  .modal-overlay {
+    position:fixed; inset:0; z-index:9999;
+    background:rgba(8,8,16,0.88); backdrop-filter:blur(5px);
+    display:none; align-items:center; justify-content:center; padding:1.5rem;
+  }
+  .modal-overlay.open { display:flex; }
+  .modal-box {
+    background:var(--black2); border:1px solid var(--gray2); border-radius:10px;
+    width:100%; max-width:560px; display:flex; flex-direction:column;
+    max-height:80vh; box-shadow:0 20px 60px rgba(0,0,0,0.6);
+  }
+  .modal-header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:1.25rem 1.5rem; border-bottom:1px solid var(--gray); flex-shrink:0;
+  }
+  .modal-title { font-size:0.82rem; font-weight:700; letter-spacing:0.04em; }
+  .modal-title span { color:var(--purple-light); }
+  .modal-close {
+    background:transparent; border:1px solid var(--gray); color:var(--text-muted);
+    width:28px; height:28px; border-radius:4px; cursor:pointer; font-size:1rem;
+    display:flex; align-items:center; justify-content:center; transition:all 0.2s;
+  }
+  .modal-close:hover { color:var(--white); border-color:var(--gray2); }
+
+  /* Scrollable history */
+  .modal-history {
+    flex:1; overflow-y:auto; padding:1.25rem 1.5rem;
+    display:flex; flex-direction:column; gap:0.85rem; min-height:80px;
+  }
+  .modal-history::-webkit-scrollbar { width:3px; }
+  .modal-history::-webkit-scrollbar-track { background:transparent; }
+  .modal-history::-webkit-scrollbar-thumb { background:var(--gray2); border-radius:2px; }
+  .note-entry {
+    background:var(--black3); border:1px solid var(--gray); border-radius:6px; padding:0.9rem 1rem;
+  }
+  .note-entry-meta {
+    font-size:0.6rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--text-muted); margin-bottom:0.5rem; display:flex; align-items:center; gap:6px;
+  }
+  .note-entry-meta::before { content:''; display:block; width:6px; height:6px; border-radius:50%; background:var(--purple-light); flex-shrink:0; }
+  .note-entry-text { font-size:0.78rem; line-height:1.65; color:var(--white); white-space:pre-wrap; word-break:break-word; }
+  .no-notes-msg { font-size:0.78rem; color:var(--text-muted); text-align:center; padding:2.5rem 0; font-style:italic; }
+
+  /* Add note form */
+  .modal-add {
+    padding:1.25rem 1.5rem; border-top:1px solid var(--gray); flex-shrink:0;
+    display:flex; flex-direction:column; gap:0.65rem;
+  }
+  .modal-add-label { font-size:0.62rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); }
+  .modal-textarea {
+    width:100%; background:var(--black3); border:1px solid var(--gray); border-radius:5px;
+    color:var(--white); font-family:inherit; font-size:0.8rem; padding:10px 12px;
+    resize:vertical; min-height:72px; outline:none; transition:border-color 0.2s; line-height:1.5;
+  }
+  .modal-textarea:focus { border-color:var(--purple); }
+  .modal-footer { display:flex; align-items:center; justify-content:space-between; }
+  .modal-note-count { font-size:0.65rem; color:var(--text-muted); }
+  .modal-submit {
+    font-family:inherit; font-size:0.68rem; font-weight:700; letter-spacing:0.08em;
+    text-transform:uppercase; padding:8px 22px; border-radius:4px;
+    background:var(--purple); border:1px solid rgba(124,58,237,0.6);
+    color:var(--white); cursor:pointer; transition:all 0.2s;
+  }
+  .modal-submit:hover { background:var(--purple-mid); }
+  .modal-submit:disabled { opacity:0.5; cursor:not-allowed; }
+
   @media(max-width:768px) { .stats { grid-template-columns:1fr 1fr; } }
 </style>
 </head>
 <body>
+
+<!-- ── MODAL DE NOTAS ────────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="note-modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">📝 Notas — <span id="modal-name"></span></div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-history" id="modal-history"></div>
+    <div class="modal-add">
+      <div class="modal-add-label">Nueva nota</div>
+      <textarea class="modal-textarea" id="modal-input" placeholder="Escribe una nota interna para el equipo..." rows="3"></textarea>
+      <div class="modal-footer">
+        <span class="modal-note-count" id="modal-count"></span>
+        <button class="modal-submit" id="modal-save-btn" onclick="submitNote()">💾 Guardar nota</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <nav>
   <div class="nav-inner">
@@ -338,22 +438,10 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
 
   <!-- STATS -->
   <div class="stats">
-    <div class="stat pending">
-      <div class="stat-label">Pendientes</div>
-      <div class="stat-value"><?= $counts['pending'] ?></div>
-    </div>
-    <div class="stat accepted">
-      <div class="stat-label">Aceptados</div>
-      <div class="stat-value"><?= $counts['accepted'] ?></div>
-    </div>
-    <div class="stat rejected">
-      <div class="stat-label">Rechazados</div>
-      <div class="stat-value"><?= $counts['rejected'] ?></div>
-    </div>
-    <div class="stat all">
-      <div class="stat-label">Total</div>
-      <div class="stat-value"><?= $counts['all'] ?></div>
-    </div>
+    <div class="stat pending"><div class="stat-label">Pendientes</div><div class="stat-value"><?= $counts['pending'] ?></div></div>
+    <div class="stat accepted"><div class="stat-label">Aceptados</div><div class="stat-value"><?= $counts['accepted'] ?></div></div>
+    <div class="stat rejected"><div class="stat-label">Rechazados</div><div class="stat-value"><?= $counts['rejected'] ?></div></div>
+    <div class="stat all"><div class="stat-label">Total</div><div class="stat-value"><?= $counts['all'] ?></div></div>
   </div>
 
   <!-- SEARCH -->
@@ -385,29 +473,24 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
     <table id="reg-table">
       <thead>
         <tr>
-          <th>#</th>
-          <th>Nombre</th>
-          <th>Telegram</th>
-          <th>Perfil</th>
-          <th>Plataforma</th>
-          <th>Email</th>
-          <th>ID Usuario</th>
-          <th>Estado</th>
-          <th>Fechas</th>
-          <th>Acciones</th>
+          <th>#</th><th>Nombre</th><th>Telegram</th><th>Perfil</th>
+          <th>Plataforma</th><th>Email</th><th>ID Usuario</th>
+          <th>Estado</th><th>Fechas</th><th>Acciones</th>
         </tr>
       </thead>
       <tbody>
         <?php foreach ($regs as $r):
-          $is_stale   = $r['status'] === 'pending' && (time() - strtotime($r['updated_at'])) > 172800;
-          $kyc_sent   = ($r['kyc_status']  ?? '') === 'pending';
-          $migr_sent  = !empty($r['patience_sent']);
-          $has_note   = !empty($r['notes']);
+          $is_stale    = $r['status'] === 'pending' && (time() - strtotime($r['updated_at'])) > 172800;
+          $kyc_sent    = ($r['kyc_status'] ?? '') === 'pending';
+          $migr_sent   = !empty($r['patience_sent']);
+          $note_count  = (int)($r['notes_count'] ?? 0);
+          $latest_note = $r['latest_note'] ?? '';
+          $reg_name    = htmlspecialchars($r['telegram_name'] ?: '#' . $r['id']);
         ?>
         <tr id="reg-<?= $r['id'] ?>" <?= $is_stale ? 'class="row-stale"' : '' ?>>
           <td style="color:var(--text-muted)"><?= $r['id'] ?></td>
           <td><strong><?= htmlspecialchars($r['telegram_name'] ?: '—') ?></strong></td>
-          <td><?= $r['telegram_username'] ? '@' . htmlspecialchars($r['telegram_username']) : '<span style="color:var(--text-muted)">—</span>' ?></td>
+          <td><?= $r['telegram_username'] ? '@'.htmlspecialchars($r['telegram_username']) : '<span style="color:var(--text-muted)">—</span>' ?></td>
           <td>
             <span class="badge <?= $r['profile_type'] === 'trader' ? 'badge-trader' : 'badge-prin' ?>">
               <?= $prlabels[$r['profile_type']] ?? $r['profile_type'] ?>
@@ -447,9 +530,7 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
               </form>
               <?php if ($r['platform'] === 'bingx'): ?>
               <?php if ($kyc_sent): ?>
-              <form method="POST">
-                <button type="button" class="btn-kyc btn-sent" disabled>📋 KYC enviado</button>
-              </form>
+              <button type="button" class="btn-kyc" disabled>📋 KYC enviado</button>
               <?php else: ?>
               <form method="POST" onsubmit="return confirm('¿Avisar al usuario que falta completar su KYC?')">
                 <input type="hidden" name="id" value="<?= $r['id'] ?>">
@@ -460,9 +541,7 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
               <?php endif; ?>
               <?php if ($r['platform'] === 'pepperstone' && $r['is_migration']): ?>
               <?php if ($migr_sent): ?>
-              <form method="POST">
-                <button type="button" class="btn-migration btn-sent" disabled>✓ Paciencia enviada</button>
-              </form>
+              <button type="button" class="btn-migration" disabled>✓ Paciencia enviada</button>
               <?php else: ?>
               <form method="POST" onsubmit="return confirm('¿Enviar mensaje de seguimiento de migración al usuario?')">
                 <input type="hidden" name="id" value="<?= $r['id'] ?>">
@@ -478,22 +557,16 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
             <span style="color:var(--text-muted); font-size:0.72rem;">—</span>
             <?php endif; ?>
 
-            <!-- NOTES (visible para todos los registros) -->
+            <!-- NOTAS -->
             <div class="note-section">
-              <?php if ($has_note): ?>
-              <div class="note-preview">📝 <?= htmlspecialchars(mb_substr($r['notes'], 0, 60)) ?><?= mb_strlen($r['notes']) > 60 ? '…' : '' ?></div>
+              <?php if ($latest_note): ?>
+              <div class="note-preview">📝 <?= htmlspecialchars(mb_substr($latest_note, 0, 55)) ?><?= mb_strlen($latest_note) > 55 ? '…' : '' ?></div>
               <?php endif; ?>
-              <button type="button" class="note-toggle" onclick="toggleNote(<?= $r['id'] ?>)">
-                <?= $has_note ? '✏️ Editar nota' : '📝 Agregar nota' ?>
+              <button type="button"
+                class="btn-note <?= $note_count > 0 ? 'has-notes' : '' ?>"
+                onclick="openModal(<?= $r['id'] ?>, '<?= addslashes($reg_name) ?>')">
+                <?= $note_count > 0 ? "📝 Ver notas ($note_count)" : '📝 Agregar nota' ?>
               </button>
-              <div id="note-<?= $r['id'] ?>" class="note-box">
-                <form method="POST">
-                  <input type="hidden" name="id" value="<?= $r['id'] ?>">
-                  <input type="hidden" name="action" value="save_note">
-                  <textarea name="notes" class="note-textarea" rows="3" placeholder="Nota interna del equipo..."><?= htmlspecialchars($r['notes'] ?? '') ?></textarea>
-                  <button type="submit" class="note-save">💾 Guardar nota</button>
-                </form>
-              </div>
             </div>
           </td>
         </tr>
@@ -507,28 +580,125 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
 </main>
 
 <script>
-// Búsqueda en tiempo real
-const searchInput = document.getElementById('search');
-if (searchInput) {
-  searchInput.addEventListener('input', function () {
-    const q = this.value.toLowerCase().trim();
-    const rows = document.querySelectorAll('#reg-table tbody tr');
-    let visible = 0;
-    rows.forEach(function (tr) {
-      const match = !q || tr.textContent.toLowerCase().includes(q);
-      tr.style.display = match ? '' : 'none';
-      if (match) visible++;
-    });
-    const noResults = document.getElementById('no-results');
-    if (noResults) noResults.style.display = (q && visible === 0) ? 'block' : 'none';
-  });
+// ── DATOS DE NOTAS ──────────────────────────────────────────────────────────
+const notesData = <?= json_encode($all_notes, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE) ?>;
+let currentRegId = null;
+
+// ── MODAL ───────────────────────────────────────────────────────────────────
+function openModal(regId, regName) {
+    currentRegId = regId;
+    document.getElementById('modal-name').textContent = regName;
+    renderHistory();
+    document.getElementById('modal-input').value = '';
+    document.getElementById('note-modal').classList.add('open');
+    setTimeout(() => document.getElementById('modal-input').focus(), 50);
 }
 
-// Toggle de notas
-function toggleNote(id) {
-  const box = document.getElementById('note-' + id);
-  if (box) box.style.display = box.style.display === 'block' ? 'none' : 'block';
+function closeModal() {
+    document.getElementById('note-modal').classList.remove('open');
+    currentRegId = null;
 }
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+});
+
+function renderHistory() {
+    const notes = notesData[currentRegId] || [];
+    const container = document.getElementById('modal-history');
+    const countEl   = document.getElementById('modal-count');
+
+    countEl.textContent = notes.length === 0 ? '' : notes.length + ' nota' + (notes.length > 1 ? 's' : '');
+
+    if (notes.length === 0) {
+        container.innerHTML = '<div class="no-notes-msg">Sin notas aún. Sé el primero en dejar una.</div>';
+        return;
+    }
+
+    container.innerHTML = notes.map(function(n) {
+        return '<div class="note-entry">' +
+            '<div class="note-entry-meta">' + escHtml(n.created_at) + '</div>' +
+            '<div class="note-entry-text">' + escHtml(n.note) + '</div>' +
+            '</div>';
+    }).join('');
+
+    // Scroll al final (nota más reciente)
+    container.scrollTop = container.scrollHeight;
+}
+
+async function submitNote() {
+    const input = document.getElementById('modal-input');
+    const text  = input.value.trim();
+    if (!text || !currentRegId) return;
+
+    const btn = document.getElementById('modal-save-btn');
+    btn.disabled = true;
+    btn.textContent = 'Guardando…';
+
+    const fd = new FormData();
+    fd.append('action', 'add_note');
+    fd.append('id', currentRegId);
+    fd.append('note', text);
+    fd.append('ajax', '1');
+
+    try {
+        const res  = await fetch('index.php', { method: 'POST', body: fd });
+        const data = await res.json();
+
+        if (data.ok) {
+            if (!notesData[currentRegId]) notesData[currentRegId] = [];
+            notesData[currentRegId].push({
+                id: data.id, registration_id: currentRegId,
+                note: data.note, created_at: data.created_at
+            });
+            input.value = '';
+            renderHistory();
+            updateNoteBtn(currentRegId);
+        }
+    } catch(e) {}
+
+    btn.disabled = false;
+    btn.textContent = '💾 Guardar nota';
+}
+
+function updateNoteBtn(regId) {
+    const count = (notesData[regId] || []).length;
+    const latest = count > 0 ? notesData[regId][count - 1].note : '';
+    const row = document.getElementById('reg-' + regId);
+    if (!row) return;
+    const btn = row.querySelector('.btn-note');
+    if (btn) {
+        btn.textContent = count > 0 ? '📝 Ver notas (' + count + ')' : '📝 Agregar nota';
+        btn.classList.toggle('has-notes', count > 0);
+    }
+    const preview = row.querySelector('.note-preview');
+    if (preview && latest) {
+        preview.textContent = '📝 ' + (latest.length > 55 ? latest.substring(0, 55) + '…' : latest);
+        preview.style.display = '';
+    }
+}
+
+// Enter para guardar (Shift+Enter = salto de línea)
+document.getElementById('modal-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitNote(); }
+});
+
+function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── BÚSQUEDA EN TIEMPO REAL ─────────────────────────────────────────────────
+document.getElementById('search').addEventListener('input', function() {
+    const q = this.value.toLowerCase().trim();
+    let visible = 0;
+    document.querySelectorAll('#reg-table tbody tr').forEach(function(tr) {
+        const match = !q || tr.textContent.toLowerCase().includes(q);
+        tr.style.display = match ? '' : 'none';
+        if (match) visible++;
+    });
+    const noRes = document.getElementById('no-results');
+    if (noRes) noRes.style.display = (q && visible === 0) ? 'block' : 'none';
+});
 </script>
 
 </body>

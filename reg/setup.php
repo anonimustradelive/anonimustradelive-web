@@ -57,8 +57,15 @@ try {
     $pdo->exec("ALTER TABLE registrations ADD COLUMN patience_sent TINYINT(1) NOT NULL DEFAULT 0 AFTER migration_status;");
 } catch (PDOException $e) {}
 
-try {
-    $pdo->exec("ALTER TABLE registrations ADD COLUMN notes TEXT NULL AFTER patience_sent;");
-} catch (PDOException $e) {}
+// Tabla de historial de notas internas por registro
+$pdo->exec("
+CREATE TABLE IF NOT EXISTS registration_notes (
+    id                INT AUTO_INCREMENT PRIMARY KEY,
+    registration_id   INT NOT NULL,
+    note              TEXT NOT NULL,
+    created_at        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_reg (registration_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+");
 
 echo "✅ Tablas y columnas verificadas correctamente. Elimina este archivo del servidor.";
