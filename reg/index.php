@@ -166,7 +166,8 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
   body { font-family:'Montserrat',sans-serif; background:var(--black); color:var(--white); min-height:100vh; }
 
   /* NAV */
-  nav { background:var(--black2); border-bottom:1px solid var(--gray); padding:0 2rem; height:60px; display:flex; align-items:center; justify-content:space-between; }
+  nav { background:var(--black2); border-bottom:1px solid var(--gray); padding:0; height:60px; display:flex; align-items:center; justify-content:center; }
+  .nav-inner { width:100%; max-width:1600px; padding:0 clamp(1.5rem,3vw,4rem); display:flex; align-items:center; justify-content:space-between; }
   .nav-brand { font-size:0.75rem; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; }
   .nav-brand span { color:var(--red); }
   .nav-right { display:flex; align-items:center; gap:1rem; }
@@ -175,7 +176,7 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
   .nav-logout:hover { color:var(--white); }
 
   /* MAIN */
-  main { max-width:1100px; margin:0 auto; padding:2rem 1.5rem; }
+  main { max-width:1600px; margin:0 auto; padding:2rem clamp(1.5rem, 3vw, 4rem); }
 
   /* FLASH */
   .flash { padding:0.85rem 1.25rem; border-radius:5px; font-size:0.78rem; font-weight:600; margin-bottom:1.5rem; }
@@ -237,12 +238,14 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
 <body>
 
 <nav>
-  <div class="nav-brand">AnonimusTrade <span>Live</span> · Registros</div>
-  <div class="nav-right">
-    <?php if ($counts['pending'] > 0): ?>
-    <span class="nav-badge"><?= $counts['pending'] ?> pendiente<?= $counts['pending'] > 1 ? 's' : '' ?></span>
-    <?php endif; ?>
-    <a class="nav-logout" href="logout.php">Cerrar sesión →</a>
+  <div class="nav-inner">
+    <div class="nav-brand">AnonimusTrade <span>Live</span> · Registros</div>
+    <div class="nav-right">
+      <?php if ($counts['pending'] > 0): ?>
+      <span class="nav-badge"><?= $counts['pending'] ?> pendiente<?= $counts['pending'] > 1 ? 's' : '' ?></span>
+      <?php endif; ?>
+      <a class="nav-logout" href="logout.php">Cerrar sesión →</a>
+    </div>
   </div>
 </nav>
 
