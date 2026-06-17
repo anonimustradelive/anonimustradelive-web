@@ -70,6 +70,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['id'
                     "Si crees que esto es un error, [contáctanos directamente](https://t.me/+18495683020)\\."
                 );
                 $flash = "Registro #$id rechazado.";
+            } elseif ($act === 'reject_uid') {
+                $pdo->prepare("UPDATE registrations SET status='rejected', updated_at=NOW() WHERE id=?")
+                    ->execute([$id]);
+                $ref_urls = [
+                    'pepperstone' => 'https://trk.pepperstonepartners.com/aff_c?offer_id=367&aff_id=45363',
+                    'bingx'       => 'https://bingxdao.com/partner/AnonimusTrade/',
+                    'bitunix'     => 'https://www.bitunix.com/register?vipCode=KMrN',
+                ];
+                $plabels2 = ['pepperstone' => 'Pepperstone', 'bingx' => 'BingX', 'bitunix' => 'Bitunix'];
+                $pname    = $plabels2[$reg['platform']] ?? $reg['platform'];
+                $ref_url  = $ref_urls[$reg['platform']] ?? '#';
+                tgSend((int)$reg['telegram_user_id'],
+                    "⛔ *Tu solicitud no pudo ser aprobada\\.*\n\n" .
+                    "El ID de cuenta que nos proporcionaste \\(`" . $reg['platform_user_id'] . "`\\) no está registrado bajo el referido de *AnonimusTrade Live* en *$pname*\\.\n\n" .
+                    "Esto ocurre cuando la cuenta fue creada antes de usar nuestro enlace, o con un enlace diferente al nuestro\\.\n\n" .
+                    "━━━━━━━━━━━━━━━\n" .
+                    "Para acceder a la comunidad debes abrir una *cuenta nueva* usando nuestro enlace oficial:\n\n" .
+                    "👉 [Crear cuenta en $pname]($ref_url)\n\n" .
+                    "Una vez creada, escribe /start y regístrala con nosotros\\."
+                );
+                $flash = "⛔ Registro #$id rechazado por UID no referido. Mensaje con instrucciones enviado al usuario.";
             } elseif ($act === 'kyc' && $reg['platform'] === 'bingx') {
                 $attempts = (int)$reg['kyc_attempts'] + 1;
                 if ($attempts >= 3) {
@@ -302,6 +323,8 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
   .btn-accept:hover    { background:rgba(34,197,94,0.25); }
   .btn-reject    { background:var(--red-light);          border-color:rgba(192,17,43,0.4);   color:#FF6B6B;             }
   .btn-reject:hover    { background:rgba(192,17,43,0.22); }
+  .btn-reject-uid { background:rgba(245,158,11,0.1); border-color:rgba(245,158,11,0.35); color:var(--yellow); }
+  .btn-reject-uid:hover { background:rgba(245,158,11,0.2); }
   .btn-kyc       { background:var(--purple-glow);        border-color:rgba(124,58,237,0.4);  color:var(--purple-light); }
   .btn-kyc:hover:not(:disabled)       { background:rgba(124,58,237,0.25); }
   .btn-migration { background:rgba(56,189,248,0.12);     border-color:rgba(56,189,248,0.4);  color:#38BDF8;             }
@@ -527,6 +550,11 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
                 <input type="hidden" name="id" value="<?= $r['id'] ?>">
                 <input type="hidden" name="action" value="reject">
                 <button type="submit" class="btn-reject">❌ Rechazar</button>
+              </form>
+              <form method="POST" onsubmit="return confirm('¿Rechazar por UID no referido? Se le enviará al usuario un mensaje con el enlace para crear una cuenta nueva.')">
+                <input type="hidden" name="id" value="<?= $r['id'] ?>">
+                <input type="hidden" name="action" value="reject_uid">
+                <button type="submit" class="btn-reject-uid">⛔ UID no referido</button>
               </form>
               <?php if ($r['platform'] === 'bingx'): ?>
               <?php if ($kyc_sent): ?>
