@@ -407,7 +407,7 @@
     <div id="liveCountdown">
       <p class="live-pre-label">Próximo live en</p>
       <div class="live-timer" id="liveTimer">--<span>:</span>--<span>:</span>--</div>
-      <p class="live-sub-label">09:00 AM hora de Nueva York · lunes a viernes</p>
+      <p class="live-sub-label">08:30 AM hora de Nueva York · lunes a viernes</p>
     </div>
     <a id="liveBanner" class="live-banner" href="https://www.youtube.com/@anonimustradelive" target="_blank" rel="noopener" style="display:none">
       <span class="live-dot"></span>
@@ -591,8 +591,8 @@
   function updateLive() {
     const ny       = getNYTime();
     const totalSec = ny.getHours() * 3600 + ny.getMinutes() * 60 + ny.getSeconds();
-    const startSec = 9  * 3600;  // 9:00 AM ET
-    const endSec   = 11 * 3600;  // 11:00 AM ET
+    const startSec = 8 * 3600 + 30 * 60;  // 8:30 AM ET
+    const endSec   = 12 * 3600;           // 12:00 PM ET
 
     const widget    = document.getElementById('liveWidget');
     const countdown = document.getElementById('liveCountdown');
