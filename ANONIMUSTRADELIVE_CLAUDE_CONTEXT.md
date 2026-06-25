@@ -274,6 +274,11 @@ Script PHP que corre periódicamente (cron en cPanel).
 
 ## Historial de cambios recientes
 
+### 2026-06-25
+- Fix: `/libros` desde el grupo ahora responde en ese mismo grupo e hilo (`$thread_id` capturado en router)
+- Fix crítico: `commands/` no estaba en `.cpanel.yml` — los archivos nunca llegaban al servidor. Agregado `mkdir -p commands/` + `cp` de los 3 archivos
+- Regla: cada archivo nuevo en `commands/` requiere su línea correspondiente en `.cpanel.yml`
+
 ### 2026-06-17
 - Refactorización de `telegram-auth-webhook.php` a estructura modular (router + commands/)
 - Restaurados comandos `/libros`, `/librosp`, `/toplibros`, `/toplibrosp` en `commands/libros.php`
