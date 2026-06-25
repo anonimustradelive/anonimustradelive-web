@@ -274,6 +274,11 @@ Script PHP que corre periódicamente (cron en cPanel).
 
 ## Historial de cambios recientes
 
+### 2026-06-25 (4)
+- Chat de soporte: botón con 3 estados visuales — 💬 gris (inactivo) / 🟢 verde (activo, último mensaje nuestro) / 🟠 naranja (pendiente, último mensaje del usuario sin responder)
+- Estado se actualiza en tiempo real: al recibir mensaje del usuario → naranja, al enviar → verde
+- Poll de 20s en background actualiza todos los estados de la tabla
+
 ### 2026-06-25 (3)
 - Chat de soporte: agregados 5 botones de plantillas (🔢 ID, 🔄 Migración, 📋 KYC, ⏳ Recordatorio, ✅ Cierre)
 - Al hacer click en una plantilla, el texto se carga en el textarea para revisión/edición antes de enviar

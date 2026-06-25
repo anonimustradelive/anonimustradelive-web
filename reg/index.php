@@ -54,7 +54,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array($_POST['action'] ?? '', $c
         $r2 = $pdo->prepare("SELECT support_active FROM registrations WHERE id=?");
         $r2->execute([$id]);
         $reg2 = $r2->fetch(PDO::FETCH_ASSOC);
-        echo json_encode(['ok'=>true, 'messages'=>$msgs, 'support_active'=>(bool)($reg2['support_active'] ?? false)]);
+        $last = end($msgs);
+        $last_direction = $last ? $last['direction'] : null;
+        echo json_encode(['ok'=>true, 'messages'=>$msgs, 'support_active'=>(bool)($reg2['support_active'] ?? false), 'last_direction'=>$last_direction]);
         exit;
     }
 
@@ -64,7 +66,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array($_POST['action'] ?? '', $c
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $counts[(int)$row['registration_id']] = (int)$row['cnt'];
         }
-        echo json_encode(['ok'=>true, 'counts'=>$counts]);
+        // Registros con soporte activo donde el último mensaje es del usuario (pendiente de respuesta)
+        $pstmt = $pdo->query("
+            SELECT r.id FROM registrations r
+            WHERE r.support_active = 1
+            AND (SELECT direction FROM support_messages sm WHERE sm.registration_id = r.id ORDER BY sm.created_at DESC LIMIT 1) = 'in'
+        ");
+        $pending = array_column($pstmt->fetchAll(PDO::FETCH_ASSOC), 'id');
+        echo json_encode(['ok'=>true, 'counts'=>$counts, 'pending'=>$pending]);
         exit;
     }
 }
@@ -221,7 +230,8 @@ $regs = $pdo->query("
     SELECT r.*,
         (SELECT COUNT(*) FROM registration_notes n WHERE n.registration_id = r.id) AS notes_count,
         (SELECT n.note FROM registration_notes n WHERE n.registration_id = r.id ORDER BY n.created_at DESC LIMIT 1) AS latest_note,
-        (SELECT COUNT(*) FROM support_messages sm WHERE sm.registration_id = r.id AND sm.direction = 'in' AND sm.leido = 0) AS unread_count
+        (SELECT COUNT(*) FROM support_messages sm WHERE sm.registration_id = r.id AND sm.direction = 'in' AND sm.leido = 0) AS unread_count,
+        (SELECT direction FROM support_messages sm WHERE sm.registration_id = r.id ORDER BY sm.created_at DESC LIMIT 1) AS last_msg_direction
     FROM registrations r
     $where
     ORDER BY r.created_at DESC
@@ -499,8 +509,10 @@ function tgSendPlain(int $chat_id, string $text): void {
     display:flex; align-items:center; justify-content:center; gap:4px;
   }
   .btn-chat:hover { border-color:var(--gray2); color:var(--white); }
-  .btn-chat-active { border-color:rgba(34,197,94,0.4); color:var(--green); background:rgba(34,197,94,0.06); }
-  .btn-chat-active:hover { background:rgba(34,197,94,0.12); }
+  .btn-chat-active  { border-color:rgba(34,197,94,0.4);   color:var(--green); background:rgba(34,197,94,0.06); }
+  .btn-chat-active:hover  { background:rgba(34,197,94,0.12); }
+  .btn-chat-pending { border-color:rgba(249,115,22,0.5); color:#F97316;      background:rgba(249,115,22,0.08); }
+  .btn-chat-pending:hover { background:rgba(249,115,22,0.15); }
   .chat-badge-inline {
     display:inline-flex; align-items:center; justify-content:center;
     background:#EF4444; color:#fff; border-radius:10px;
@@ -673,7 +685,8 @@ function tgSendPlain(int $chat_id, string $text): void {
           $note_count   = (int)($r['notes_count'] ?? 0);
           $latest_note  = $r['latest_note'] ?? '';
           $reg_name     = htmlspecialchars($r['telegram_name'] ?: '#' . $r['id']);
-          $unread_count = (int)($r['unread_count'] ?? 0);
+          $unread_count  = (int)($r['unread_count'] ?? 0);
+          $chat_pending  = $r['support_active'] && ($r['last_msg_direction'] ?? '') === 'in';
         ?>
         <tr id="reg-<?= $r['id'] ?>" <?= $is_stale ? 'class="row-stale"' : '' ?>>
           <td style="color:var(--text-muted)"><?= $r['id'] ?></td>
@@ -763,10 +776,12 @@ function tgSendPlain(int $chat_id, string $text): void {
                 <?= $note_count > 0 ? "📝 Ver notas ($note_count)" : '📝 Agregar nota' ?>
               </button>
               <button type="button"
-                class="btn-chat <?= $r['support_active'] ? 'btn-chat-active' : '' ?>"
+                class="btn-chat <?= $r['support_active'] ? ($chat_pending ? 'btn-chat-pending' : 'btn-chat-active') : '' ?>"
                 onclick="openChat(<?= $r['id'] ?>, '<?= addslashes($reg_name) ?>', <?= (int)$r['support_active'] ?>)"
                 data-reg-id="<?= $r['id'] ?>">
-                <?= $r['support_active'] ? '🟢 Chat activo' : '💬 Chat' ?>
+                <?php if (!$r['support_active']): ?>💬 Chat
+                <?php elseif ($chat_pending): ?>🟠 Chat pendiente
+                <?php else: ?>🟢 Chat activo<?php endif; ?>
                 <?php if ($unread_count > 0): ?><span class="chat-badge-inline"><?= $unread_count ?></span><?php endif; ?>
               </button>
             </div>
@@ -979,7 +994,7 @@ async function toggleSupport() {
     if (data.ok) {
         chatIsActive = !chatIsActive;
         updateChatUI();
-        updateRowBtn(chatRegId);
+        updateRowBtnState(chatRegId, chatIsActive, 'out');
         if (chatIsActive) setTimeout(() => document.getElementById('chat-input').focus(), 80);
     }
 }
@@ -1022,6 +1037,9 @@ async function loadMessages() {
     chatLastCount = data.messages.length;
 
     updateChatBadge(chatRegId, 0);
+    if (data.last_direction !== undefined) {
+        updateRowBtnState(chatRegId, chatIsActive, data.last_direction);
+    }
 }
 
 async function sendChatMessage() {
@@ -1051,17 +1069,21 @@ document.getElementById('chat-input').addEventListener('keydown', function(e) {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
 });
 
-// Refrescar badges cada 20 segundos en segundo plano
+// Refrescar badges y estados cada 20 segundos en segundo plano
 setInterval(async function() {
     const fd = new FormData();
     fd.append('action', 'chat_unread_counts');
     const res  = await fetch('index.php', { method:'POST', body:fd });
     const data = await res.json();
     if (!data.ok) return;
+    const pendingIds = data.pending || [];
     document.querySelectorAll('.btn-chat[data-reg-id]').forEach(function(btn) {
-        const id    = parseInt(btn.dataset.regId);
-        const count = data.counts[id] || 0;
+        const id      = parseInt(btn.dataset.regId);
+        const count   = data.counts[id] || 0;
+        const active  = btn.classList.contains('btn-chat-active') || btn.classList.contains('btn-chat-pending');
+        const pending = pendingIds.includes(id);
         updateChatBadge(id, count);
+        if (active) updateRowBtnState(id, true, pending ? 'in' : 'out');
     });
 }, 20000);
 
@@ -1075,18 +1097,26 @@ function updateChatBadge(regId, count) {
     } else if (badge) { badge.remove(); }
 }
 
-function updateRowBtn(regId) {
+function updateRowBtnState(regId, isActive, lastDirection) {
     const btn = document.querySelector('.btn-chat[data-reg-id="' + regId + '"]');
     if (!btn) return;
-    const badge = btn.querySelector('.chat-badge-inline');
-    if (chatIsActive) {
+    const badge   = btn.querySelector('.chat-badge-inline');
+    const pending = isActive && lastDirection === 'in';
+    btn.classList.remove('btn-chat-active', 'btn-chat-pending');
+    if (!isActive) {
+        btn.childNodes[0].textContent = '💬 Chat';
+    } else if (pending) {
+        btn.classList.add('btn-chat-pending');
+        btn.childNodes[0].textContent = '🟠 Chat pendiente';
+    } else {
         btn.classList.add('btn-chat-active');
         btn.childNodes[0].textContent = '🟢 Chat activo';
-    } else {
-        btn.classList.remove('btn-chat-active');
-        btn.childNodes[0].textContent = '💬 Chat';
     }
     if (badge) btn.appendChild(badge);
+}
+
+function updateRowBtn(regId) {
+    updateRowBtnState(regId, chatIsActive, chatIsActive ? null : null);
 }
 </script>
 
