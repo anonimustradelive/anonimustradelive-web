@@ -9,6 +9,66 @@ $pdo = new PDO(
     [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
 );
 
+// ── CHAT AJAX ────────────────────────────────────────────────────────────────
+$chat_ajax = ['chat_open','chat_close','chat_send','chat_get','chat_unread_counts'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array($_POST['action'] ?? '', $chat_ajax)) {
+    header('Content-Type: application/json');
+    $act = $_POST['action'];
+
+    if ($act === 'chat_open') {
+        $id = (int)($_POST['reg_id'] ?? 0);
+        $pdo->prepare("UPDATE registrations SET support_active=1, updated_at=NOW() WHERE id=?")->execute([$id]);
+        echo json_encode(['ok' => true]);
+        exit;
+    }
+
+    if ($act === 'chat_close') {
+        $id = (int)($_POST['reg_id'] ?? 0);
+        $pdo->prepare("UPDATE registrations SET support_active=0, updated_at=NOW() WHERE id=?")->execute([$id]);
+        echo json_encode(['ok' => true]);
+        exit;
+    }
+
+    if ($act === 'chat_send') {
+        $id  = (int)($_POST['reg_id'] ?? 0);
+        $msg = trim($_POST['message'] ?? '');
+        if (!$id || !$msg) { echo json_encode(['ok'=>false]); exit; }
+        $r = $pdo->prepare("SELECT telegram_user_id FROM registrations WHERE id=?");
+        $r->execute([$id]);
+        $reg = $r->fetch(PDO::FETCH_ASSOC);
+        if (!$reg) { echo json_encode(['ok'=>false]); exit; }
+        $pdo->prepare("INSERT INTO support_messages (registration_id, telegram_user_id, direction, message, leido) VALUES (?, ?, 'out', ?, 1)")
+            ->execute([$id, $reg['telegram_user_id'], $msg]);
+        $new_id = $pdo->lastInsertId();
+        tgSendPlain((int)$reg['telegram_user_id'], $msg);
+        echo json_encode(['ok'=>true, 'id'=>$new_id, 'ts'=>date('d/m H:i')]);
+        exit;
+    }
+
+    if ($act === 'chat_get') {
+        $id = (int)($_POST['reg_id'] ?? 0);
+        $stmt = $pdo->prepare("SELECT id, direction, message, leido, DATE_FORMAT(created_at,'%d/%m %H:%i') AS ts FROM support_messages WHERE registration_id=? ORDER BY created_at ASC");
+        $stmt->execute([$id]);
+        $msgs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $pdo->prepare("UPDATE support_messages SET leido=1 WHERE registration_id=? AND direction='in' AND leido=0")->execute([$id]);
+        $r2 = $pdo->prepare("SELECT support_active FROM registrations WHERE id=?");
+        $r2->execute([$id]);
+        $reg2 = $r2->fetch(PDO::FETCH_ASSOC);
+        echo json_encode(['ok'=>true, 'messages'=>$msgs, 'support_active'=>(bool)($reg2['support_active'] ?? false)]);
+        exit;
+    }
+
+    if ($act === 'chat_unread_counts') {
+        $stmt = $pdo->query("SELECT registration_id, COUNT(*) AS cnt FROM support_messages WHERE direction='in' AND leido=0 GROUP BY registration_id");
+        $counts = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $counts[(int)$row['registration_id']] = (int)$row['cnt'];
+        }
+        echo json_encode(['ok'=>true, 'counts'=>$counts]);
+        exit;
+    }
+}
+
 $flash = '';
 $flash_type = 'success';
 
@@ -160,7 +220,8 @@ $where = $where_parts ? "WHERE " . implode(" AND ", $where_parts) : "";
 $regs = $pdo->query("
     SELECT r.*,
         (SELECT COUNT(*) FROM registration_notes n WHERE n.registration_id = r.id) AS notes_count,
-        (SELECT n.note FROM registration_notes n WHERE n.registration_id = r.id ORDER BY n.created_at DESC LIMIT 1) AS latest_note
+        (SELECT n.note FROM registration_notes n WHERE n.registration_id = r.id ORDER BY n.created_at DESC LIMIT 1) AS latest_note,
+        (SELECT COUNT(*) FROM support_messages sm WHERE sm.registration_id = r.id AND sm.direction = 'in' AND sm.leido = 0) AS unread_count
     FROM registrations r
     $where
     ORDER BY r.created_at DESC
@@ -219,6 +280,17 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
         'method'        => 'POST',
         'header'        => "Content-Type: application/json\r\n",
         'content'       => json_encode($payload),
+        'timeout'       => 5,
+        'ignore_errors' => true,
+    ]]);
+    @file_get_contents("https://api.telegram.org/bot".BOT_TOKEN."/sendMessage", false, $ctx);
+}
+
+function tgSendPlain(int $chat_id, string $text): void {
+    $ctx = stream_context_create(['http' => [
+        'method'        => 'POST',
+        'header'        => "Content-Type: application/json\r\n",
+        'content'       => json_encode(['chat_id' => $chat_id, 'text' => $text]),
         'timeout'       => 5,
         'ignore_errors' => true,
     ]]);
@@ -418,6 +490,54 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
   .modal-submit:disabled { opacity:0.5; cursor:not-allowed; }
 
   @media(max-width:768px) { .stats { grid-template-columns:1fr 1fr; } }
+
+  /* CHAT BUTTON */
+  .btn-chat {
+    font-family:inherit; font-size:0.62rem; font-weight:600; letter-spacing:0.06em; text-transform:uppercase;
+    background:transparent; border:1px solid var(--gray); color:var(--text-muted);
+    padding:4px 10px; border-radius:3px; cursor:pointer; transition:all 0.2s; width:100%; margin-top:5px;
+    display:flex; align-items:center; justify-content:center; gap:4px;
+  }
+  .btn-chat:hover { border-color:var(--gray2); color:var(--white); }
+  .btn-chat-active { border-color:rgba(34,197,94,0.4); color:var(--green); background:rgba(34,197,94,0.06); }
+  .btn-chat-active:hover { background:rgba(34,197,94,0.12); }
+  .chat-badge-inline {
+    display:inline-flex; align-items:center; justify-content:center;
+    background:#EF4444; color:#fff; border-radius:10px;
+    font-size:0.55rem; padding:1px 5px; font-weight:800; min-width:16px;
+  }
+
+  /* CHAT MODAL */
+  .chat-messages {
+    flex:1; overflow-y:auto; padding:1rem 1.5rem;
+    display:flex; flex-direction:column; gap:0.6rem;
+    min-height:180px; max-height:320px;
+  }
+  .chat-messages::-webkit-scrollbar { width:3px; }
+  .chat-messages::-webkit-scrollbar-track { background:transparent; }
+  .chat-messages::-webkit-scrollbar-thumb { background:var(--gray2); border-radius:2px; }
+
+  .msg-wrap { display:flex; flex-direction:column; }
+  .msg-wrap.in  { align-items:flex-start; }
+  .msg-wrap.out { align-items:flex-end; }
+  .msg-bubble {
+    max-width:80%; padding:8px 12px; font-size:0.78rem; line-height:1.5; word-break:break-word;
+  }
+  .msg-wrap.in  .msg-bubble { background:var(--black3); border:1px solid var(--gray); border-radius:2px 10px 10px 10px; color:var(--white); }
+  .msg-wrap.out .msg-bubble { background:var(--purple-glow); border:1px solid rgba(124,58,237,0.3); border-radius:10px 2px 10px 10px; color:var(--purple-light); }
+  .msg-label { font-size:0.58rem; color:var(--text-muted); margin-top:3px; padding:0 2px; }
+
+  .chat-empty-msg { font-size:0.78rem; color:var(--text-muted); text-align:center; padding:3rem 0; font-style:italic; }
+  .chat-input-area { padding:1rem 1.5rem; border-top:1px solid var(--gray); flex-shrink:0; display:flex; flex-direction:column; gap:0.6rem; }
+
+  #chat-toggle-btn {
+    font-family:inherit; font-size:0.65rem; font-weight:700; letter-spacing:0.06em;
+    text-transform:uppercase; padding:5px 14px; border-radius:4px; cursor:pointer; transition:all 0.2s; border:1px solid;
+  }
+  .toggle-start { background:rgba(34,197,94,0.1); border-color:rgba(34,197,94,0.4); color:var(--green); }
+  .toggle-start:hover { background:rgba(34,197,94,0.2); }
+  .toggle-close { background:rgba(239,68,68,0.1); border-color:rgba(239,68,68,0.4); color:#EF4444; }
+  .toggle-close:hover { background:rgba(239,68,68,0.2); }
 </style>
 </head>
 <body>
@@ -436,6 +556,32 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
       <div class="modal-footer">
         <span class="modal-note-count" id="modal-count"></span>
         <button class="modal-submit" id="modal-save-btn" onclick="submitNote()">💾 Guardar nota</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL DE CHAT ─────────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="chat-modal" onclick="if(event.target===this)closeChat()">
+  <div class="modal-box" style="max-width:500px">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">💬 Soporte — <span id="chat-modal-name"></span></div>
+        <div id="chat-status-text" style="font-size:0.62rem;color:var(--text-muted);margin-top:3px;"></div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button id="chat-toggle-btn" onclick="toggleSupport()"></button>
+        <button class="modal-close" onclick="closeChat()">✕</button>
+      </div>
+    </div>
+    <div class="chat-messages" id="chat-messages">
+      <div class="chat-empty-msg">Cargando...</div>
+    </div>
+    <div class="chat-input-area" id="chat-input-area" style="display:none">
+      <textarea class="modal-textarea" id="chat-input" placeholder="Escribe un mensaje al usuario..." rows="2"></textarea>
+      <div class="modal-footer">
+        <span style="font-size:0.6rem;color:var(--text-muted);">Enter para enviar · Shift+Enter = salto de línea</span>
+        <button class="modal-submit" id="chat-send-btn" onclick="sendChatMessage()">Enviar →</button>
       </div>
     </div>
   </div>
@@ -503,12 +649,13 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
       </thead>
       <tbody>
         <?php foreach ($regs as $r):
-          $is_stale    = $r['status'] === 'pending' && (time() - strtotime($r['updated_at'])) > 172800;
-          $kyc_sent    = ($r['kyc_status'] ?? '') === 'pending';
-          $migr_sent   = !empty($r['patience_sent']);
-          $note_count  = (int)($r['notes_count'] ?? 0);
-          $latest_note = $r['latest_note'] ?? '';
-          $reg_name    = htmlspecialchars($r['telegram_name'] ?: '#' . $r['id']);
+          $is_stale     = $r['status'] === 'pending' && (time() - strtotime($r['updated_at'])) > 172800;
+          $kyc_sent     = ($r['kyc_status'] ?? '') === 'pending';
+          $migr_sent    = !empty($r['patience_sent']);
+          $note_count   = (int)($r['notes_count'] ?? 0);
+          $latest_note  = $r['latest_note'] ?? '';
+          $reg_name     = htmlspecialchars($r['telegram_name'] ?: '#' . $r['id']);
+          $unread_count = (int)($r['unread_count'] ?? 0);
         ?>
         <tr id="reg-<?= $r['id'] ?>" <?= $is_stale ? 'class="row-stale"' : '' ?>>
           <td style="color:var(--text-muted)"><?= $r['id'] ?></td>
@@ -597,6 +744,13 @@ function tgSend(int $chat_id, string $text, array $keyboard = []): void {
                 onclick="openModal(<?= $r['id'] ?>, '<?= addslashes($reg_name) ?>')">
                 <?= $note_count > 0 ? "📝 Ver notas ($note_count)" : '📝 Agregar nota' ?>
               </button>
+              <button type="button"
+                class="btn-chat <?= $r['support_active'] ? 'btn-chat-active' : '' ?>"
+                onclick="openChat(<?= $r['id'] ?>, '<?= addslashes($reg_name) ?>', <?= (int)$r['support_active'] ?>)"
+                data-reg-id="<?= $r['id'] ?>">
+                <?= $r['support_active'] ? '🟢 Chat activo' : '💬 Chat' ?>
+                <?php if ($unread_count > 0): ?><span class="chat-badge-inline"><?= $unread_count ?></span><?php endif; ?>
+              </button>
             </div>
           </td>
         </tr>
@@ -630,7 +784,7 @@ function closeModal() {
 }
 
 document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeModal();
+    if (e.key === 'Escape') { closeModal(); closeChat(); }
 });
 
 function renderHistory() {
@@ -729,6 +883,172 @@ document.getElementById('search').addEventListener('input', function() {
     const noRes = document.getElementById('no-results');
     if (noRes) noRes.style.display = (q && visible === 0) ? 'block' : 'none';
 });
+</script>
+
+<script>
+// ── CHAT ──────────────────────────────────────────────────────────────────────
+let chatRegId       = null;
+let chatIsActive    = false;
+let chatPollTimer   = null;
+let chatLastCount   = 0;
+
+function openChat(regId, regName, isActive) {
+    chatRegId    = regId;
+    chatIsActive = !!isActive;
+    document.getElementById('chat-modal-name').textContent = regName;
+    updateChatUI();
+    loadMessages();
+    document.getElementById('chat-modal').classList.add('open');
+    chatPollTimer = setInterval(loadMessages, 4000);
+    setTimeout(() => { if (chatIsActive) document.getElementById('chat-input').focus(); }, 80);
+}
+
+function closeChat() {
+    document.getElementById('chat-modal').classList.remove('open');
+    clearInterval(chatPollTimer);
+    chatPollTimer = null;
+    chatRegId     = null;
+}
+
+function updateChatUI() {
+    const statusEl   = document.getElementById('chat-status-text');
+    const toggleBtn  = document.getElementById('chat-toggle-btn');
+    const inputArea  = document.getElementById('chat-input-area');
+
+    if (chatIsActive) {
+        statusEl.textContent         = '🟢 Soporte activo — el usuario puede responderte';
+        toggleBtn.textContent        = '🔴 Cerrar chat';
+        toggleBtn.className          = 'toggle-close';
+        inputArea.style.display      = 'flex';
+        inputArea.style.flexDirection = 'column';
+    } else {
+        statusEl.textContent    = '⚪ Soporte inactivo — el usuario no sabe que estás aquí';
+        toggleBtn.textContent   = '💬 Iniciar soporte';
+        toggleBtn.className     = 'toggle-start';
+        inputArea.style.display = 'none';
+    }
+}
+
+async function toggleSupport() {
+    if (!chatRegId) return;
+    const action = chatIsActive ? 'chat_close' : 'chat_open';
+    const fd = new FormData();
+    fd.append('action', action);
+    fd.append('reg_id', chatRegId);
+    const res  = await fetch('index.php', { method:'POST', body:fd });
+    const data = await res.json();
+    if (data.ok) {
+        chatIsActive = !chatIsActive;
+        updateChatUI();
+        updateRowBtn(chatRegId);
+        if (chatIsActive) setTimeout(() => document.getElementById('chat-input').focus(), 80);
+    }
+}
+
+async function loadMessages() {
+    if (!chatRegId) return;
+    const fd = new FormData();
+    fd.append('action', 'chat_get');
+    fd.append('reg_id', chatRegId);
+    const res  = await fetch('index.php', { method:'POST', body:fd });
+    const data = await res.json();
+    if (!data.ok) return;
+
+    // Sync active state if changed externally
+    if (data.support_active !== chatIsActive) {
+        chatIsActive = data.support_active;
+        updateChatUI();
+    }
+
+    const container = document.getElementById('chat-messages');
+    const atBottom  = container.scrollTop + container.clientHeight >= container.scrollHeight - 20;
+
+    if (data.messages.length === 0) {
+        container.innerHTML = '<div class="chat-empty-msg">Sin mensajes aún.<br>Inicia el soporte y escribe el primer mensaje.</div>';
+        return;
+    }
+
+    container.innerHTML = data.messages.map(function(m) {
+        const dir   = m.direction === 'in' ? 'in' : 'out';
+        const label = dir === 'in' ? 'Usuario · ' : 'Tú · ';
+        return '<div class="msg-wrap ' + dir + '">' +
+            '<div class="msg-bubble">' + escHtml(m.message) + '</div>' +
+            '<div class="msg-label">' + label + escHtml(m.ts) + '</div>' +
+            '</div>';
+    }).join('');
+
+    if (atBottom || data.messages.length !== chatLastCount) {
+        container.scrollTop = container.scrollHeight;
+    }
+    chatLastCount = data.messages.length;
+
+    updateChatBadge(chatRegId, 0);
+}
+
+async function sendChatMessage() {
+    const input = document.getElementById('chat-input');
+    const msg   = input.value.trim();
+    if (!msg || !chatRegId) return;
+
+    const btn = document.getElementById('chat-send-btn');
+    btn.disabled     = true;
+    btn.textContent  = 'Enviando…';
+
+    const fd = new FormData();
+    fd.append('action',  'chat_send');
+    fd.append('reg_id',  chatRegId);
+    fd.append('message', msg);
+
+    const res  = await fetch('index.php', { method:'POST', body:fd });
+    const data = await res.json();
+
+    if (data.ok) { input.value = ''; loadMessages(); }
+
+    btn.disabled    = false;
+    btn.textContent = 'Enviar →';
+}
+
+document.getElementById('chat-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
+});
+
+// Refrescar badges cada 20 segundos en segundo plano
+setInterval(async function() {
+    const fd = new FormData();
+    fd.append('action', 'chat_unread_counts');
+    const res  = await fetch('index.php', { method:'POST', body:fd });
+    const data = await res.json();
+    if (!data.ok) return;
+    document.querySelectorAll('.btn-chat[data-reg-id]').forEach(function(btn) {
+        const id    = parseInt(btn.dataset.regId);
+        const count = data.counts[id] || 0;
+        updateChatBadge(id, count);
+    });
+}, 20000);
+
+function updateChatBadge(regId, count) {
+    const btn = document.querySelector('.btn-chat[data-reg-id="' + regId + '"]');
+    if (!btn) return;
+    let badge = btn.querySelector('.chat-badge-inline');
+    if (count > 0) {
+        if (!badge) { badge = document.createElement('span'); badge.className = 'chat-badge-inline'; btn.appendChild(badge); }
+        badge.textContent = count;
+    } else if (badge) { badge.remove(); }
+}
+
+function updateRowBtn(regId) {
+    const btn = document.querySelector('.btn-chat[data-reg-id="' + regId + '"]');
+    if (!btn) return;
+    const badge = btn.querySelector('.chat-badge-inline');
+    if (chatIsActive) {
+        btn.classList.add('btn-chat-active');
+        btn.childNodes[0].textContent = '🟢 Chat activo';
+    } else {
+        btn.classList.remove('btn-chat-active');
+        btn.childNodes[0].textContent = '💬 Chat';
+    }
+    if (badge) btn.appendChild(badge);
+}
 </script>
 
 </body>

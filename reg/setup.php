@@ -57,6 +57,26 @@ try {
     $pdo->exec("ALTER TABLE registrations ADD COLUMN patience_sent TINYINT(1) NOT NULL DEFAULT 0 AFTER migration_status;");
 } catch (PDOException $e) {}
 
+try {
+    $pdo->exec("ALTER TABLE registrations ADD COLUMN support_active TINYINT(1) NOT NULL DEFAULT 0 AFTER patience_sent;");
+} catch (PDOException $e) {}
+
+// Tabla de mensajes de soporte (chat admin ↔ usuario vía bot)
+$pdo->exec("
+CREATE TABLE IF NOT EXISTS support_messages (
+    id                INT AUTO_INCREMENT PRIMARY KEY,
+    registration_id   INT NOT NULL,
+    telegram_user_id  BIGINT NOT NULL,
+    direction         ENUM('in','out') NOT NULL,
+    message           TEXT NOT NULL,
+    leido             TINYINT(1) NOT NULL DEFAULT 0,
+    created_at        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_reg  (registration_id),
+    INDEX idx_tg   (telegram_user_id),
+    INDEX idx_leido (leido)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+");
+
 // Tabla de historial de notas internas por registro
 $pdo->exec("
 CREATE TABLE IF NOT EXISTS registration_notes (

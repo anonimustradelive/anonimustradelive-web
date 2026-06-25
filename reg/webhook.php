@@ -29,7 +29,16 @@ if ($callback) {
     $user    = $message['from'];
     $chat_id = $message['chat']['id'];
     $text    = trim($message['text'] ?? '');
-    handleMessage($pdo, $user, $chat_id, $text);
+
+    // Soporte activo — interceptar antes del flujo de registro
+    $suppStmt = $pdo->prepare("SELECT id FROM registrations WHERE telegram_user_id = ? AND support_active = 1 ORDER BY created_at DESC LIMIT 1");
+    $suppStmt->execute([(int)$user['id']]);
+    $suppReg = $suppStmt->fetch(PDO::FETCH_ASSOC);
+    if ($suppReg) {
+        handleSupportMessage($pdo, $user, $chat_id, $message, $suppReg['id']);
+    } else {
+        handleMessage($pdo, $user, $chat_id, $text);
+    }
 }
 
 // ── STATE ────────────────────────────────────────────────────────────────────
@@ -474,6 +483,45 @@ function handleCallback(PDO $pdo, array $user, int $chat_id, string $cb, int $ms
             }
             break;
     }
+}
+
+// ── SOPORTE ──────────────────────────────────────────────────────────────────
+
+function handleSupportMessage(PDO $pdo, array $user, int $chat_id, array $message, int $reg_id): void {
+    $uid  = (int)$user['id'];
+    $text = trim($message['text'] ?? '');
+
+    // Detectar contenido no textual
+    $has_media = isset($message['photo'])      || isset($message['video'])     ||
+                 isset($message['document'])   || isset($message['voice'])     ||
+                 isset($message['audio'])      || isset($message['sticker'])   ||
+                 isset($message['video_note']) || isset($message['animation']) ||
+                 isset($message['contact'])    || isset($message['location']);
+
+    if ($has_media || $text === '') {
+        tgSend($chat_id,
+            "⚠️ *Solo texto permitido*\n\n" .
+            "Este canal de soporte no puede recibir imágenes, archivos ni otros tipos de contenido\\.\n\n" .
+            "Por favor escribe tu mensaje en texto\\."
+        );
+        return;
+    }
+
+    // Guardar mensaje entrante
+    $pdo->prepare("INSERT INTO support_messages (registration_id, telegram_user_id, direction, message) VALUES (?, ?, 'in', ?)")
+        ->execute([$reg_id, $uid, $text]);
+
+    // Notificar al admin por Telegram
+    $name     = trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? ''));
+    $username = !empty($user['username']) ? '@' . $user['username'] : 'ID: ' . $uid;
+    tgAPI('sendMessage', [
+        'chat_id'    => ADMIN_TG_ID,
+        'text'       => "💬 *Respuesta de soporte*\n\n" .
+                        "👤 " . mdEscape($name) . " \\(" . mdEscape($username) . "\\)\n\n" .
+                        mdEscape($text) . "\n\n" .
+                        "👉 https://reg\\.anonimustradelive\\.com",
+        'parse_mode' => 'MarkdownV2',
+    ]);
 }
 
 // ── HELPERS ──────────────────────────────────────────────────────────────────

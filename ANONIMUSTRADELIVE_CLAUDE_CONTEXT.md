@@ -274,6 +274,15 @@ Script PHP que corre periódicamente (cron en cPanel).
 
 ## Historial de cambios recientes
 
+### 2026-06-25 (2)
+- Nuevo: sistema de chat de soporte bilateral en el panel de registro
+- `support_messages` tabla nueva (registration_id, direction in/out, message, leido)
+- Campo `support_active TINYINT` en tabla `registrations`
+- `reg/webhook.php`: intercepta mensajes cuando `support_active=1` → guarda en DB + notifica admin. Si usuario manda imagen/archivo → warning "solo texto permitido"
+- `reg/index.php`: botón 💬 Chat en cada fila (verde cuando activo, badge rojo con conteo no leídos), modal de chat con burbujas, polling cada 4s, badges se refrescan cada 20s en segundo plano
+- `reg/setup.php`: migración agregada (ALTER + CREATE TABLE IF NOT EXISTS)
+- ⚠️ Después de deploy, navegar a `reg.anonimustradelive.com/setup.php` para crear columna y tabla, luego eliminarlo
+
 ### 2026-06-25
 - Fix: `/libros` desde el grupo ahora responde en ese mismo grupo e hilo (`$thread_id` capturado en router)
 - Fix crítico: `commands/` no estaba en `.cpanel.yml` — los archivos nunca llegaban al servidor. Agregado `mkdir -p commands/` + `cp` de los 3 archivos
