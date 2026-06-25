@@ -14,6 +14,10 @@ deployment:
     - /bin/cp gate.php /home/ntpsrnlfrg/anonimustradelive.com/
     - /bin/cp verify.php /home/ntpsrnlfrg/anonimustradelive.com/
     - /bin/cp telegram-auth-webhook.php /home/ntpsrnlfrg/anonimustradelive.com/
+    - /bin/mkdir -p /home/ntpsrnlfrg/anonimustradelive.com/commands
+    - /bin/cp commands/start.php /home/ntpsrnlfrg/anonimustradelive.com/commands/
+    - /bin/cp commands/acceso.php /home/ntpsrnlfrg/anonimustradelive.com/commands/
+    - /bin/cp commands/libros.php /home/ntpsrnlfrg/anonimustradelive.com/commands/
     - /bin/mkdir -p /home/ntpsrnlfrg/anonimustradelive.com/utilidades
     - /bin/rm -f /home/ntpsrnlfrg/anonimustradelive.com/utilidades/index.html
     - /bin/cp utilidades/index.php /home/ntpsrnlfrg/anonimustradelive.com/utilidades/
