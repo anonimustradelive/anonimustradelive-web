@@ -274,6 +274,10 @@ Script PHP que corre periódicamente (cron en cPanel).
 
 ## Historial de cambios recientes
 
+### 2026-06-25 (3)
+- Chat de soporte: agregados 5 botones de plantillas (🔢 ID, 🔄 Migración, 📋 KYC, ⏳ Recordatorio, ✅ Cierre)
+- Al hacer click en una plantilla, el texto se carga en el textarea para revisión/edición antes de enviar
+
 ### 2026-06-25 (2)
 - Nuevo: sistema de chat de soporte bilateral en el panel de registro
 - `support_messages` tabla nueva (registration_id, direction in/out, message, leido)

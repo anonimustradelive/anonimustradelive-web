@@ -530,6 +530,16 @@ function tgSendPlain(int $chat_id, string $text): void {
   .chat-empty-msg { font-size:0.78rem; color:var(--text-muted); text-align:center; padding:3rem 0; font-style:italic; }
   .chat-input-area { padding:1rem 1.5rem; border-top:1px solid var(--gray); flex-shrink:0; display:flex; flex-direction:column; gap:0.6rem; }
 
+  /* PLANTILLAS */
+  .chat-templates { display:flex; align-items:center; gap:5px; flex-wrap:wrap; }
+  .templates-label { font-size:0.58rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); white-space:nowrap; margin-right:2px; }
+  .tpl-btn {
+    font-family:inherit; font-size:0.62rem; font-weight:600; padding:4px 9px;
+    border-radius:3px; border:1px solid var(--gray2); background:var(--black3);
+    color:var(--text-muted); cursor:pointer; transition:all 0.2s; white-space:nowrap;
+  }
+  .tpl-btn:hover { border-color:var(--purple-light); color:var(--purple-light); background:var(--purple-glow); }
+
   #chat-toggle-btn {
     font-family:inherit; font-size:0.65rem; font-weight:700; letter-spacing:0.06em;
     text-transform:uppercase; padding:5px 14px; border-radius:4px; cursor:pointer; transition:all 0.2s; border:1px solid;
@@ -578,6 +588,14 @@ function tgSendPlain(int $chat_id, string $text): void {
       <div class="chat-empty-msg">Cargando...</div>
     </div>
     <div class="chat-input-area" id="chat-input-area" style="display:none">
+      <div class="chat-templates">
+        <span class="templates-label">Plantillas:</span>
+        <button class="tpl-btn" onclick="useTemplate(0)" title="ID incorrecto o cambiado">🔢 ID</button>
+        <button class="tpl-btn" onclick="useTemplate(1)" title="Migración Pepperstone sin respuesta">🔄 Migración</button>
+        <button class="tpl-btn" onclick="useTemplate(2)" title="KYC BingX pendiente">📋 KYC</button>
+        <button class="tpl-btn" onclick="useTemplate(3)" title="Recordatorio general">⏳ Recordatorio</button>
+        <button class="tpl-btn" onclick="useTemplate(4)" title="Cierre de conversación">✅ Cierre</button>
+      </div>
       <textarea class="modal-textarea" id="chat-input" placeholder="Escribe un mensaje al usuario..." rows="2"></textarea>
       <div class="modal-footer">
         <span style="font-size:0.6rem;color:var(--text-muted);">Enter para enviar · Shift+Enter = salto de línea</span>
@@ -886,6 +904,27 @@ document.getElementById('search').addEventListener('input', function() {
 </script>
 
 <script>
+// ── PLANTILLAS DE MENSAJES ────────────────────────────────────────────────────
+const TEMPLATES = [
+    // 0 — ID incorrecto o cambiado
+    "Hola, ¿cómo estás? Hemos notado que llevas un tiempo esperando acceso a la comunidad y queremos ayudarte a resolverlo. El código de usuario que nos registraste no aparece en nuestra plataforma. ¿Podrías confirmarnos si sigue siendo el mismo o si ha cambiado? Puedes enviarnos tu ID de cuenta o código de usuario directamente desde tu perfil en la plataforma.",
+    // 1 — Migración Pepperstone sin respuesta
+    "Hola, vemos que enviaste la solicitud de migración hace un tiempo y aún no hemos recibido confirmación de Pepperstone. Te recomendamos contactarlos directamente para darle seguimiento a tu caso. Una vez recibas su confirmación, avísanos y procesamos tu acceso de inmediato.",
+    // 2 — KYC BingX pendiente
+    "Hola, revisamos tu cuenta de BingX y la verificación de identidad (KYC) aún aparece como pendiente. Sin ese paso no podemos procesar tu acceso. Cuando lo completes, avísanos con el botón que te enviamos anteriormente.",
+    // 3 — Recordatorio general
+    "Hola, ¿todo bien? Tu solicitud lleva un tiempo sin actualizarse. Si necesitas ayuda para completar el proceso, aquí estamos. Cuéntanos en qué punto quedaste.",
+    // 4 — Cierre de conversación
+    "Perfecto, quedamos atentos. Cuando tengas la información lista, escríbenos aquí y continuamos el proceso. ¡Éxitos!"
+];
+
+function useTemplate(index) {
+    const input = document.getElementById('chat-input');
+    input.value = TEMPLATES[index];
+    input.focus();
+    input.setSelectionRange(input.value.length, input.value.length);
+}
+
 // ── CHAT ──────────────────────────────────────────────────────────────────────
 let chatRegId       = null;
 let chatIsActive    = false;
