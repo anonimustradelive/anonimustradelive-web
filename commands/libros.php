@@ -75,13 +75,15 @@ $top5 =
     "📚 Ver lista completa: /libros\n" .
     "💜 AnonimusTrade Live — Trading transparente, sin filtros.";
 
-$thread = $TG_THREAD_ID ?? '';
-
 switch ($cmd) {
     case '/libros':
-        sendToGroup($TG_TOKEN, $TG_CHAT_ID, $lista_completa, $thread);
         if ($chat_type === 'private') {
+            // Desde DM → publica en el grupo de la comunidad
+            sendToGroup($TG_TOKEN, $TG_CHAT_ID, $lista_completa, $TG_THREAD_ID ?? '');
             sendMessage($TG_TOKEN, $user_id, "✅ Lista completa enviada al grupo.");
+        } else {
+            // Desde el grupo → responde en ese mismo grupo e hilo
+            sendToGroup($TG_TOKEN, (string)$chat_id, $lista_completa, (string)($thread_id ?? ''));
         }
         break;
 
@@ -90,9 +92,11 @@ switch ($cmd) {
         break;
 
     case '/toplibros':
-        sendToGroup($TG_TOKEN, $TG_CHAT_ID, $top5, $thread);
         if ($chat_type === 'private') {
+            sendToGroup($TG_TOKEN, $TG_CHAT_ID, $top5, $TG_THREAD_ID ?? '');
             sendMessage($TG_TOKEN, $user_id, "✅ Top 5 enviado al grupo.");
+        } else {
+            sendToGroup($TG_TOKEN, (string)$chat_id, $top5, (string)($thread_id ?? ''));
         }
         break;
 

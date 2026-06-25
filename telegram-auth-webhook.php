@@ -18,11 +18,12 @@ if (!$update) { http_response_code(200); exit; }
 $message = $update['message'] ?? null;
 if (!$message) { http_response_code(200); exit; }
 
-$user_id   = $message['from']['id']         ?? null;
+$user_id   = $message['from']['id']           ?? null;
 $username  = $message['from']['username']   ?? '';
 $chat_id   = $message['chat']['id']         ?? null;
 $chat_type = $message['chat']['type']       ?? '';
 $text      = trim($message['text']          ?? '');
+$thread_id = $message['message_thread_id']  ?? null; // hilo/topic del grupo
 
 if (!$user_id) { http_response_code(200); exit; }
 
