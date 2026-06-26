@@ -276,6 +276,14 @@ Script PHP que corre periódicamente (cron en cPanel).
 
 ## Historial de cambios recientes
 
+### 2026-06-26 (6)
+- `ads/index.html`: selector de spot + slider único activo en paso 2 del calculador
+- Reemplazados 3 sliders separados por: timeline visual + 3 tabs de selector + 1 slider
+- Timeline: barra de reproducción con pins coloreados (Inicio=verde 10%, Pico=ámbar 42%, Cierre=rojo 90%), clickeables
+- Tabs: muestran estado actual de cada spot ("Off" o "2×/sem · $532/mes" en verde), se actualizan al mover el slider
+- Pips del slider simplificados a "Off / 1× / 2× / 3× / 4× / 5×" para evitar texto apretado
+- Estado 0 del slider muestra instrucción en cursiva; >0 muestra frecuencia + precio + descuento
+
 ### 2026-06-26 (5)
 - Rediseño completo `ads/index.html` estilo Preline UI con noUiSlider
 - Fuente cambiada de Montserrat a Inter (Google Fonts)
