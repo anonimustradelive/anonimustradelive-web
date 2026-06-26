@@ -276,6 +276,16 @@ Script PHP que corre periódicamente (cron en cPanel).
 
 ## Historial de cambios recientes
 
+### 2026-06-26 (7)
+- `ads/index.html`: pasada de profundidad visual — degradados, sombras en capas, hover lift
+- Botones (nav-cta, hero-cta, sum-cta): gradiente azul 135°, sombra azul, translateY(-1/-2px) en hover
+- Formato cards: sombra en capas, lift de 3px en hover; card destacada (contenido orgánico) con gradiente más profundo y sombra azul
+- c-opt y spot-tab activos: gradiente suave EFF6FF→DBEAFE con sombra
+- sum-total-box: gradiente + inset highlight
+- calc-summary: sombra con tinte azul
+- specs-card: sombra con tinte azul
+- step-num y tag-blue: gradiente azul claro
+
 ### 2026-06-26 (6)
 - `ads/index.html`: selector de spot + slider único activo en paso 2 del calculador
 - Reemplazados 3 sliders separados por: timeline visual + 3 tabs de selector + 1 slider
