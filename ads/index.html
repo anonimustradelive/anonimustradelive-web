@@ -163,10 +163,12 @@ nav{position:sticky;top:0;z-index:100;background:rgba(248,250,252,0.97);backdrop
   transform-origin:bottom center;
   box-shadow:0 8px 32px rgba(0,0,0,0.14);
 }
-.fan-card:nth-child(1){transform:rotate(-13deg) translateX(-75px);z-index:1}
+.fan-card:nth-child(1){transform:rotate(-13deg) translateX(-75px);z-index:3}
 .fan-card:nth-child(2){transform:rotate(0deg);z-index:2}
 .fan-card:nth-child(3){transform:rotate(13deg) translateX(75px);z-index:1}
-.fan-card:hover{transform:rotate(0deg) translateX(0) translateY(-28px) scale(1.06);z-index:10}
+.fan-card:nth-child(1):hover{transform:rotate(-5deg) translateX(-65px) translateY(-18px) scale(1.04);z-index:10}
+.fan-card:nth-child(2):hover{transform:rotate(0deg) translateY(-18px) scale(1.04);z-index:10}
+.fan-card:nth-child(3):hover{transform:rotate(5deg) translateX(65px) translateY(-18px) scale(1.04);z-index:10}
 .fan-ph{
   width:100%;height:100%;
   background:var(--bg3);border:1px solid var(--bdr);
