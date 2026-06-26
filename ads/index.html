@@ -125,7 +125,9 @@ nav{position:sticky;top:0;z-index:100;background:rgba(248,250,252,0.97);backdrop
 .f-btn.sel{border-color:var(--blue);background:var(--blue-g);color:var(--white)}
 .f-btn.sel-full{border-color:var(--gold);background:var(--gold-g);color:var(--gold)}
 .f-btn-n{font-size:0.9rem;font-weight:900;display:block}
-.f-btn-p{font-size:0.65rem;display:block;margin-top:4px;opacity:0.8}
+.f-btn-p{font-size:0.65rem;display:block;margin-top:3px;opacity:0.8}
+.f-btn-d{font-size:0.6rem;font-weight:900;color:var(--green);display:block;margin-top:3px;letter-spacing:0.02em}
+.f-btn.sel .f-btn-d,.f-btn.sel-full .f-btn-d{opacity:1}
 .disc-hint{font-size:0.75rem;color:var(--muted);margin-top:0.75rem;text-align:center}
 .disc-hint strong{color:var(--green)}
 
@@ -397,10 +399,10 @@ footer a:hover{color:var(--white)}
               <div class="freq-btns" id="freq-pico">
                 <button class="f-btn sel" onclick="setFreq('pico',0,this)"><span class="f-btn-n">—</span><span class="f-btn-p">Off</span></button>
                 <button class="f-btn" onclick="setFreq('pico',1,this)"><span class="f-btn-n">1×</span><span class="f-btn-p">$400</span></button>
-                <button class="f-btn" onclick="setFreq('pico',2,this)"><span class="f-btn-n">2×</span><span class="f-btn-p">$760</span></button>
-                <button class="f-btn" onclick="setFreq('pico',3,this)"><span class="f-btn-n">3×</span><span class="f-btn-p">$1,080</span></button>
-                <button class="f-btn" onclick="setFreq('pico',4,this)"><span class="f-btn-n">4×</span><span class="f-btn-p">$1,360</span></button>
-                <button class="f-btn" onclick="setFreq('pico',5,this)"><span class="f-btn-n">5×</span><span class="f-btn-p">$1,600</span></button>
+                <button class="f-btn" onclick="setFreq('pico',2,this)"><span class="f-btn-n">2×</span><span class="f-btn-p">$760</span><span class="f-btn-d">-5%</span></button>
+                <button class="f-btn" onclick="setFreq('pico',3,this)"><span class="f-btn-n">3×</span><span class="f-btn-p">$1,080</span><span class="f-btn-d">-10%</span></button>
+                <button class="f-btn" onclick="setFreq('pico',4,this)"><span class="f-btn-n">4×</span><span class="f-btn-p">$1,360</span><span class="f-btn-d">-15%</span></button>
+                <button class="f-btn" onclick="setFreq('pico',5,this)"><span class="f-btn-n">5×</span><span class="f-btn-p">$1,600</span><span class="f-btn-d">-20%</span></button>
               </div>
             </div>
             <div class="spot-card">
@@ -411,10 +413,10 @@ footer a:hover{color:var(--white)}
               <div class="freq-btns" id="freq-inicio">
                 <button class="f-btn sel" onclick="setFreq('inicio',0,this)"><span class="f-btn-n">—</span><span class="f-btn-p">Off</span></button>
                 <button class="f-btn" onclick="setFreq('inicio',1,this)"><span class="f-btn-n">1×</span><span class="f-btn-p">$280</span></button>
-                <button class="f-btn" onclick="setFreq('inicio',2,this)"><span class="f-btn-n">2×</span><span class="f-btn-p">$532</span></button>
-                <button class="f-btn" onclick="setFreq('inicio',3,this)"><span class="f-btn-n">3×</span><span class="f-btn-p">$756</span></button>
-                <button class="f-btn" onclick="setFreq('inicio',4,this)"><span class="f-btn-n">4×</span><span class="f-btn-p">$952</span></button>
-                <button class="f-btn" onclick="setFreq('inicio',5,this)"><span class="f-btn-n">5×</span><span class="f-btn-p">$1,120</span></button>
+                <button class="f-btn" onclick="setFreq('inicio',2,this)"><span class="f-btn-n">2×</span><span class="f-btn-p">$532</span><span class="f-btn-d">-5%</span></button>
+                <button class="f-btn" onclick="setFreq('inicio',3,this)"><span class="f-btn-n">3×</span><span class="f-btn-p">$756</span><span class="f-btn-d">-10%</span></button>
+                <button class="f-btn" onclick="setFreq('inicio',4,this)"><span class="f-btn-n">4×</span><span class="f-btn-p">$952</span><span class="f-btn-d">-15%</span></button>
+                <button class="f-btn" onclick="setFreq('inicio',5,this)"><span class="f-btn-n">5×</span><span class="f-btn-p">$1,120</span><span class="f-btn-d">-20%</span></button>
               </div>
             </div>
             <div class="spot-card">
@@ -425,10 +427,10 @@ footer a:hover{color:var(--white)}
               <div class="freq-btns" id="freq-cierre">
                 <button class="f-btn sel" onclick="setFreq('cierre',0,this)"><span class="f-btn-n">—</span><span class="f-btn-p">Off</span></button>
                 <button class="f-btn" onclick="setFreq('cierre',1,this)"><span class="f-btn-n">1×</span><span class="f-btn-p">$200</span></button>
-                <button class="f-btn" onclick="setFreq('cierre',2,this)"><span class="f-btn-n">2×</span><span class="f-btn-p">$380</span></button>
-                <button class="f-btn" onclick="setFreq('cierre',3,this)"><span class="f-btn-n">3×</span><span class="f-btn-p">$540</span></button>
-                <button class="f-btn" onclick="setFreq('cierre',4,this)"><span class="f-btn-n">4×</span><span class="f-btn-p">$680</span></button>
-                <button class="f-btn" onclick="setFreq('cierre',5,this)"><span class="f-btn-n">5×</span><span class="f-btn-p">$800</span></button>
+                <button class="f-btn" onclick="setFreq('cierre',2,this)"><span class="f-btn-n">2×</span><span class="f-btn-p">$380</span><span class="f-btn-d">-5%</span></button>
+                <button class="f-btn" onclick="setFreq('cierre',3,this)"><span class="f-btn-n">3×</span><span class="f-btn-p">$540</span><span class="f-btn-d">-10%</span></button>
+                <button class="f-btn" onclick="setFreq('cierre',4,this)"><span class="f-btn-n">4×</span><span class="f-btn-p">$680</span><span class="f-btn-d">-15%</span></button>
+                <button class="f-btn" onclick="setFreq('cierre',5,this)"><span class="f-btn-n">5×</span><span class="f-btn-p">$800</span><span class="f-btn-d">-20%</span></button>
               </div>
             </div>
           </div>
