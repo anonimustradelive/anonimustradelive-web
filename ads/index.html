@@ -114,17 +114,18 @@ nav{position:sticky;top:0;z-index:100;background:rgba(6,16,30,0.95);backdrop-fil
 .c-opt-price{font-size:1.3rem;font-weight:900}
 .c-opt-sub{font-size:0.68rem;color:var(--muted);margin-top:3px;line-height:1.3}
 
-.spots{display:flex;flex-direction:column;gap:1.1rem}
-.spot-r{display:grid;grid-template-columns:130px 1fr;gap:0.75rem;align-items:center}
-.spot-r-name{font-size:0.85rem;font-weight:700}
-.spot-r-sub{font-size:0.68rem;color:var(--muted);font-weight:500;margin-top:1px}
-.freq-btns{display:flex;gap:3px}
-.f-btn{flex:1;border:1px solid var(--bdr);background:var(--bg4);color:var(--muted);font-family:inherit;font-size:0.68rem;font-weight:700;padding:8px 2px 6px;border-radius:5px;cursor:pointer;transition:all 0.14s;text-align:center;line-height:1}
+.spots{display:flex;flex-direction:column;gap:0.75rem}
+.spot-card{background:var(--bg4);border:1px solid var(--bdr);border-radius:8px;padding:1.25rem 1.5rem}
+.spot-card-hdr{display:flex;align-items:baseline;gap:0.75rem;margin-bottom:1rem;flex-wrap:wrap}
+.spot-r-name{font-size:1rem;font-weight:800}
+.spot-r-sub{font-size:0.78rem;color:var(--muted);font-weight:500}
+.freq-btns{display:grid;grid-template-columns:0.6fr repeat(5,1fr);gap:6px}
+.f-btn{border:1px solid var(--bdr);background:var(--bg3);color:var(--muted);font-family:inherit;padding:14px 4px 11px;border-radius:6px;cursor:pointer;transition:all 0.14s;text-align:center;line-height:1}
 .f-btn:hover{border-color:rgba(37,99,235,0.3);color:var(--white)}
 .f-btn.sel{border-color:var(--blue);background:var(--blue-g);color:var(--white)}
 .f-btn.sel-full{border-color:var(--gold);background:var(--gold-g);color:var(--gold)}
-.f-btn-n{font-size:0.75rem;font-weight:900;display:block}
-.f-btn-p{font-size:0.55rem;display:block;margin-top:2px;opacity:0.75}
+.f-btn-n{font-size:0.9rem;font-weight:900;display:block}
+.f-btn-p{font-size:0.65rem;display:block;margin-top:4px;opacity:0.8}
 .disc-hint{font-size:0.75rem;color:var(--muted);margin-top:0.75rem;text-align:center}
 .disc-hint strong{color:var(--green)}
 
@@ -386,10 +387,10 @@ footer a:hover{color:var(--white)}
           <div class="step-title">¿Cuántas veces por semana aparecer?</div>
           <p class="step-desc">Tu marca en pantalla + mención verbal en el live. Elige el momento y la frecuencia — a mayor frecuencia, mayor descuento.</p>
           <div class="spots">
-            <div class="spot-r">
-              <div>
-                <div class="spot-r-name">🔥 Spot Pico</div>
-                <div class="spot-r-sub">Hora de mayor audiencia ⭐</div>
+            <div class="spot-card">
+              <div class="spot-card-hdr">
+                <span class="spot-r-name">🔥 Spot Pico</span>
+                <span class="spot-r-sub">Hora de mayor audiencia ⭐</span>
               </div>
               <div class="freq-btns" id="freq-pico">
                 <button class="f-btn sel" onclick="setFreq('pico',0,this)"><span class="f-btn-n">—</span><span class="f-btn-p">Off</span></button>
@@ -400,10 +401,10 @@ footer a:hover{color:var(--white)}
                 <button class="f-btn" onclick="setFreq('pico',5,this)"><span class="f-btn-n">5×</span><span class="f-btn-p">$1,600</span></button>
               </div>
             </div>
-            <div class="spot-r">
-              <div>
-                <div class="spot-r-name">🌅 Spot Inicio</div>
-                <div class="spot-r-sub">Apertura del live</div>
+            <div class="spot-card">
+              <div class="spot-card-hdr">
+                <span class="spot-r-name">🌅 Spot Inicio</span>
+                <span class="spot-r-sub">Apertura del live</span>
               </div>
               <div class="freq-btns" id="freq-inicio">
                 <button class="f-btn sel" onclick="setFreq('inicio',0,this)"><span class="f-btn-n">—</span><span class="f-btn-p">Off</span></button>
@@ -414,10 +415,10 @@ footer a:hover{color:var(--white)}
                 <button class="f-btn" onclick="setFreq('inicio',5,this)"><span class="f-btn-n">5×</span><span class="f-btn-p">$1,120</span></button>
               </div>
             </div>
-            <div class="spot-r">
-              <div>
-                <div class="spot-r-name">🌙 Spot Cierre</div>
-                <div class="spot-r-sub">Despedida del live</div>
+            <div class="spot-card">
+              <div class="spot-card-hdr">
+                <span class="spot-r-name">🌙 Spot Cierre</span>
+                <span class="spot-r-sub">Despedida del live</span>
               </div>
               <div class="freq-btns" id="freq-cierre">
                 <button class="f-btn sel" onclick="setFreq('cierre',0,this)"><span class="f-btn-n">—</span><span class="f-btn-p">Off</span></button>
