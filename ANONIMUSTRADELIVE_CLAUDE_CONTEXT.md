@@ -276,11 +276,17 @@ Script PHP que corre periódicamente (cron en cPanel).
 
 ## Historial de cambios recientes
 
+### 2026-06-26 (2)
+- Rediseño completo `ads/index.html`: psicología de color, "Don't Make Me Think", funnel B2B
+- Paleta: navy oscuro (#06101E) + azul eléctrico (#2563EB) como acento principal, rojo solo en logo
+- Estructura nueva: Hero → Calculador (sección 2) → Audiencia → Servicios accordion → Bundle → Contacto
+- Fix: Spot Inicio cards mostraba $200/mes → corregido a $280/mes (el correcto)
+- Fix: flecha eliminada del botón "Ver calculador" en nav
+- Tablas de precios dentro de accordion colapsable (menos fricción antes del calculador)
+- Stats de plataformas PENDIENTES — el usuario dará los datos actualizados
+
 ### 2026-06-26
 - Nueva página `ads/index.html` — landing page de publicidad en `anonimustradelive.com/ads`
-- Secciones: Hero (métricas YT/TikTok/IG), Pitch (audiencia), Contenido orgánico (Plan Semanal $650 / Intensivo $1,000), Cintillos en vivo (3 spots × 5 frecuencias), Bundle (15% extra), Calculador interactivo, Cierre/contacto
-- Calculador JS: objeto `PRECIOS` centralizado, cálculo en tiempo real, descuento bundle condicional, mensaje de upsell dinámico, desglose línea por línea
-- Regla de negocio respetada: NUNCA se muestra precio por aparición individual, solo totales mensuales
 - `.cpanel.yml`: agregadas líneas para `ads/` (mkdir + cp)
 
 ### 2026-06-25 (4)
