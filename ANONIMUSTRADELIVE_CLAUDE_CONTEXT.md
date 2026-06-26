@@ -276,6 +276,17 @@ Script PHP que corre periódicamente (cron en cPanel).
 
 ## Historial de cambios recientes
 
+### 2026-06-26 (5)
+- Rediseño completo `ads/index.html` estilo Preline UI con noUiSlider
+- Fuente cambiada de Montserrat a Inter (Google Fonts)
+- Sliders nativos `<input type="range">` reemplazados por noUiSlider v15.8.1 (jsDelivr CDN)
+- noUiSlider: pips etiquetados "Off / 1×/sem / 2×/sem / 3×/sem / 4×/sem / 5×/sem", carril azul visible, thumb blanco con borde azul
+- Estado inicial del slider: instrucción "Desliza para elegir con cuánta frecuencia semanal aparecer" en lugar de "Desactivado"
+- Paleta Preline UI: cards blancas con `box-shadow` sutil, slate-900 para texto, slate-500 para muted
+- Variable CSS nueva `--blue-lt: #EFF6FF` para estados activos
+- Sección contacto rediseñada como card de degradado azul oscuro a azul (blanco sobre azul)
+- Fan cards y toda la lógica de precios (PRECIOS, recalc, selectContent) sin cambios
+
 ### 2026-06-26 (4)
 - Rediseño y compactación de `ads/index.html`: de 6 secciones a 5
 - Eliminadas: sección Audiencia completa, accordion de Servicios, sección Bundle separada
