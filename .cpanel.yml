@@ -22,6 +22,8 @@ deployment:
     - /bin/rm -f /home/ntpsrnlfrg/anonimustradelive.com/utilidades/index.html
     - /bin/cp utilidades/index.php /home/ntpsrnlfrg/anonimustradelive.com/utilidades/
     - /bin/cp utilidades/.htaccess /home/ntpsrnlfrg/anonimustradelive.com/utilidades/
+    - /bin/mkdir -p /home/ntpsrnlfrg/anonimustradelive.com/ads
+    - /bin/cp ads/index.html /home/ntpsrnlfrg/anonimustradelive.com/ads/
     - /bin/mkdir -p /home/ntpsrnlfrg/reg.anonimustradelive.com
     - /bin/cp reg/webhook.php /home/ntpsrnlfrg/reg.anonimustradelive.com/
     - /bin/cp reg/index.php /home/ntpsrnlfrg/reg.anonimustradelive.com/

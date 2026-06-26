@@ -74,6 +74,8 @@ anonimustradelive/
 ├── herramientas/
 │   └── index.html             ← página pública de herramientas
 ├── images/                    ← logos, favicon, fotos
+├── ads/
+│   └── index.html             ← landing page de publicidad (estática, sin backend)
 └── Asistente/
     └── contexto-anonimustradelive.md  ← contexto del show (no tocar)
 ```
@@ -273,6 +275,13 @@ Script PHP que corre periódicamente (cron en cPanel).
 ---
 
 ## Historial de cambios recientes
+
+### 2026-06-26
+- Nueva página `ads/index.html` — landing page de publicidad en `anonimustradelive.com/ads`
+- Secciones: Hero (métricas YT/TikTok/IG), Pitch (audiencia), Contenido orgánico (Plan Semanal $650 / Intensivo $1,000), Cintillos en vivo (3 spots × 5 frecuencias), Bundle (15% extra), Calculador interactivo, Cierre/contacto
+- Calculador JS: objeto `PRECIOS` centralizado, cálculo en tiempo real, descuento bundle condicional, mensaje de upsell dinámico, desglose línea por línea
+- Regla de negocio respetada: NUNCA se muestra precio por aparición individual, solo totales mensuales
+- `.cpanel.yml`: agregadas líneas para `ads/` (mkdir + cp)
 
 ### 2026-06-25 (4)
 - Chat de soporte: botón con 3 estados visuales — 💬 gris (inactivo) / 🟢 verde (activo, último mensaje nuestro) / 🟠 naranja (pendiente, último mensaje del usuario sin responder)

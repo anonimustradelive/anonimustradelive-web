@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anúnciate con AnonimusTrade Live</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red:      #C0112B;
+  --red-dark: #960D21;
+  --red-glow: rgba(192,17,43,0.15);
+  --black:    #080810;
+  --black2:   #0E0E18;
+  --black3:   #14141F;
+  --black4:   #1A1A28;
+  --white:    #F0EFFF;
+  --muted:    #7070A0;
+  --gray:     #252535;
+  --gray2:    #333348;
+  --gold:     #F59E0B;
+  --gold-glow:rgba(245,158,11,0.12);
+  --green:    #22C55E;
+  --green-glow:rgba(34,197,94,0.12);
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { font-family:'Montserrat',sans-serif; background:var(--black); color:var(--white); line-height:1.6; }
+
+/* ── UTILIDADES ─────────────────────────────────────────────────── */
+.container  { max-width:1080px; margin:0 auto; padding:0 clamp(1.25rem,5vw,3rem); }
+.section    { padding:clamp(4rem,8vw,7rem) 0; }
+.section-alt { background:var(--black2); }
+.tag        { display:inline-block; font-size:0.62rem; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; padding:4px 12px; border-radius:20px; margin-bottom:1rem; }
+.tag-red    { background:var(--red-glow); color:var(--red); border:1px solid rgba(192,17,43,0.35); }
+.tag-gold   { background:var(--gold-glow); color:var(--gold); border:1px solid rgba(245,158,11,0.35); }
+.tag-green  { background:var(--green-glow); color:var(--green); border:1px solid rgba(34,197,94,0.35); }
+.section-title { font-size:clamp(1.6rem,4vw,2.4rem); font-weight:900; line-height:1.15; margin-bottom:1rem; }
+.section-sub   { font-size:0.95rem; color:var(--muted); max-width:600px; line-height:1.75; }
+.highlight { color:var(--red); }
+.strike    { text-decoration:line-through; opacity:0.45; }
+
+/* ── NAV ─────────────────────────────────────────────────────────── */
+nav {
+  position:sticky; top:0; z-index:100;
+  background:rgba(8,8,16,0.92); backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--gray);
+  padding:0 clamp(1.25rem,5vw,3rem); height:58px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.nav-brand { font-size:0.78rem; font-weight:900; letter-spacing:0.1em; text-transform:uppercase; }
+.nav-brand span { color:var(--red); }
+.nav-cta {
+  font-family:inherit; font-size:0.7rem; font-weight:800; letter-spacing:0.08em;
+  text-transform:uppercase; background:var(--red); color:var(--white);
+  border:none; padding:8px 18px; border-radius:4px; cursor:pointer;
+  text-decoration:none; transition:background 0.2s;
+}
+.nav-cta:hover { background:var(--red-dark); }
+
+/* ── HERO ────────────────────────────────────────────────────────── */
+.hero {
+  padding:clamp(5rem,10vw,8rem) 0 clamp(4rem,8vw,6rem);
+  border-bottom:1px solid var(--gray);
+  background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(192,17,43,0.12) 0%, transparent 70%);
+}
+.hero-eyebrow { font-size:0.7rem; font-weight:800; letter-spacing:0.18em; text-transform:uppercase; color:var(--red); margin-bottom:1.25rem; display:flex; align-items:center; gap:8px; }
+.hero-eyebrow::before { content:''; display:block; width:28px; height:2px; background:var(--red); }
+.hero h1 { font-size:clamp(2rem,6vw,3.6rem); font-weight:900; line-height:1.1; letter-spacing:-0.02em; margin-bottom:1.5rem; max-width:720px; }
+.hero h1 em { color:var(--red); font-style:normal; }
+.hero-sub { font-size:clamp(0.9rem,2vw,1.05rem); color:var(--muted); max-width:540px; margin-bottom:2.5rem; line-height:1.8; }
+.hero-cta { display:inline-flex; align-items:center; gap:10px; background:var(--red); color:var(--white); text-decoration:none; font-weight:800; font-size:0.82rem; letter-spacing:0.08em; text-transform:uppercase; padding:14px 28px; border-radius:5px; transition:background 0.2s; }
+.hero-cta:hover { background:var(--red-dark); }
+.hero-cta span { font-size:1rem; }
+
+.hero-metrics { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--gray); border:1px solid var(--gray); border-radius:8px; margin-top:3.5rem; overflow:hidden; }
+.metric       { background:var(--black2); padding:1.5rem 1.75rem; }
+.metric-num   { font-size:clamp(1.4rem,3.5vw,2rem); font-weight:900; letter-spacing:-0.02em; margin-bottom:4px; }
+.metric-label { font-size:0.67rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); }
+.metric-platform { font-size:0.6rem; letter-spacing:0.08em; color:var(--red); text-transform:uppercase; font-weight:800; margin-bottom:6px; }
+
+/* ── PITCH ───────────────────────────────────────────────────────── */
+.pitch-grid { display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center; }
+.pitch-stats { display:flex; flex-direction:column; gap:1rem; }
+.pitch-stat  { display:flex; align-items:flex-start; gap:1rem; padding:1.25rem; background:var(--black3); border:1px solid var(--gray); border-radius:6px; }
+.pitch-stat-icon { font-size:1.4rem; flex-shrink:0; margin-top:2px; }
+.pitch-stat-num  { font-size:1.2rem; font-weight:900; }
+.pitch-stat-desc { font-size:0.72rem; color:var(--muted); margin-top:2px; line-height:1.5; }
+.audience-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-top:2rem; }
+.audience-item { background:var(--black3); border:1px solid var(--gray); border-radius:5px; padding:1rem; text-align:center; }
+.audience-val  { font-size:1.4rem; font-weight:900; color:var(--white); }
+.audience-lbl  { font-size:0.62rem; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:0.08em; margin-top:4px; }
+
+/* ── CARDS DE SERVICIO ───────────────────────────────────────────── */
+.service-cards { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; margin-top:2.5rem; }
+.service-card  {
+  background:var(--black3); border:1px solid var(--gray); border-radius:8px;
+  padding:2rem; position:relative; transition:border-color 0.2s;
+}
+.service-card:hover    { border-color:var(--gray2); }
+.service-card.featured { border-color:rgba(192,17,43,0.4); background:var(--black3); }
+.service-card.featured::before { content:''; position:absolute; inset:0; border-radius:8px; background:radial-gradient(ellipse at top, rgba(192,17,43,0.07), transparent 70%); pointer-events:none; }
+.card-badge  { position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:var(--red); color:var(--white); font-size:0.6rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; padding:4px 14px; border-radius:20px; white-space:nowrap; }
+.card-plan   { font-size:0.68rem; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:0.5rem; }
+.card-price  { font-size:2.2rem; font-weight:900; letter-spacing:-0.02em; margin-bottom:0.25rem; }
+.card-period { font-size:0.72rem; color:var(--muted); }
+.card-items  { margin-top:1.25rem; display:flex; flex-direction:column; gap:0.5rem; }
+.card-item   { font-size:0.78rem; display:flex; align-items:flex-start; gap:8px; color:var(--muted); }
+.card-item::before { content:'✓'; color:var(--green); font-weight:800; flex-shrink:0; }
+
+/* ── SPOTS ───────────────────────────────────────────────────────── */
+.spots-intro { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-top:2rem; }
+.spot-card   { background:var(--black3); border:1px solid var(--gray); border-radius:8px; padding:1.5rem; text-align:center; position:relative; }
+.spot-card.featured-spot { border-color:rgba(245,158,11,0.4); }
+.spot-card.featured-spot::before { content:'⭐ MAYOR ALCANCE'; position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:var(--gold); color:#000; font-size:0.55rem; font-weight:900; letter-spacing:0.1em; padding:3px 12px; border-radius:20px; white-space:nowrap; }
+.spot-icon   { font-size:1.8rem; margin-bottom:0.5rem; }
+.spot-name   { font-size:0.72rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; color:var(--white); margin-bottom:0.35rem; }
+.spot-desc   { font-size:0.72rem; color:var(--muted); line-height:1.5; }
+.spot-from   { font-size:0.65rem; color:var(--muted); margin-top:0.75rem; }
+.spot-from strong { color:var(--white); font-size:1rem; }
+
+.price-tables { display:flex; flex-direction:column; gap:1.5rem; margin-top:2.5rem; }
+.price-table  { background:var(--black3); border:1px solid var(--gray); border-radius:8px; overflow:hidden; }
+.price-table-header { display:flex; align-items:center; justify-content:space-between; padding:1rem 1.5rem; border-bottom:1px solid var(--gray); background:var(--black4); }
+.price-table-title  { font-size:0.75rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; }
+.price-table-from   { font-size:0.68rem; color:var(--muted); }
+.price-rows  { display:flex; flex-direction:column; }
+.price-row   { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; align-items:center; padding:0.85rem 1.5rem; border-bottom:1px solid rgba(255,255,255,0.03); font-size:0.78rem; }
+.price-row:last-child { border-bottom:none; }
+.price-row:hover { background:rgba(255,255,255,0.02); }
+.price-row.header { font-size:0.6rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); padding:0.6rem 1.5rem; border-bottom:1px solid var(--gray); }
+.price-freq  { font-weight:700; }
+.price-month { color:var(--muted); font-size:0.72rem; }
+.price-total { font-weight:800; }
+.price-save  { }
+.save-badge  { display:inline-block; background:var(--green-glow); color:var(--green); border:1px solid rgba(34,197,94,0.3); border-radius:3px; font-size:0.6rem; font-weight:800; letter-spacing:0.08em; padding:2px 7px; }
+.price-row.full-row { background:rgba(245,158,11,0.04); border-top:1px solid rgba(245,158,11,0.15); }
+.full-row .price-total { color:var(--gold); }
+
+/* ── BUNDLE ──────────────────────────────────────────────────────── */
+.bundle-steps { display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem; margin:2.5rem 0; }
+.bundle-step  { background:var(--black3); border:1px solid var(--gray); border-radius:8px; padding:1.75rem; position:relative; }
+.step-num     { width:36px; height:36px; border-radius:50%; background:var(--red-glow); border:1px solid rgba(192,17,43,0.4); color:var(--red); font-weight:900; font-size:0.9rem; display:flex; align-items:center; justify-content:center; margin-bottom:1rem; }
+.step-title   { font-size:0.82rem; font-weight:800; margin-bottom:0.5rem; }
+.step-desc    { font-size:0.75rem; color:var(--muted); line-height:1.6; }
+.bundle-highlight {
+  background:linear-gradient(135deg, rgba(192,17,43,0.12), rgba(192,17,43,0.04));
+  border:1px solid rgba(192,17,43,0.3); border-radius:8px; padding:2rem 2.5rem;
+  display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap;
+}
+.bundle-hl-text h3  { font-size:1.3rem; font-weight:900; margin-bottom:0.5rem; }
+.bundle-hl-text p   { font-size:0.82rem; color:var(--muted); max-width:480px; line-height:1.7; }
+.bundle-hl-badge    { text-align:center; flex-shrink:0; }
+.bundle-pct         { font-size:3.5rem; font-weight:900; color:var(--red); line-height:1; }
+.bundle-pct-label   { font-size:0.68rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); }
+
+/* ── CALCULADOR ──────────────────────────────────────────────────── */
+.calc-wrapper { display:grid; grid-template-columns:1fr 380px; gap:2rem; align-items:start; margin-top:2.5rem; }
+.calc-controls { display:flex; flex-direction:column; gap:1.75rem; }
+.calc-block    { background:var(--black3); border:1px solid var(--gray); border-radius:8px; padding:1.5rem; }
+.calc-block-title { font-size:0.68rem; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:1.25rem; display:flex; align-items:center; gap:8px; }
+.calc-block-title::before { content:''; display:block; width:3px; height:14px; background:var(--red); border-radius:2px; }
+
+/* Content selector */
+.content-options { display:grid; grid-template-columns:repeat(3,1fr); gap:0.65rem; }
+.content-opt     { border:1px solid var(--gray); border-radius:6px; padding:1rem; cursor:pointer; transition:all 0.18s; text-align:center; background:var(--black4); }
+.content-opt:hover   { border-color:var(--gray2); }
+.content-opt.active  { border-color:var(--red); background:var(--red-glow); }
+.content-opt-label   { font-size:0.72rem; font-weight:800; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:4px; }
+.content-opt-price   { font-size:1.2rem; font-weight:900; }
+.content-opt-sub     { font-size:0.62rem; color:var(--muted); margin-top:2px; }
+.content-opt.active .content-opt-sub { color:rgba(240,239,255,0.6); }
+
+/* Cintillos */
+.spot-selector   { display:flex; flex-direction:column; gap:1rem; }
+.spot-row        { display:grid; grid-template-columns:120px 1fr; gap:1rem; align-items:center; }
+.spot-row-name   { font-size:0.72rem; font-weight:700; }
+.spot-row-name small { display:block; font-size:0.6rem; color:var(--muted); font-weight:500; margin-top:2px; }
+.freq-buttons    { display:flex; gap:4px; }
+.freq-btn        { flex:1; border:1px solid var(--gray); background:var(--black4); color:var(--muted); font-family:inherit; font-size:0.68rem; font-weight:700; padding:8px 4px; border-radius:4px; cursor:pointer; transition:all 0.15s; text-align:center; }
+.freq-btn:hover  { border-color:var(--gray2); color:var(--white); }
+.freq-btn.active { border-color:var(--gold); background:rgba(245,158,11,0.1); color:var(--gold); }
+.freq-btn.active-full { border-color:var(--red); background:var(--red-glow); color:var(--white); }
+.freq-label      { font-size:0.55rem; display:block; margin-top:2px; }
+
+/* Summary panel */
+.calc-summary {
+  background:var(--black2); border:1px solid var(--gray); border-radius:8px;
+  padding:1.75rem; position:sticky; top:75px;
+}
+.summary-title { font-size:0.68rem; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:1.5rem; }
+.summary-lines { display:flex; flex-direction:column; gap:0.6rem; margin-bottom:1.25rem; }
+.summary-line  { display:flex; justify-content:space-between; align-items:center; font-size:0.78rem; }
+.summary-line.empty { color:var(--muted); font-style:italic; }
+.summary-line-label { color:var(--muted); }
+.summary-line-value { font-weight:700; }
+.summary-divider    { height:1px; background:var(--gray); margin:0.75rem 0; }
+.summary-subtotal   { display:flex; justify-content:space-between; font-size:0.82rem; font-weight:700; }
+.summary-bundle     { display:flex; justify-content:space-between; font-size:0.78rem; color:var(--green); background:var(--green-glow); border:1px solid rgba(34,197,94,0.2); border-radius:5px; padding:10px 12px; margin:0.75rem 0; }
+.summary-bundle-label { font-weight:600; }
+.summary-bundle-value { font-weight:800; }
+.summary-total-box  { background:var(--red-glow); border:1px solid rgba(192,17,43,0.3); border-radius:6px; padding:1.25rem; margin-top:0.75rem; text-align:center; }
+.summary-total-lbl  { font-size:0.62rem; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
+.summary-total-val  { font-size:2.2rem; font-weight:900; letter-spacing:-0.02em; }
+.summary-upsell     { font-size:0.72rem; color:var(--gold); background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.2); border-radius:5px; padding:10px 12px; margin-top:0.75rem; line-height:1.5; }
+.summary-cta        { display:block; text-align:center; margin-top:1.25rem; background:var(--red); color:var(--white); text-decoration:none; font-weight:800; font-size:0.75rem; letter-spacing:0.08em; text-transform:uppercase; padding:13px; border-radius:5px; transition:background 0.2s; }
+.summary-cta:hover  { background:var(--red-dark); }
+.summary-note       { font-size:0.62rem; color:var(--muted); text-align:center; margin-top:0.75rem; line-height:1.5; }
+
+/* ── CIERRE ──────────────────────────────────────────────────────── */
+.cierre-box {
+  background:linear-gradient(135deg, rgba(192,17,43,0.1), rgba(192,17,43,0.03));
+  border:1px solid rgba(192,17,43,0.25); border-radius:12px;
+  padding:clamp(2.5rem,5vw,4rem); text-align:center; max-width:700px; margin:0 auto;
+}
+.cierre-box h2   { font-size:clamp(1.5rem,4vw,2.2rem); font-weight:900; margin-bottom:1rem; }
+.cierre-box p    { font-size:0.9rem; color:var(--muted); margin-bottom:2rem; line-height:1.8; }
+.cierre-email    { display:inline-flex; align-items:center; gap:10px; background:var(--red); color:var(--white); text-decoration:none; font-weight:800; font-size:0.9rem; letter-spacing:0.04em; padding:16px 32px; border-radius:6px; transition:background 0.2s; }
+.cierre-email:hover { background:var(--red-dark); }
+.cierre-note     { font-size:0.72rem; color:var(--muted); margin-top:1.25rem; }
+
+/* ── FOOTER ──────────────────────────────────────────────────────── */
+footer { border-top:1px solid var(--gray); padding:2rem; text-align:center; font-size:0.68rem; color:var(--muted); }
+footer a { color:var(--muted); text-decoration:none; }
+footer a:hover { color:var(--white); }
+
+/* ── RESPONSIVE ──────────────────────────────────────────────────── */
+@media(max-width:900px) {
+  .calc-wrapper   { grid-template-columns:1fr; }
+  .calc-summary   { position:static; }
+  .pitch-grid     { grid-template-columns:1fr; }
+  .bundle-steps   { grid-template-columns:1fr; }
+}
+@media(max-width:680px) {
+  .hero-metrics   { grid-template-columns:1fr; }
+  .service-cards  { grid-template-columns:1fr; }
+  .spots-intro    { grid-template-columns:1fr; }
+  .content-options { grid-template-columns:1fr; }
+  .spot-row       { grid-template-columns:1fr; }
+  .spot-row-name  { font-size:0.8rem; }
+  .price-row      { grid-template-columns:1fr 1fr 1fr 1fr; font-size:0.7rem; }
+  .price-row      { padding:0.75rem 1rem; }
+  .bundle-highlight { flex-direction:column; text-align:center; }
+  .audience-grid  { grid-template-columns:1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">AnonimusTrade <span>Live</span></div>
+  <a href="#calculador" class="nav-cta">Ver calculador →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">Publicidad · AnonimusTrade Live</div>
+    <h1>Conecta tu marca con la<br><em>audiencia de trading</em><br>más activa en español.</h1>
+    <p class="hero-sub">Trading en vivo real, sin filtros, de lunes a viernes. Una comunidad fiel de traders activos que confía en nuestra palabra. Si tu marca encaja con finanzas, cripto o herramientas para inversores, estás en el lugar correcto.</p>
+    <a href="#calculador" class="hero-cta"><span>🧮</span> Arma tu paquete y calcula tu inversión</a>
+
+    <div class="hero-metrics">
+      <div class="metric">
+        <div class="metric-platform">YouTube</div>
+        <div class="metric-num">54.8K</div>
+        <div class="metric-label">Vistas totales · +70% crecimiento mensual</div>
+      </div>
+      <div class="metric">
+        <div class="metric-platform">TikTok</div>
+        <div class="metric-num">134.8K</div>
+        <div class="metric-label">Vistas · 50K viewers únicos (12 meses)</div>
+      </div>
+      <div class="metric">
+        <div class="metric-platform">Instagram</div>
+        <div class="metric-num">119.8K</div>
+        <div class="metric-label">Vistas en 90 días · 43.1K cuentas alcanzadas</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PITCH -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="pitch-grid">
+      <div>
+        <div class="tag tag-red">La audiencia</div>
+        <h2 class="section-title">Le hablas directo al trader que <em class="highlight">toma decisiones.</em></h2>
+        <p class="section-sub">Nuestra audiencia no son espectadores pasivos. Son personas que ya manejan dinero real, buscan herramientas, y confían en nuestra opinión porque nos ven operar en vivo todos los días.</p>
+        <div class="audience-grid">
+          <div class="audience-item">
+            <div class="audience-val">83–88%</div>
+            <div class="audience-lbl">Masculino</div>
+          </div>
+          <div class="audience-item">
+            <div class="audience-val">50%+</div>
+            <div class="audience-lbl">25 a 34 años</div>
+          </div>
+          <div class="audience-item">
+            <div class="audience-val">100%</div>
+            <div class="audience-lbl">Hispanohablante</div>
+          </div>
+          <div class="audience-item">
+            <div class="audience-val">🇩🇴 + LATAM</div>
+            <div class="audience-lbl">RD · COL · MX · ARG</div>
+          </div>
+        </div>
+      </div>
+      <div class="pitch-stats">
+        <div class="pitch-stat">
+          <div class="pitch-stat-icon">📺</div>
+          <div>
+            <div class="pitch-stat-num">~5,200</div>
+            <div class="pitch-stat-desc">Viewers mensuales en YouTube — en crecimiento activo mes a mes.</div>
+          </div>
+        </div>
+        <div class="pitch-stat">
+          <div class="pitch-stat-icon">⚡</div>
+          <div>
+            <div class="pitch-stat-num">Live diario</div>
+            <div class="pitch-stat-desc">Transmitimos de lunes a viernes a las 9:00 AM hora RD. Presencia constante en la rutina del trader.</div>
+          </div>
+        </div>
+        <div class="pitch-stat">
+          <div class="pitch-stat-icon">🤝</div>
+          <div>
+            <div class="pitch-stat-num">Comunidad fiel</div>
+            <div class="pitch-stat-desc">Sin bots, sin compras de seguidores. Audiencia orgánica construida con transparencia total.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICIO 1: CONTENIDO -->
+<section class="section" id="contenido">
+  <div class="container">
+    <div class="tag tag-red">Servicio 1</div>
+    <h2 class="section-title">Contenido orgánico <span class="highlight">con CTA</span></h2>
+    <p class="section-sub">Producimos contenido que educa o entretiene mientras posiciona tu marca de forma natural. No se siente como anuncio — porque no lo es. Distribución en YouTube, TikTok e Instagram.</p>
+    <div class="service-cards" style="margin-top:2rem;">
+      <div class="service-card">
+        <div class="card-plan">Plan Semanal</div>
+        <div class="card-price">$650<span style="font-size:1rem;font-weight:500;color:var(--muted)">/mes</span></div>
+        <div class="card-period">4 piezas por mes</div>
+        <div class="card-items">
+          <div class="card-item">1 video/reel vertical por semana</div>
+          <div class="card-item">Integración natural de tu marca + CTA claro</div>
+          <div class="card-item">Distribución en las 3 plataformas</div>
+          <div class="card-item">1 ronda de ajustes por pieza</div>
+        </div>
+      </div>
+      <div class="service-card featured">
+        <div class="card-badge">Ahorra $300 — 23% off</div>
+        <div class="card-plan">Plan Intensivo</div>
+        <div class="card-price">$1,000<span style="font-size:1rem;font-weight:500;color:var(--muted)">/mes</span></div>
+        <div class="card-period">8 piezas por mes · <span class="strike">$1,300</span> precio regular</div>
+        <div class="card-items">
+          <div class="card-item">2 videos/reels verticales por semana</div>
+          <div class="card-item">Integración natural de tu marca + CTA claro</div>
+          <div class="card-item">Distribución en las 3 plataformas</div>
+          <div class="card-item">1 ronda de ajustes por pieza</div>
+          <div class="card-item">Máxima cobertura — tope de producción semanal</div>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:0.72rem;color:var(--muted);margin-top:1.25rem;">Contenido: casos de uso reales, educación financiera, integraciones suaves dentro de análisis de mercado. Máximo 2 piezas por semana — no ofrecemos más que esto.</p>
+  </div>
+</section>
+
+<!-- SERVICIO 2: CINTILLOS -->
+<section class="section section-alt" id="cintillos">
+  <div class="container">
+    <div class="tag tag-gold">Servicio 2</div>
+    <h2 class="section-title">Cintillos en <span class="highlight">vivo</span></h2>
+    <p class="section-sub">Tu marca aparece en pantalla durante el live simultáneo en YouTube y TikTok, acompañada de una mención verbal del presentador. Elige el momento del live que más te conviene.</p>
+
+    <div class="spots-intro">
+      <div class="spot-card">
+        <div class="spot-icon">🌅</div>
+        <div class="spot-name">Spot Inicio</div>
+        <div class="spot-desc">Aparece en la apertura del live, cuando la audiencia sintoniza.</div>
+        <div class="spot-from">Desde <strong>$200</strong>/mes</div>
+      </div>
+      <div class="spot-card featured-spot">
+        <div class="spot-icon">🔥</div>
+        <div class="spot-name">Spot Pico</div>
+        <div class="spot-desc">Hora de mayor audiencia. El momento de más alcance del live.</div>
+        <div class="spot-from">Desde <strong>$400</strong>/mes</div>
+      </div>
+      <div class="spot-card">
+        <div class="spot-icon">🌙</div>
+        <div class="spot-name">Spot Cierre</div>
+        <div class="spot-desc">Aparece en la despedida. Última impresión antes de que el viewer salga.</div>
+        <div class="spot-from">Desde <strong>$200</strong>/mes</div>
+      </div>
+    </div>
+
+    <div class="price-tables">
+
+      <!-- PICO -->
+      <div class="price-table">
+        <div class="price-table-header">
+          <div class="price-table-title">🔥 Spot Pico — Hora de mayor audiencia</div>
+          <div class="price-table-from">Paquete mensual</div>
+        </div>
+        <div class="price-rows">
+          <div class="price-row header">
+            <div>Frecuencia</div><div>Apariciones/mes</div><div>Total/mes</div><div>Ahorro</div>
+          </div>
+          <div class="price-row"><div class="price-freq">1×/semana</div><div class="price-month">4/mes</div><div class="price-total">$400</div><div>—</div></div>
+          <div class="price-row"><div class="price-freq">2×/semana</div><div class="price-month">8/mes</div><div class="price-total">$760</div><div><span class="save-badge">-5%</span> $40</div></div>
+          <div class="price-row"><div class="price-freq">3×/semana</div><div class="price-month">12/mes</div><div class="price-total">$1,080</div><div><span class="save-badge">-10%</span> $120</div></div>
+          <div class="price-row"><div class="price-freq">4×/semana</div><div class="price-month">16/mes</div><div class="price-total">$1,360</div><div><span class="save-badge">-15%</span> $240</div></div>
+          <div class="price-row full-row"><div class="price-freq">5×/semana ⭐</div><div class="price-month">20/mes</div><div class="price-total">$1,600</div><div><span class="save-badge">-20%</span> $400</div></div>
+        </div>
+      </div>
+
+      <!-- INICIO -->
+      <div class="price-table">
+        <div class="price-table-header">
+          <div class="price-table-title">🌅 Spot Inicio — Apertura del live</div>
+          <div class="price-table-from">Paquete mensual</div>
+        </div>
+        <div class="price-rows">
+          <div class="price-row header">
+            <div>Frecuencia</div><div>Apariciones/mes</div><div>Total/mes</div><div>Ahorro</div>
+          </div>
+          <div class="price-row"><div class="price-freq">1×/semana</div><div class="price-month">4/mes</div><div class="price-total">$280</div><div>—</div></div>
+          <div class="price-row"><div class="price-freq">2×/semana</div><div class="price-month">8/mes</div><div class="price-total">$532</div><div><span class="save-badge">-5%</span> $28</div></div>
+          <div class="price-row"><div class="price-freq">3×/semana</div><div class="price-month">12/mes</div><div class="price-total">$756</div><div><span class="save-badge">-10%</span> $84</div></div>
+          <div class="price-row"><div class="price-freq">4×/semana</div><div class="price-month">16/mes</div><div class="price-total">$952</div><div><span class="save-badge">-15%</span> $168</div></div>
+          <div class="price-row full-row"><div class="price-freq">5×/semana ⭐</div><div class="price-month">20/mes</div><div class="price-total">$1,120</div><div><span class="save-badge">-20%</span> $280</div></div>
+        </div>
+      </div>
+
+      <!-- CIERRE -->
+      <div class="price-table">
+        <div class="price-table-header">
+          <div class="price-table-title">🌙 Spot Cierre — Despedida del live</div>
+          <div class="price-table-from">Paquete mensual</div>
+        </div>
+        <div class="price-rows">
+          <div class="price-row header">
+            <div>Frecuencia</div><div>Apariciones/mes</div><div>Total/mes</div><div>Ahorro</div>
+          </div>
+          <div class="price-row"><div class="price-freq">1×/semana</div><div class="price-month">4/mes</div><div class="price-total">$200</div><div>—</div></div>
+          <div class="price-row"><div class="price-freq">2×/semana</div><div class="price-month">8/mes</div><div class="price-total">$380</div><div><span class="save-badge">-5%</span> $20</div></div>
+          <div class="price-row"><div class="price-freq">3×/semana</div><div class="price-month">12/mes</div><div class="price-total">$540</div><div><span class="save-badge">-10%</span> $60</div></div>
+          <div class="price-row"><div class="price-freq">4×/semana</div><div class="price-month">16/mes</div><div class="price-total">$680</div><div><span class="save-badge">-15%</span> $120</div></div>
+          <div class="price-row full-row"><div class="price-freq">5×/semana ⭐</div><div class="price-month">20/mes</div><div class="price-total">$800</div><div><span class="save-badge">-20%</span> $200</div></div>
+        </div>
+      </div>
+
+    </div>
+    <p style="font-size:0.72rem;color:var(--muted);margin-top:1.25rem;">Incluye reporte mensual de alcance. Todos los paquetes son mensuales.</p>
+  </div>
+</section>
+
+<!-- BUNDLE -->
+<section class="section" id="bundle">
+  <div class="container">
+    <div class="tag tag-green">Bundle</div>
+    <h2 class="section-title">Combina ambos servicios y obtén <span class="highlight">15% extra</span> de descuento.</h2>
+    <p class="section-sub">Elige tu plan de contenido y tus cintillos. Al tomar los dos juntos, aplicamos un 15% adicional sobre tu total. Así de simple.</p>
+
+    <div class="bundle-steps">
+      <div class="bundle-step">
+        <div class="step-num">1</div>
+        <div class="step-title">Elige tu plan de contenido</div>
+        <div class="step-desc">Plan Semanal (4 piezas/mes) o Plan Intensivo (8 piezas/mes). Cada uno a su precio.</div>
+      </div>
+      <div class="bundle-step">
+        <div class="step-num">2</div>
+        <div class="step-title">Elige tus cintillos</div>
+        <div class="step-desc">Selecciona los spots y la frecuencia que quieras. Cada spot mantiene su descuento por volumen.</div>
+      </div>
+      <div class="bundle-step">
+        <div class="step-num">3</div>
+        <div class="step-title">15% extra sobre el total</div>
+        <div class="step-desc">Al combinar contenido y cintillos, el 15% se aplica automáticamente sobre la suma de ambos servicios.</div>
+      </div>
+    </div>
+
+    <div class="bundle-highlight">
+      <div class="bundle-hl-text">
+        <h3>Dominio total de la audiencia</h3>
+        <p>Contenido intensivo (8 piezas/mes) + los 3 spots en cobertura máxima (20 apariciones cada uno). Total antes del bundle: $4,520. Con el 15% extra: <strong>$3,842/mes</strong>. El techo absoluto de inversión publicitaria con AnonimusTrade Live.</p>
+      </div>
+      <div class="bundle-hl-badge">
+        <div class="bundle-pct">15%</div>
+        <div class="bundle-pct-label">Descuento bundle</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CALCULADOR -->
+<section class="section section-alt" id="calculador">
+  <div class="container">
+    <div class="tag tag-red">Calculador</div>
+    <h2 class="section-title">Arma tu paquete <span class="highlight">a tu medida.</span></h2>
+    <p class="section-sub">Selecciona las opciones que se ajusten a tu estrategia. El precio se calcula en tiempo real con todos los descuentos aplicados.</p>
+
+    <div class="calc-wrapper">
+
+      <!-- CONTROLES -->
+      <div class="calc-controls">
+
+        <!-- Paso 1: Contenido -->
+        <div class="calc-block">
+          <div class="calc-block-title">Paso 1 — Contenido orgánico</div>
+          <div class="content-options">
+            <div class="content-opt active" onclick="selectContent('ninguno',this)">
+              <div class="content-opt-label">Ninguno</div>
+              <div class="content-opt-price">$0</div>
+              <div class="content-opt-sub">Sin contenido</div>
+            </div>
+            <div class="content-opt" onclick="selectContent('semanal',this)">
+              <div class="content-opt-label">Plan Semanal</div>
+              <div class="content-opt-price">$650</div>
+              <div class="content-opt-sub">4 piezas/mes</div>
+            </div>
+            <div class="content-opt" onclick="selectContent('intensivo',this)">
+              <div class="content-opt-label">Plan Intensivo</div>
+              <div class="content-opt-price">$1,000</div>
+              <div class="content-opt-sub">8 piezas/mes · 23% off</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paso 2: Cintillos -->
+        <div class="calc-block">
+          <div class="calc-block-title">Paso 2 — Cintillos en vivo (apariciones por semana)</div>
+          <div class="spot-selector">
+
+            <div class="spot-row">
+              <div class="spot-row-name">🔥 Spot Pico <small>Mayor alcance</small></div>
+              <div class="freq-buttons" id="freq-pico">
+                <button class="freq-btn active" onclick="selectFreq('pico',0,this)">0<span class="freq-label">Off</span></button>
+                <button class="freq-btn" onclick="selectFreq('pico',1,this)">1×<span class="freq-label">$400</span></button>
+                <button class="freq-btn" onclick="selectFreq('pico',2,this)">2×<span class="freq-label">$760</span></button>
+                <button class="freq-btn" onclick="selectFreq('pico',3,this)">3×<span class="freq-label">$1,080</span></button>
+                <button class="freq-btn" onclick="selectFreq('pico',4,this)">4×<span class="freq-label">$1,360</span></button>
+                <button class="freq-btn" onclick="selectFreq('pico',5,this)">5×<span class="freq-label">$1,600</span></button>
+              </div>
+            </div>
+
+            <div class="spot-row">
+              <div class="spot-row-name">🌅 Spot Inicio <small>Apertura</small></div>
+              <div class="freq-buttons" id="freq-inicio">
+                <button class="freq-btn active" onclick="selectFreq('inicio',0,this)">0<span class="freq-label">Off</span></button>
+                <button class="freq-btn" onclick="selectFreq('inicio',1,this)">1×<span class="freq-label">$280</span></button>
+                <button class="freq-btn" onclick="selectFreq('inicio',2,this)">2×<span class="freq-label">$532</span></button>
+                <button class="freq-btn" onclick="selectFreq('inicio',3,this)">3×<span class="freq-label">$756</span></button>
+                <button class="freq-btn" onclick="selectFreq('inicio',4,this)">4×<span class="freq-label">$952</span></button>
+                <button class="freq-btn" onclick="selectFreq('inicio',5,this)">5×<span class="freq-label">$1,120</span></button>
+              </div>
+            </div>
+
+            <div class="spot-row">
+              <div class="spot-row-name">🌙 Spot Cierre <small>Despedida</small></div>
+              <div class="freq-buttons" id="freq-cierre">
+                <button class="freq-btn active" onclick="selectFreq('cierre',0,this)">0<span class="freq-label">Off</span></button>
+                <button class="freq-btn" onclick="selectFreq('cierre',1,this)">1×<span class="freq-label">$200</span></button>
+                <button class="freq-btn" onclick="selectFreq('cierre',2,this)">2×<span class="freq-label">$380</span></button>
+                <button class="freq-btn" onclick="selectFreq('cierre',3,this)">3×<span class="freq-label">$540</span></button>
+                <button class="freq-btn" onclick="selectFreq('cierre',4,this)">4×<span class="freq-label">$680</span></button>
+                <button class="freq-btn" onclick="selectFreq('cierre',5,this)">5×<span class="freq-label">$800</span></button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- RESUMEN -->
+      <div class="calc-summary">
+        <div class="summary-title">Tu inversión mensual</div>
+        <div class="summary-lines" id="summary-lines">
+          <div class="summary-line empty">Selecciona opciones para ver el desglose.</div>
+        </div>
+        <div class="summary-divider"></div>
+        <div class="summary-subtotal">
+          <span>Subtotal</span>
+          <span id="summary-subtotal">$0</span>
+        </div>
+        <div id="bundle-row" style="display:none" class="summary-bundle">
+          <span class="summary-bundle-label">🎁 15% Bundle</span>
+          <span class="summary-bundle-value" id="bundle-amount">-$0</span>
+        </div>
+        <div class="summary-total-box">
+          <div class="summary-total-lbl">Total mensual</div>
+          <div class="summary-total-val" id="summary-total">$0</div>
+        </div>
+        <div id="upsell-msg" class="summary-upsell" style="display:none"></div>
+        <a href="mailto:anonimustradelive@outlook.com?subject=Solicitud%20de%20propuesta%20publicitaria" class="summary-cta">Solicitar propuesta formal →</a>
+        <div class="summary-note">El calculador no procesa pagos. Toda negociación se formaliza por correo.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CIERRE -->
+<section class="section">
+  <div class="container">
+    <div class="cierre-box">
+      <div class="tag tag-red" style="display:inline-block">¿Listo?</div>
+      <h2>Hablemos de tu propuesta.</h2>
+      <p>Escríbenos al correo con tu selección de paquete o con tus dudas. Respondemos rápido y armamos tu propuesta formal sin compromiso.</p>
+      <a href="mailto:anonimustradelive@outlook.com?subject=Solicitud%20de%20propuesta%20publicitaria" class="cierre-email">
+        📧 anonimustradelive@outlook.com
+      </a>
+      <p class="cierre-note">Toda negociación y contratación se formaliza por correo electrónico.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>© AnonimusTrade Live · <a href="https://anonimustradelive.com">anonimustradelive.com</a></div>
+</footer>
+
+<script>
+// ── CONFIGURACIÓN DE PRECIOS (única fuente de verdad) ─────────────
+const PRECIOS = {
+  contenido: { ninguno: 0, semanal: 650, intensivo: 1000 },
+  cintillos: {
+    pico:   { 0:0, 1:400,  2:760,  3:1080, 4:1360, 5:1600 },
+    inicio: { 0:0, 1:280,  2:532,  3:756,  4:952,  5:1120 },
+    cierre: { 0:0, 1:200,  2:380,  3:540,  4:680,  5:800  }
+  },
+  descuentoLabel: { 0:null, 1:null, 2:'5%', 3:'10%', 4:'15%', 5:'20%' },
+  bundleExtra: 0.15
+};
+
+const SPOT_NAMES = { pico:'🔥 Spot Pico', inicio:'🌅 Spot Inicio', cierre:'🌙 Spot Cierre' };
+const SPOT_FREQ_LABELS = { 1:'1×/sem (4/mes)', 2:'2×/sem (8/mes)', 3:'3×/sem (12/mes)', 4:'4×/sem (16/mes)', 5:'5×/sem (20/mes)' };
+
+// ── ESTADO ───────────────────────────────────────────────────────────
+let state = { contenido: 'ninguno', pico: 0, inicio: 0, cierre: 0 };
+
+// ── CONTROLES ────────────────────────────────────────────────────────
+function selectContent(plan, el) {
+  document.querySelectorAll('.content-opt').forEach(e => e.classList.remove('active'));
+  el.classList.add('active');
+  state.contenido = plan;
+  recalcular();
+}
+
+function selectFreq(spot, freq, el) {
+  document.querySelectorAll('#freq-' + spot + ' .freq-btn').forEach(function(b) {
+    b.classList.remove('active', 'active-full');
+  });
+  el.classList.add(freq === 5 ? 'active-full' : 'active');
+  state[spot] = freq;
+  recalcular();
+}
+
+// ── CÁLCULO ───────────────────────────────────────────────────────────
+function recalcular() {
+  const costContenido = PRECIOS.contenido[state.contenido];
+  const costPico      = PRECIOS.cintillos.pico[state.pico];
+  const costInicio    = PRECIOS.cintillos.inicio[state.inicio];
+  const costCierre    = PRECIOS.cintillos.cierre[state.cierre];
+  const subtotalCintillos = costPico + costInicio + costCierre;
+  const subtotal          = costContenido + subtotalCintillos;
+
+  const hayContenido  = costContenido > 0;
+  const hayCintillos  = subtotalCintillos > 0;
+  const bundleApplies = hayContenido && hayCintillos;
+  const descBundle    = bundleApplies ? Math.round(subtotal * PRECIOS.bundleExtra) : 0;
+  const total         = subtotal - descBundle;
+
+  renderSummary(costContenido, costPico, costInicio, costCierre, subtotal, descBundle, total, hayContenido, hayCintillos, bundleApplies);
+}
+
+function fmt(n) { return '$' + n.toLocaleString('en-US'); }
+
+function renderSummary(costC, costP, costI, costCi, sub, desc, total, hayC, hayCin, bundle) {
+  const linesEl  = document.getElementById('summary-lines');
+  const subEl    = document.getElementById('summary-subtotal');
+  const bundleRow = document.getElementById('bundle-row');
+  const bundleAmt = document.getElementById('bundle-amount');
+  const totalEl  = document.getElementById('summary-total');
+  const upsellEl = document.getElementById('upsell-msg');
+
+  // Líneas de desglose
+  let lines = [];
+  if (costC > 0) {
+    const label = state.contenido === 'semanal' ? 'Contenido Semanal (4 piezas)' : 'Contenido Intensivo (8 piezas)';
+    lines.push([label, fmt(costC)]);
+  }
+  if (costP > 0) lines.push([SPOT_NAMES.pico + ' · ' + SPOT_FREQ_LABELS[state.pico], fmt(costP)]);
+  if (costI > 0) lines.push([SPOT_NAMES.inicio + ' · ' + SPOT_FREQ_LABELS[state.inicio], fmt(costI)]);
+  if (costCi > 0) lines.push([SPOT_NAMES.cierre + ' · ' + SPOT_FREQ_LABELS[state.cierre], fmt(costCi)]);
+
+  if (lines.length === 0) {
+    linesEl.innerHTML = '<div class="summary-line empty">Selecciona opciones para ver el desglose.</div>';
+  } else {
+    linesEl.innerHTML = lines.map(function(l) {
+      return '<div class="summary-line"><span class="summary-line-label">' + l[0] + '</span><span class="summary-line-value">' + l[1] + '</span></div>';
+    }).join('');
+  }
+
+  subEl.textContent = fmt(sub);
+
+  // Bundle
+  if (bundle) {
+    bundleRow.style.display = 'flex';
+    bundleAmt.textContent   = '-' + fmt(desc);
+  } else {
+    bundleRow.style.display = 'none';
+  }
+
+  // Total
+  totalEl.textContent = fmt(total);
+
+  // Upsell dinámico
+  if (!hayC && !hayCin) {
+    upsellEl.style.display = 'none';
+  } else if (hayC && !hayCin) {
+    upsellEl.style.display = 'block';
+    upsellEl.textContent = '💡 Agrega cintillos en vivo y obtén 15% de descuento extra sobre todo tu total.';
+  } else if (!hayC && hayCin) {
+    upsellEl.style.display = 'block';
+    upsellEl.textContent = '💡 Agrega contenido orgánico y obtén 15% de descuento extra sobre todo tu total.';
+  } else {
+    upsellEl.style.display = 'none';
+  }
+}
+
+// Inicializar
+recalcular();
+</script>
+
+</body>
+</html>
