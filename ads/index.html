@@ -16,7 +16,6 @@
   --blue-g: rgba(37,99,235,0.12);
   --blue-b: rgba(37,99,235,0.22);
   --red:    #C0112B;
-  --red-g:  rgba(192,17,43,0.10);
   --gold:   #F59E0B;
   --gold-g: rgba(245,158,11,0.10);
   --green:  #10B981;
@@ -28,206 +27,212 @@
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--white);line-height:1.6}
+body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--white);line-height:1.6;font-size:16px}
 .container{max-width:1080px;margin:0 auto;padding:0 clamp(1.25rem,5vw,2.5rem)}
 
-/* NAV */
-nav{position:sticky;top:0;z-index:100;background:rgba(6,16,30,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--bdr);padding:0 clamp(1.25rem,5vw,2.5rem);height:56px;display:flex;align-items:center;justify-content:space-between}
-.nav-brand{font-size:0.78rem;font-weight:900;letter-spacing:0.1em;text-transform:uppercase}
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:100;background:rgba(6,16,30,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--bdr);padding:0 clamp(1.25rem,5vw,2.5rem);height:60px;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{font-size:0.85rem;font-weight:900;letter-spacing:0.1em;text-transform:uppercase}
 .nav-brand span{color:var(--red)}
-.nav-cta{font-family:inherit;font-size:0.7rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;background:var(--blue);color:var(--white);border:none;padding:9px 20px;border-radius:5px;cursor:pointer;text-decoration:none;transition:background 0.2s}
+.nav-cta{font-family:inherit;font-size:0.8rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;background:var(--blue);color:var(--white);border:none;padding:10px 22px;border-radius:5px;cursor:pointer;text-decoration:none;transition:background 0.2s}
 .nav-cta:hover{background:var(--blue-d)}
 
-/* HERO */
-.hero{padding:clamp(4rem,9vw,7rem) 0 clamp(3rem,7vw,5rem);background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(37,99,235,0.10) 0%,transparent 70%);border-bottom:1px solid var(--bdr)}
-.hero-kicker{font-size:0.65rem;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:var(--blue);margin-bottom:1.25rem;display:flex;align-items:center;gap:8px}
+/* ── HERO ── */
+.hero{position:relative;overflow:hidden;padding:clamp(5rem,10vw,8rem) 0 clamp(3.5rem,7vw,5.5rem);border-bottom:1px solid var(--bdr)}
+/* IMAGEN: cuando tengas el archivo coloca en .hero-bg: background:url('../images/ads-hero.jpg') right center / cover no-repeat */
+.hero-bg{position:absolute;inset:0;z-index:0;background:linear-gradient(135deg,#0a1828 0%,#1a3060 100%)}
+.hero-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(6,16,30,0.97) 30%,rgba(6,16,30,0.80) 60%,rgba(6,16,30,0.30) 100%)}
+.hero .container{position:relative;z-index:2}
+.hero-kicker{font-size:0.72rem;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:var(--blue);margin-bottom:1.25rem;display:flex;align-items:center;gap:8px}
 .hero-kicker::before{content:'';width:24px;height:2px;background:var(--blue);display:block;flex-shrink:0}
-.hero h1{font-size:clamp(1.9rem,5.5vw,3.4rem);font-weight:900;line-height:1.1;letter-spacing:-0.02em;margin-bottom:1.25rem;max-width:680px}
+.hero h1{font-size:clamp(2rem,5.5vw,3.4rem);font-weight:900;line-height:1.1;letter-spacing:-0.02em;margin-bottom:1.25rem;max-width:640px}
 .hero h1 em{color:var(--blue);font-style:normal}
-.hero-sub{font-size:clamp(0.88rem,2vw,1rem);color:var(--muted);max-width:500px;margin-bottom:2rem;line-height:1.8}
-.hero-cta-wrap{display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap}
-.hero-cta{display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:var(--white);text-decoration:none;font-weight:800;font-size:0.82rem;letter-spacing:0.06em;text-transform:uppercase;padding:14px 28px;border-radius:5px;transition:background 0.2s}
+.hero-sub{font-size:clamp(0.95rem,2vw,1.05rem);color:var(--muted);max-width:500px;margin-bottom:2rem;line-height:1.8}
+.hero-actions{display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;margin-bottom:3rem}
+.hero-cta{display:inline-flex;align-items:center;background:var(--blue);color:var(--white);text-decoration:none;font-weight:800;font-size:0.9rem;letter-spacing:0.06em;text-transform:uppercase;padding:15px 30px;border-radius:5px;transition:background 0.2s}
 .hero-cta:hover{background:var(--blue-d)}
-.hero-note{font-size:0.72rem;color:var(--muted)}
-.metrics-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bdr);border:1px solid var(--bdr);border-radius:8px;margin-top:3rem;overflow:hidden}
-.metric{background:var(--bg2);padding:1.25rem 1.5rem}
-.metric-platform{font-size:0.58rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--blue);margin-bottom:5px}
-.metric-num{font-size:clamp(1.3rem,3vw,1.8rem);font-weight:900;letter-spacing:-0.02em;margin-bottom:3px}
-.metric-label{font-size:0.62rem;color:var(--muted);font-weight:500;line-height:1.4}
+.hero-note{font-size:0.78rem;color:var(--muted)}
 
-/* CALCULADOR */
-#calculador{padding:clamp(3.5rem,7vw,6rem) 0;background:var(--bg2);border-bottom:1px solid var(--bdr)}
+/* Metrics bar */
+.metrics-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bdr);border:1px solid var(--bdr);border-radius:8px;overflow:hidden}
+.metric{background:var(--bg2);padding:1.25rem 1.5rem}
+.metric-platform{font-size:0.65rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--blue);margin-bottom:5px}
+.metric-num{font-size:clamp(1.3rem,3vw,1.8rem);font-weight:900;letter-spacing:-0.02em;margin-bottom:3px}
+.metric-label{font-size:0.68rem;color:var(--muted);font-weight:500;line-height:1.4}
+
+/* ── AUDIENCE STRIP ── */
+.aud-strip{background:var(--bg2);border-bottom:1px solid var(--bdr)}
+.aud-strip-inner{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bdr)}
+.aud-stat{background:var(--bg2);padding:1.25rem 1.5rem;text-align:center}
+.aud-val{font-size:clamp(1.1rem,2.5vw,1.4rem);font-weight:900;margin-bottom:3px}
+.aud-lbl{font-size:0.68rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.06em}
+
+/* ── FORMATOS ── */
+#formatos{padding:clamp(3rem,6vw,5rem) 0;border-bottom:1px solid var(--bdr)}
+.sec-eyebrow{font-size:0.7rem;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;color:var(--blue);margin-bottom:0.75rem;display:flex;align-items:center;gap:8px}
+.sec-eyebrow::before{content:'';width:20px;height:2px;background:var(--blue);display:block;flex-shrink:0}
+.sec-h2{font-size:clamp(1.5rem,3.5vw,2.2rem);font-weight:900;letter-spacing:-0.01em;margin-bottom:0.75rem}
+.sec-sub{font-size:1rem;color:var(--muted);line-height:1.7;margin-bottom:2.5rem;max-width:620px}
+
+.formats-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.fmt-card{background:var(--bg3);border:1px solid var(--bdr);border-radius:10px;padding:2rem 2rem 1.75rem;display:flex;flex-direction:column;gap:1.1rem}
+.fmt-card.feat{border-color:var(--bdr-b);background:linear-gradient(145deg,var(--bg3),var(--bg4))}
+.fmt-icon{font-size:2rem;line-height:1}
+.fmt-name{font-size:1.1rem;font-weight:900}
+.fmt-pitch{font-size:0.92rem;color:var(--muted);line-height:1.65}
+.fmt-ideal{font-size:0.82rem;color:var(--muted);background:var(--bg4);border-radius:6px;padding:0.8rem 1rem;border-left:3px solid var(--blue);line-height:1.6}
+.fmt-ideal strong{color:var(--white);font-weight:800}
+.fmt-platforms{display:flex;flex-direction:column;gap:0.4rem}
+.fmt-pl{font-size:0.82rem;display:flex;align-items:center;gap:8px;color:var(--muted)}
+.fmt-pl::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--blue);flex-shrink:0}
+.fmt-from{margin-top:auto;border-top:1px solid var(--bdr);padding-top:1.25rem}
+.fmt-from-lbl{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:2px}
+.fmt-from-price{font-size:1.6rem;font-weight:900}
+.fmt-from-sub{font-size:0.75rem;color:var(--muted);margin-top:2px}
+
+/* ── CALCULADOR ── */
+#calculador{padding:clamp(3rem,6vw,5rem) 0;background:var(--bg2);border-bottom:1px solid var(--bdr)}
 .calc-hdr{text-align:center;margin-bottom:2.5rem}
-.tag{display:inline-block;font-size:0.6rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;padding:4px 14px;border-radius:20px;margin-bottom:0.75rem}
+.tag{display:inline-block;font-size:0.62rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;padding:4px 14px;border-radius:20px;margin-bottom:0.75rem}
 .tag-blue{background:var(--blue-g);color:var(--blue);border:1px solid var(--bdr-b)}
-.tag-red{background:var(--red-g);color:var(--red);border:1px solid rgba(192,17,43,0.25)}
-.tag-muted{background:var(--bdr);color:var(--muted);border:1px solid var(--bdr)}
 .calc-hdr h2{font-size:clamp(1.5rem,4vw,2.2rem);font-weight:900;letter-spacing:-0.01em;margin-bottom:0.5rem}
-.calc-hdr p{font-size:0.88rem;color:var(--muted)}
+.calc-hdr p{font-size:0.95rem;color:var(--muted)}
 .calc-layout{display:grid;grid-template-columns:1fr 360px;gap:1.75rem;align-items:start}
 .calc-controls{display:flex;flex-direction:column;gap:1.5rem}
 .calc-step{background:var(--bg3);border:1px solid var(--bdr);border-radius:10px;padding:1.5rem}
-.step-lbl{font-size:0.62rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:0.35rem;display:flex;align-items:center;gap:6px}
-.step-num-badge{width:20px;height:20px;background:var(--blue-g);border:1px solid var(--bdr-b);color:var(--blue);border-radius:50%;font-size:0.65rem;font-weight:900;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
-.step-title{font-size:0.9rem;font-weight:800;margin-bottom:0.35rem}
-.step-desc{font-size:0.72rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.6}
+.step-lbl{font-size:0.65rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:0.35rem;display:flex;align-items:center;gap:6px}
+.step-num{width:22px;height:22px;background:var(--blue-g);border:1px solid var(--bdr-b);color:var(--blue);border-radius:50%;font-size:0.65rem;font-weight:900;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-title{font-size:0.95rem;font-weight:800;margin-bottom:0.35rem}
+.step-desc{font-size:0.82rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.6}
 
-/* Content options */
-.c-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:0.6rem}
-.c-opt{border:1px solid var(--bdr);border-radius:7px;padding:1rem 0.75rem;cursor:pointer;transition:all 0.18s;text-align:center;background:var(--bg4);user-select:none}
+.c-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:0.65rem}
+.c-opt{border:1px solid var(--bdr);border-radius:7px;padding:1.1rem 0.75rem;cursor:pointer;transition:all 0.18s;text-align:center;background:var(--bg4);user-select:none}
 .c-opt:hover{border-color:rgba(37,99,235,0.35)}
 .c-opt.sel{border-color:var(--blue);background:var(--blue-g)}
-.c-opt-lbl{font-size:0.62rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.c-opt-lbl{font-size:0.65rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
 .c-opt.sel .c-opt-lbl{color:var(--blue)}
-.c-opt-price{font-size:1.25rem;font-weight:900}
-.c-opt-sub{font-size:0.58rem;color:var(--muted);margin-top:3px;line-height:1.3}
+.c-opt-price{font-size:1.3rem;font-weight:900}
+.c-opt-sub{font-size:0.68rem;color:var(--muted);margin-top:3px;line-height:1.3}
 
-/* Spot rows */
 .spots{display:flex;flex-direction:column;gap:1.1rem}
 .spot-r{display:grid;grid-template-columns:130px 1fr;gap:0.75rem;align-items:center}
-.spot-r-name{font-size:0.78rem;font-weight:700}
-.spot-r-sub{font-size:0.6rem;color:var(--muted);font-weight:500;margin-top:1px}
+.spot-r-name{font-size:0.85rem;font-weight:700}
+.spot-r-sub{font-size:0.68rem;color:var(--muted);font-weight:500;margin-top:1px}
 .freq-btns{display:flex;gap:3px}
-.f-btn{flex:1;border:1px solid var(--bdr);background:var(--bg4);color:var(--muted);font-family:inherit;font-size:0.65rem;font-weight:700;padding:7px 2px 5px;border-radius:5px;cursor:pointer;transition:all 0.14s;text-align:center;line-height:1}
+.f-btn{flex:1;border:1px solid var(--bdr);background:var(--bg4);color:var(--muted);font-family:inherit;font-size:0.68rem;font-weight:700;padding:8px 2px 6px;border-radius:5px;cursor:pointer;transition:all 0.14s;text-align:center;line-height:1}
 .f-btn:hover{border-color:rgba(37,99,235,0.3);color:var(--white)}
 .f-btn.sel{border-color:var(--blue);background:var(--blue-g);color:var(--white)}
 .f-btn.sel-full{border-color:var(--gold);background:var(--gold-g);color:var(--gold)}
-.f-btn-n{font-size:0.72rem;font-weight:900;display:block}
-.f-btn-p{font-size:0.5rem;display:block;margin-top:2px;opacity:0.75}
+.f-btn-n{font-size:0.75rem;font-weight:900;display:block}
+.f-btn-p{font-size:0.55rem;display:block;margin-top:2px;opacity:0.75}
+.disc-hint{font-size:0.75rem;color:var(--muted);margin-top:0.75rem;text-align:center}
+.disc-hint strong{color:var(--green)}
 
-/* Summary */
-.calc-summary{background:var(--bg3);border:1px solid var(--bdr-b);border-radius:10px;padding:1.75rem;position:sticky;top:68px}
-.sum-title{font-size:0.62rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:1.25rem}
+.calc-summary{background:var(--bg3);border:1px solid var(--bdr-b);border-radius:10px;padding:1.75rem;position:sticky;top:72px}
+.sum-title{font-size:0.65rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:1.25rem}
 .sum-lines{display:flex;flex-direction:column;gap:0.5rem;min-height:48px}
-.sum-line{display:flex;justify-content:space-between;align-items:flex-start;font-size:0.75rem;gap:0.5rem}
+.sum-line{display:flex;justify-content:space-between;align-items:flex-start;font-size:0.82rem;gap:0.5rem}
 .sum-line-k{color:var(--muted);flex:1}
 .sum-line-v{font-weight:700;flex-shrink:0}
-.sum-empty{font-size:0.75rem;color:var(--muted);font-style:italic}
+.sum-empty{font-size:0.82rem;color:var(--muted);font-style:italic}
 .sum-div{height:1px;background:var(--bdr);margin:1rem 0}
-.sum-sub{display:flex;justify-content:space-between;font-size:0.8rem;font-weight:700}
-.sum-bundle{display:flex;justify-content:space-between;align-items:center;font-size:0.75rem;color:var(--green);background:var(--grn-g);border:1px solid rgba(16,185,129,0.2);border-radius:5px;padding:10px 12px;margin:0.75rem 0}
+.sum-sub{display:flex;justify-content:space-between;font-size:0.88rem;font-weight:700}
+.sum-bundle{display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;color:var(--green);background:var(--grn-g);border:1px solid rgba(16,185,129,0.2);border-radius:5px;padding:10px 12px;margin:0.75rem 0}
 .sum-total-box{background:var(--blue-g);border:1px solid var(--bdr-b);border-radius:7px;padding:1.25rem;margin-top:0.75rem;text-align:center}
-.sum-total-lbl{font-size:0.58rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
-.sum-total-val{font-size:2rem;font-weight:900;letter-spacing:-0.02em}
-.sum-upsell{font-size:0.7rem;color:var(--gold);background:var(--gold-g);border:1px solid rgba(245,158,11,0.2);border-radius:5px;padding:9px 11px;margin-top:0.75rem;line-height:1.5}
-.sum-cta{display:block;text-align:center;margin-top:1.25rem;background:var(--blue);color:var(--white);text-decoration:none;font-weight:800;font-size:0.75rem;letter-spacing:0.08em;text-transform:uppercase;padding:13px;border-radius:5px;transition:background 0.2s}
+.sum-total-lbl{font-size:0.62rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.sum-total-val{font-size:2.2rem;font-weight:900;letter-spacing:-0.02em}
+.sum-upsell{font-size:0.78rem;color:var(--gold);background:var(--gold-g);border:1px solid rgba(245,158,11,0.2);border-radius:5px;padding:10px 12px;margin-top:0.75rem;line-height:1.5}
+.sum-cta{display:block;text-align:center;margin-top:1.25rem;background:var(--blue);color:var(--white);text-decoration:none;font-weight:800;font-size:0.82rem;letter-spacing:0.08em;text-transform:uppercase;padding:14px;border-radius:5px;transition:background 0.2s}
 .sum-cta:hover{background:var(--blue-d)}
-.sum-note{font-size:0.6rem;color:var(--muted);text-align:center;margin-top:0.75rem;line-height:1.5}
+.sum-note{font-size:0.68rem;color:var(--muted);text-align:center;margin-top:0.75rem;line-height:1.5}
 
-/* AUDIENCIA */
-#audiencia{padding:clamp(3rem,6vw,5rem) 0;border-bottom:1px solid var(--bdr)}
-.aud-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:3rem;align-items:center}
-.aud-title{font-size:clamp(1.3rem,3.5vw,2rem);font-weight:900;line-height:1.15;margin-bottom:0.75rem}
-.aud-sub{font-size:0.85rem;color:var(--muted);line-height:1.75;margin-bottom:1.5rem}
-.aud-stats{display:grid;grid-template-columns:1fr 1fr;gap:0.65rem}
-.aud-stat{background:var(--bg2);border:1px solid var(--bdr);border-radius:7px;padding:1rem;text-align:center}
-.aud-val{font-size:1.3rem;font-weight:900}
-.aud-lbl{font-size:0.6rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-top:3px}
-.aud-proof{display:flex;flex-direction:column;gap:0.75rem}
-.proof-item{display:flex;gap:1rem;align-items:flex-start;background:var(--bg2);border:1px solid var(--bdr);border-radius:7px;padding:1rem 1.25rem}
-.proof-icon{font-size:1.3rem;flex-shrink:0}
-.proof-title{font-size:0.82rem;font-weight:800;margin-bottom:2px}
-.proof-desc{font-size:0.7rem;color:var(--muted);line-height:1.5}
+/* ── VISUALES ── */
+#visuales{padding:clamp(3rem,6vw,5rem) 0;border-bottom:1px solid var(--bdr)}
+.visual-grid{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:start}
+.vis-col-label{font-size:0.7rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:1.5rem;display:flex;align-items:center;gap:8px}
+.vis-col-label::before{content:'';width:16px;height:2px;background:var(--blue);flex-shrink:0}
 
-/* SERVICIOS */
-#servicios{padding:clamp(3rem,6vw,5rem) 0;background:var(--bg2);border-bottom:1px solid var(--bdr)}
-.section-hdr{text-align:center;margin-bottom:2rem}
-.section-hdr h2{font-size:clamp(1.3rem,3vw,1.8rem);font-weight:900;margin-bottom:0.5rem}
-.section-hdr p{font-size:0.85rem;color:var(--muted)}
-.accordion{display:flex;flex-direction:column;gap:0.75rem}
-.acc-item{background:var(--bg3);border:1px solid var(--bdr);border-radius:8px;overflow:hidden}
-.acc-trigger{width:100%;background:none;border:none;cursor:pointer;color:var(--white);display:flex;justify-content:space-between;align-items:center;padding:1.25rem 1.5rem;font-family:inherit;text-align:left;transition:background 0.15s}
-.acc-trigger:hover{background:rgba(255,255,255,0.02)}
-.acc-left{display:flex;align-items:center;gap:0.75rem}
-.acc-icon{font-size:1.2rem}
-.acc-t-title{font-size:0.9rem;font-weight:800}
-.acc-t-sub{font-size:0.68rem;color:var(--muted);font-weight:500;margin-top:1px}
-.acc-arrow{font-size:0.65rem;color:var(--muted);transition:transform 0.2s;flex-shrink:0}
-.acc-item.open .acc-arrow{transform:rotate(180deg)}
-.acc-body{display:none;padding:0 1.5rem 1.5rem;border-top:1px solid var(--bdr)}
-.acc-item.open .acc-body{display:block}
-.acc-intro{font-size:0.78rem;color:var(--muted);margin-top:1rem;line-height:1.7;margin-bottom:1.25rem}
+/* Fan deck */
+.fan-wrapper{display:flex;justify-content:center;align-items:flex-end;min-height:340px;padding:1rem 0 1.5rem}
+.fan-deck{position:relative;width:200px;height:296px}
+.fan-card{
+  position:absolute;top:0;left:0;width:200px;height:296px;
+  border-radius:12px;overflow:hidden;cursor:pointer;display:block;text-decoration:none;
+  transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  transform-origin:bottom center;
+  box-shadow:0 12px 40px rgba(0,0,0,0.55);
+}
+.fan-card:nth-child(1){transform:rotate(-13deg) translateX(-75px);z-index:1}
+.fan-card:nth-child(2){transform:rotate(0deg);z-index:2}
+.fan-card:nth-child(3){transform:rotate(13deg) translateX(75px);z-index:1}
+.fan-card:hover{transform:rotate(0deg) translateX(0) translateY(-28px) scale(1.06);z-index:10}
+.fan-ph{
+  width:100%;height:100%;
+  background:var(--bg3);border:1px solid var(--bdr);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.75rem;
+  padding:1rem;text-align:center;
+}
+/* Cuando tengas las imágenes: .fan-card img{width:100%;height:100%;object-fit:cover;display:block} */
+.fan-ph-num{font-size:0.6rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--blue)}
+.fan-ph-ico{font-size:2.5rem;opacity:0.2}
+.fan-ph-txt{font-size:0.72rem;color:var(--muted);line-height:1.4}
+.fan-note{font-size:0.8rem;color:var(--muted);text-align:center;line-height:1.6;margin-top:0.25rem}
 
-/* Content cards in accordion */
-.cc-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-.cc{background:var(--bg4);border:1px solid var(--bdr);border-radius:7px;padding:1.25rem;position:relative}
-.cc.cc-feat{border-color:var(--bdr-b)}
-.cc-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;font-size:0.56rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;padding:3px 12px;border-radius:20px;white-space:nowrap}
-.cc-plan{font-size:0.62rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
-.cc-price{font-size:1.8rem;font-weight:900;letter-spacing:-0.02em}
-.cc-period{font-size:0.68rem;color:var(--muted);margin-bottom:1rem}
-.cc-items{display:flex;flex-direction:column;gap:0.4rem}
-.cc-item{font-size:0.72rem;color:var(--muted);display:flex;align-items:flex-start;gap:7px}
-.cc-item::before{content:'✓';color:var(--green);font-weight:800;flex-shrink:0}
+/* Stream mockup */
+.stream-mock{position:relative;width:100%;aspect-ratio:16/9;background:var(--bg4);border:1px solid var(--bdr);border-radius:8px;overflow:hidden;margin-bottom:1.25rem}
+.stream-body{position:absolute;inset:0;bottom:20%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.5rem}
+.stream-live{position:absolute;top:10px;left:10px;background:var(--red);color:#fff;font-size:0.6rem;font-weight:900;letter-spacing:0.08em;padding:3px 8px;border-radius:3px}
+.stream-ph{font-size:0.72rem;color:rgba(107,125,179,0.45);font-weight:600;letter-spacing:0.1em;text-transform:uppercase}
+/* Cuando tengas la captura: agrega <img src="images/stream-live.jpg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"> */
+.cintillo-strip{position:absolute;bottom:0;left:0;right:0;height:20%;background:var(--bg3);border-top:1px solid var(--bdr);display:flex;align-items:center;justify-content:center}
+.cintillo-strip-ph{font-size:0.62rem;color:rgba(107,125,179,0.4);font-weight:700;letter-spacing:0.1em;text-transform:uppercase}
+/* Cuando tengas el cintillo de ejemplo: reemplaza el div.cintillo-strip-ph por <img src="images/cintillo-ejemplo.png" style="width:100%;height:100%;object-fit:cover"> */
 
-/* Spot brief cards */
-.spot-briefs{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-bottom:1.25rem}
-.sb{background:var(--bg4);border:1px solid var(--bdr);border-radius:7px;padding:1rem;text-align:center}
-.sb.sb-star{border-color:rgba(245,158,11,0.3)}
-.sb-icon{font-size:1.4rem;margin-bottom:4px}
-.sb-name{font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px}
-.sb-desc{font-size:0.64rem;color:var(--muted);line-height:1.4;margin-bottom:6px}
-.sb-from{font-size:0.62rem;color:var(--muted)}
-.sb-from strong{color:var(--white);font-size:0.9rem}
+/* Cintillo gallery */
+.cin-gallery{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1.25rem}
+.cin-item{width:100%;aspect-ratio:1920/216;background:var(--bg3);border:1px solid var(--bdr);border-radius:5px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.cin-item img{width:100%;height:100%;object-fit:cover;display:block}
+.cin-ph{font-size:0.65rem;color:rgba(107,125,179,0.4);font-weight:700;letter-spacing:0.1em;text-transform:uppercase}
 
-/* Price tables in accordion */
-.ptable{border:1px solid var(--bdr);border-radius:7px;overflow:hidden;margin-top:0.65rem}
-.pt-hdr-row{display:flex;justify-content:space-between;align-items:center;padding:0.85rem 1.25rem;background:var(--bg4);border-bottom:1px solid var(--bdr)}
-.pt-hdr-title{font-size:0.72rem;font-weight:800}
-.pt-rows{display:flex;flex-direction:column}
-.pt-row{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;align-items:center;padding:0.7rem 1.25rem;border-bottom:1px solid rgba(255,255,255,0.03);font-size:0.74rem}
-.pt-row:last-child{border-bottom:none}
-.pt-row:hover{background:rgba(255,255,255,0.02)}
-.pt-col-hdr{font-size:0.57rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);padding:0.5rem 1.25rem;border-bottom:1px solid var(--bdr);display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr}
-.pt-row.pt-full{background:rgba(245,158,11,0.04)}
-.pt-total{font-weight:800}
-.pt-full .pt-total{color:var(--gold)}
-.save-badge{display:inline-block;background:var(--grn-g);color:var(--green);border:1px solid rgba(16,185,129,0.2);border-radius:3px;font-size:0.57rem;font-weight:800;padding:1px 6px}
+/* Specs */
+.specs-card{background:var(--bg3);border:1px solid var(--bdr-b);border-radius:8px;padding:1.25rem 1.5rem}
+.specs-title{font-size:0.72rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--blue);margin-bottom:1rem}
+.spec-row{display:flex;justify-content:space-between;align-items:baseline;font-size:0.85rem;gap:1rem;padding:0.55rem 0;border-bottom:1px solid var(--bdr)}
+.spec-row:last-child{border-bottom:none}
+.spec-k{color:var(--muted)}
+.spec-v{font-weight:700;text-align:right}
+.specs-cta{display:block;text-align:center;margin-top:1.25rem;background:var(--bg4);border:1px solid var(--bdr-b);color:var(--white);text-decoration:none;font-size:0.82rem;font-weight:700;padding:11px;border-radius:5px;transition:border-color 0.2s}
+.specs-cta:hover{border-color:var(--blue)}
 
-/* BUNDLE */
-#bundle{padding:clamp(2.5rem,5vw,4rem) 0;border-bottom:1px solid var(--bdr)}
-.bundle-box{background:linear-gradient(135deg,rgba(37,99,235,0.08),rgba(37,99,235,0.03));border:1px solid var(--bdr-b);border-radius:10px;padding:2.5rem;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap}
-.bundle-txt h3{font-size:clamp(1.2rem,3vw,1.7rem);font-weight:900;margin-bottom:0.5rem}
-.bundle-txt p{font-size:0.82rem;color:var(--muted);max-width:480px;line-height:1.7}
-.bundle-steps-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.5rem}
-.bs{text-align:center;padding:0.75rem}
-.bs-num{width:32px;height:32px;border-radius:50%;background:var(--blue-g);border:1px solid var(--bdr-b);color:var(--blue);font-weight:900;font-size:0.85rem;display:inline-flex;align-items:center;justify-content:center;margin-bottom:0.5rem}
-.bs-title{font-size:0.78rem;font-weight:700;margin-bottom:0.25rem}
-.bs-desc{font-size:0.68rem;color:var(--muted);line-height:1.5}
-.bundle-badge{text-align:center;flex-shrink:0;background:var(--bg3);border:1px solid var(--bdr-b);border-radius:10px;padding:1.25rem 2rem}
-.bundle-pct{font-size:3rem;font-weight:900;color:var(--blue);line-height:1}
-.bundle-pct-lbl{font-size:0.62rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-top:4px}
-
-/* CONTACTO */
+/* ── CONTACTO ── */
 #contacto{padding:clamp(3.5rem,7vw,6rem) 0}
 .contact-box{text-align:center;max-width:600px;margin:0 auto;background:var(--bg2);border:1px solid var(--bdr-b);border-radius:12px;padding:clamp(2.5rem,5vw,4rem)}
-.contact-box h2{font-size:clamp(1.4rem,4vw,2rem);font-weight:900;margin-bottom:0.75rem}
-.contact-box p{font-size:0.88rem;color:var(--muted);margin-bottom:2rem;line-height:1.8}
-.contact-email{display:inline-flex;align-items:center;gap:10px;background:var(--blue);color:var(--white);text-decoration:none;font-weight:800;font-size:0.88rem;letter-spacing:0.04em;padding:15px 30px;border-radius:6px;transition:background 0.2s}
+.contact-box h2{font-size:clamp(1.5rem,4vw,2.2rem);font-weight:900;margin-bottom:0.75rem}
+.contact-box p{font-size:0.95rem;color:var(--muted);margin-bottom:2rem;line-height:1.8}
+.contact-email{display:inline-flex;align-items:center;gap:10px;background:var(--blue);color:var(--white);text-decoration:none;font-weight:800;font-size:0.95rem;letter-spacing:0.04em;padding:16px 32px;border-radius:6px;transition:background 0.2s}
 .contact-email:hover{background:var(--blue-d)}
-.contact-note{font-size:0.68rem;color:var(--muted);margin-top:1.25rem;line-height:1.5}
+.contact-note{font-size:0.72rem;color:var(--muted);margin-top:1.25rem;line-height:1.5}
 
-/* FOOTER */
-footer{border-top:1px solid var(--bdr);padding:1.75rem;text-align:center;font-size:0.65rem;color:var(--muted)}
+footer{border-top:1px solid var(--bdr);padding:1.75rem;text-align:center;font-size:0.7rem;color:var(--muted)}
 footer a{color:var(--muted);text-decoration:none}
 footer a:hover{color:var(--white)}
 
-/* RESPONSIVE */
+/* ── RESPONSIVE ── */
 @media(max-width:900px){
   .calc-layout{grid-template-columns:1fr}
   .calc-summary{position:static}
-  .aud-grid{grid-template-columns:1fr}
-  .bundle-box{flex-direction:column;text-align:center}
-  .bundle-steps-row{grid-template-columns:1fr}
+  .formats-grid{grid-template-columns:1fr}
+  .visual-grid{grid-template-columns:1fr}
+  .aud-strip-inner{grid-template-columns:1fr 1fr}
 }
 @media(max-width:660px){
   .metrics-bar{grid-template-columns:1fr}
   .c-opts{grid-template-columns:1fr}
   .spot-r{grid-template-columns:1fr}
-  .cc-grid{grid-template-columns:1fr}
-  .spot-briefs{grid-template-columns:1fr}
-  .aud-stats{grid-template-columns:1fr 1fr}
-  .pt-row,.pt-col-hdr{font-size:0.65rem;padding:0.6rem 0.75rem}
+  .fan-deck{width:160px;height:237px}
+  .fan-card{width:160px;height:237px}
+  .fan-card:nth-child(1){transform:rotate(-13deg) translateX(-60px)}
+  .fan-card:nth-child(3){transform:rotate(13deg) translateX(60px)}
 }
 </style>
 </head>
@@ -241,19 +246,21 @@ footer a:hover{color:var(--white)}
 
 <!-- HERO -->
 <section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
   <div class="container">
-    <div class="hero-kicker">Publicidad · Trading en vivo · Lunes a viernes</div>
-    <h1>Conecta tu marca con la audiencia de trading <em>más activa en español.</em></h1>
-    <p class="hero-sub">Transmisiones en vivo reales, sin filtros, desde las 9 AM. Traders activos que confían en nuestra opinión — todos los días.</p>
-    <div class="hero-cta-wrap">
+    <div class="hero-kicker">Publicidad · Trading en vivo · L-V 9 AM</div>
+    <h1>Tu marca frente a la audiencia de trading <em>más activa en español.</em></h1>
+    <p class="hero-sub">Transmisiones en vivo reales, sin filtros. Traders activos que ya operan con dinero real y confían en nuestra opinión — todos los días.</p>
+    <div class="hero-actions">
       <a href="#calculador" class="hero-cta">Armar mi paquete</a>
-      <span class="hero-note">Sin compromiso · Calcula tu inversión al instante</span>
+      <span class="hero-note">Sin compromiso · Tu precio en segundos</span>
     </div>
     <div class="metrics-bar">
       <div class="metric">
         <div class="metric-platform">YouTube</div>
         <div class="metric-num">76.4K</div>
-        <div class="metric-label">Vistas totales · 5.9K espectadores mensuales</div>
+        <div class="metric-label">Vistas totales · 5.9K espectadores/mes</div>
       </div>
       <div class="metric">
         <div class="metric-platform">TikTok</div>
@@ -269,23 +276,92 @@ footer a:hover{color:var(--white)}
   </div>
 </section>
 
+<!-- AUDIENCE STRIP -->
+<div class="aud-strip">
+  <div class="aud-strip-inner" style="max-width:1080px;margin:0 auto">
+    <div class="aud-stat">
+      <div class="aud-val">83–87%</div>
+      <div class="aud-lbl">Masculino</div>
+    </div>
+    <div class="aud-stat">
+      <div class="aud-val">~50%</div>
+      <div class="aud-lbl">25 a 34 años</div>
+    </div>
+    <div class="aud-stat">
+      <div class="aud-val">22 min</div>
+      <div class="aud-lbl">Promedio en vivo</div>
+    </div>
+    <div class="aud-stat">
+      <div class="aud-val">🇩🇴 + LATAM</div>
+      <div class="aud-lbl">RD · VE · COL · MX · EE.UU.</div>
+    </div>
+  </div>
+</div>
+
+<!-- FORMATOS -->
+<section id="formatos">
+  <div class="container">
+    <div class="sec-eyebrow">Formatos disponibles</div>
+    <h2 class="sec-h2">¿Qué tipo de presencia quieres?</h2>
+    <p class="sec-sub">Dos formatos para dos objetivos distintos. Puedes contratar uno, el otro, o los dos juntos con 15% de descuento extra sobre el total.</p>
+    <div class="formats-grid">
+
+      <div class="fmt-card">
+        <div class="fmt-icon">📺</div>
+        <div>
+          <div class="fmt-name">Cintillo en vivo</div>
+          <p class="fmt-pitch">Tu marca en pantalla durante el live — cintillo visual + mención verbal. Sin involucrar tu contenido ni tu perfil.</p>
+        </div>
+        <div class="fmt-ideal"><strong>Ideal si:</strong> solo quieres exposición. No necesitas que el contenido refleje tu marca ni tu tono de comunicación.</div>
+        <div class="fmt-platforms">
+          <div class="fmt-pl">YouTube (lives)</div>
+          <div class="fmt-pl">TikTok (lives)</div>
+        </div>
+        <div class="fmt-from">
+          <div class="fmt-from-lbl">Desde</div>
+          <div class="fmt-from-price">$200<span style="font-size:1rem;font-weight:500;color:var(--muted)">/mes</span></div>
+          <div class="fmt-from-sub">Descuento automático a mayor frecuencia · hasta 20%</div>
+        </div>
+      </div>
+
+      <div class="fmt-card feat">
+        <div class="fmt-icon">🎬</div>
+        <div>
+          <div class="fmt-name">Contenido orgánico</div>
+          <p class="fmt-pitch">Producimos un video/reel con tu marca integrada de forma natural en nuestro estilo. En Instagram, el video aparece también en tu perfil como colaboración.</p>
+        </div>
+        <div class="fmt-ideal"><strong>Ideal si:</strong> quieres nuestro respaldo genuino y que el contenido viva tanto en nuestros canales como en el tuyo (IG).</div>
+        <div class="fmt-platforms">
+          <div class="fmt-pl">YouTube + TikTok (en nuestro canal)</div>
+          <div class="fmt-pl">Instagram (collab — aparece en tu perfil también)</div>
+        </div>
+        <div class="fmt-from">
+          <div class="fmt-from-lbl">Desde</div>
+          <div class="fmt-from-price">$650<span style="font-size:1rem;font-weight:500;color:var(--muted)">/mes</span></div>
+          <div class="fmt-from-sub">Plan Semanal: 4 piezas/mes · Plan Intensivo: 8 piezas/mes</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 <!-- CALCULADOR -->
 <section id="calculador">
   <div class="container">
     <div class="calc-hdr">
       <div class="tag tag-blue">Calculador de inversión</div>
       <h2>Arma tu paquete. Ve tu precio al instante.</h2>
-      <p>Elige los servicios que quieres. El total se actualiza en tiempo real con todos los descuentos aplicados.</p>
+      <p>Selecciona los formatos y frecuencias. El total se actualiza en tiempo real con todos los descuentos aplicados.</p>
     </div>
     <div class="calc-layout">
 
-      <!-- CONTROLES -->
       <div class="calc-controls">
 
         <div class="calc-step">
-          <div class="step-lbl"><span class="step-num-badge">1</span> Contenido orgánico</div>
+          <div class="step-lbl"><span class="step-num">1</span> Contenido orgánico</div>
           <div class="step-title">¿Quieres contenido de marca?</div>
-          <p class="step-desc">Videos/reels cortos con integración natural de tu marca y CTA claro. Distribuidos en YouTube, TikTok e Instagram.</p>
+          <p class="step-desc">Videos/reels con integración natural + CTA. En YouTube, TikTok y en tu perfil de Instagram (collab).</p>
           <div class="c-opts">
             <div class="c-opt sel" onclick="selectContent('ninguno',this)">
               <div class="c-opt-lbl">Sin contenido</div>
@@ -306,11 +382,10 @@ footer a:hover{color:var(--white)}
         </div>
 
         <div class="calc-step">
-          <div class="step-lbl"><span class="step-num-badge">2</span> Cintillos en vivo</div>
+          <div class="step-lbl"><span class="step-num">2</span> Cintillos en vivo</div>
           <div class="step-title">¿Cuántas veces por semana aparecer?</div>
-          <p class="step-desc">Tu marca en pantalla + mención verbal durante el live en YouTube y TikTok. Elige el momento y la frecuencia. A mayor frecuencia, mayor descuento.</p>
+          <p class="step-desc">Tu marca en pantalla + mención verbal en el live. Elige el momento y la frecuencia — a mayor frecuencia, mayor descuento.</p>
           <div class="spots">
-
             <div class="spot-r">
               <div>
                 <div class="spot-r-name">🔥 Spot Pico</div>
@@ -325,7 +400,6 @@ footer a:hover{color:var(--white)}
                 <button class="f-btn" onclick="setFreq('pico',5,this)"><span class="f-btn-n">5×</span><span class="f-btn-p">$1,600</span></button>
               </div>
             </div>
-
             <div class="spot-r">
               <div>
                 <div class="spot-r-name">🌅 Spot Inicio</div>
@@ -340,7 +414,6 @@ footer a:hover{color:var(--white)}
                 <button class="f-btn" onclick="setFreq('inicio',5,this)"><span class="f-btn-n">5×</span><span class="f-btn-p">$1,120</span></button>
               </div>
             </div>
-
             <div class="spot-r">
               <div>
                 <div class="spot-r-name">🌙 Spot Cierre</div>
@@ -355,13 +428,12 @@ footer a:hover{color:var(--white)}
                 <button class="f-btn" onclick="setFreq('cierre',5,this)"><span class="f-btn-n">5×</span><span class="f-btn-p">$800</span></button>
               </div>
             </div>
-
           </div>
+          <div class="disc-hint">Mayor frecuencia = mayor descuento automático · Hasta <strong>20% off</strong></div>
         </div>
 
-      </div><!-- /calc-controls -->
+      </div>
 
-      <!-- SUMMARY -->
       <div class="calc-summary">
         <div class="sum-title">Tu inversión mensual</div>
         <div class="sum-lines" id="sum-lines">
@@ -389,208 +461,80 @@ footer a:hover{color:var(--white)}
   </div>
 </section>
 
-<!-- AUDIENCIA -->
-<section id="audiencia">
+<!-- VISUALES -->
+<section id="visuales">
   <div class="container">
-    <div class="aud-grid">
+    <div class="sec-eyebrow">Cómo luce en la práctica</div>
+    <h2 class="sec-h2" style="margin-bottom:2.5rem">Ve lo que tu marca obtiene.</h2>
+    <div class="visual-grid">
+
+      <!-- COLUMNA IZQ: Contenido en colaboración -->
       <div>
-        <div class="tag tag-red" style="margin-bottom:0.75rem">La audiencia</div>
-        <h2 class="aud-title">Le hablas directo al trader que toma decisiones.</h2>
-        <p class="aud-sub">Traders activos y personas aprendiendo a invertir con dinero real. Sin espectadores pasivos — confían en nuestra opinión porque nos ven operar todos los días.</p>
-        <div class="aud-stats">
-          <div class="aud-stat"><div class="aud-val">83–87%</div><div class="aud-lbl">Masculino</div></div>
-          <div class="aud-stat"><div class="aud-val">~50%</div><div class="aud-lbl">25 a 34 años</div></div>
-          <div class="aud-stat"><div class="aud-val">100%</div><div class="aud-lbl">Hispanohablante</div></div>
-          <div class="aud-stat"><div class="aud-val">🇩🇴 + LATAM</div><div class="aud-lbl">RD · VE · COL · MX · EE.UU.</div></div>
-        </div>
-      </div>
-      <div class="aud-proof">
-        <div class="proof-item">
-          <div class="proof-icon">📡</div>
-          <div>
-            <div class="proof-title">Trading en vivo real · L-V 9 AM</div>
-            <div class="proof-desc">Operamos índices, oro, forex y commodities en tiempo real. Promedio de 18 viewers simultáneos, pico de 60. Duración promedio de vista: 22 minutos.</div>
-          </div>
-        </div>
-        <div class="proof-item">
-          <div class="proof-icon">📈</div>
-          <div>
-            <div class="proof-title">Crecimiento acelerado y reciente</div>
-            <div class="proof-desc">TikTok pasó de 0 a 3.9K seguidores en menos de 6 meses. 65.2K viewers nuevos en el último año. Audiencia en construcción activa.</div>
-          </div>
-        </div>
-        <div class="proof-item">
-          <div class="proof-icon">🎯</div>
-          <div>
-            <div class="proof-title">Nicho exacto, sin relleno</div>
-            <div class="proof-desc">Finanzas, cripto, fondeo, herramientas de trading. ~50% tiene entre 25 y 34 años y ya opera con dinero real. Sin bots, sin seguidores comprados.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SERVICIOS -->
-<section id="servicios">
-  <div class="container">
-    <div class="section-hdr">
-      <div class="tag tag-muted">Detalles</div>
-      <h2>¿Qué incluye cada servicio?</h2>
-      <p>Expande para ver los planes y tablas de precios completas.</p>
-    </div>
-    <div class="accordion">
-
-      <!-- Contenido -->
-      <div class="acc-item">
-        <button class="acc-trigger" onclick="toggleAcc(this)">
-          <div class="acc-left">
-            <span class="acc-icon">🎬</span>
-            <div>
-              <div class="acc-t-title">Contenido orgánico con CTA</div>
-              <div class="acc-t-sub">Videos/reels en YouTube, TikTok e Instagram · $650–$1,000/mes</div>
-            </div>
-          </div>
-          <span class="acc-arrow">▼</span>
-        </button>
-        <div class="acc-body">
-          <p class="acc-intro">Producimos contenido que educa o entretiene mientras posiciona tu marca de forma natural. No se siente como anuncio. Incluye integración + CTA claro y 1 ronda de ajustes por pieza.</p>
-          <div class="cc-grid">
-            <div class="cc">
-              <div class="cc-plan">Plan Semanal</div>
-              <div class="cc-price">$650<span style="font-size:0.9rem;font-weight:500;color:var(--muted)">/mes</span></div>
-              <div class="cc-period">4 piezas por mes</div>
-              <div class="cc-items">
-                <div class="cc-item">1 video/reel por semana</div>
-                <div class="cc-item">Distribución en las 3 plataformas</div>
-                <div class="cc-item">Integración natural + CTA</div>
-                <div class="cc-item">1 ronda de ajustes por pieza</div>
+        <div class="vis-col-label">Contenido orgánico — ejemplos reales</div>
+        <div class="fan-wrapper">
+          <div class="fan-deck">
+            <!-- Cuando tengas las capturas, reemplaza cada .fan-ph por: <img src="images/collab-1.jpg" alt="Reel #1"> -->
+            <a class="fan-card" href="https://www.instagram.com/anonimustradelive/" target="_blank" rel="noopener">
+              <div class="fan-ph">
+                <div class="fan-ph-num">Top Reel #1</div>
+                <div class="fan-ph-ico">📸</div>
+                <div class="fan-ph-txt">Captura del reel pendiente</div>
               </div>
-            </div>
-            <div class="cc cc-feat">
-              <div class="cc-badge">Ahorra $300 · 23% off</div>
-              <div class="cc-plan">Plan Intensivo</div>
-              <div class="cc-price">$1,000<span style="font-size:0.9rem;font-weight:500;color:var(--muted)">/mes</span></div>
-              <div class="cc-period">8 piezas/mes · <span style="text-decoration:line-through;opacity:0.45">$1,300</span></div>
-              <div class="cc-items">
-                <div class="cc-item">2 videos/reels por semana</div>
-                <div class="cc-item">Distribución en las 3 plataformas</div>
-                <div class="cc-item">Integración natural + CTA</div>
-                <div class="cc-item">1 ronda de ajustes por pieza</div>
-                <div class="cc-item">Máxima cobertura semanal</div>
+            </a>
+            <a class="fan-card" href="https://www.instagram.com/anonimustradelive/" target="_blank" rel="noopener">
+              <div class="fan-ph">
+                <div class="fan-ph-num">Top Reel #2</div>
+                <div class="fan-ph-ico">📸</div>
+                <div class="fan-ph-txt">Captura del reel pendiente</div>
               </div>
-            </div>
+            </a>
+            <a class="fan-card" href="https://www.instagram.com/anonimustradelive/" target="_blank" rel="noopener">
+              <div class="fan-ph">
+                <div class="fan-ph-num">Top Reel #3</div>
+                <div class="fan-ph-ico">📸</div>
+                <div class="fan-ph-txt">Captura del reel pendiente</div>
+              </div>
+            </a>
           </div>
         </div>
+        <p class="fan-note">Pasa el cursor (o toca) para explorar.<br>Haz clic para ver el reel en Instagram.</p>
       </div>
 
-      <!-- Cintillos -->
-      <div class="acc-item">
-        <button class="acc-trigger" onclick="toggleAcc(this)">
-          <div class="acc-left">
-            <span class="acc-icon">📺</span>
-            <div>
-              <div class="acc-t-title">Cintillos en vivo</div>
-              <div class="acc-t-sub">3 spots disponibles · Desde $200/mes · Descuento por volumen</div>
-            </div>
-          </div>
-          <span class="acc-arrow">▼</span>
-        </button>
-        <div class="acc-body">
-          <p class="acc-intro">Cintillo visual en la parte inferior de pantalla + mención verbal del presentador. Simultáneo en YouTube y TikTok. Incluye reporte mensual de alcance. Mayor frecuencia = mayor descuento.</p>
+      <!-- COLUMNA DER: Cintillos -->
+      <div>
+        <div class="vis-col-label">Cintillos — cómo se ven en pantalla</div>
 
-          <div class="spot-briefs">
-            <div class="sb">
-              <div class="sb-icon">🌅</div>
-              <div class="sb-name">Spot Inicio</div>
-              <div class="sb-desc">Apertura del live, cuando la audiencia sintoniza.</div>
-              <div class="sb-from">Desde <strong>$280</strong>/mes</div>
-            </div>
-            <div class="sb sb-star">
-              <div class="sb-icon">🔥</div>
-              <div class="sb-name">Spot Pico ⭐</div>
-              <div class="sb-desc">Hora de mayor audiencia. El momento de más alcance.</div>
-              <div class="sb-from">Desde <strong>$400</strong>/mes</div>
-            </div>
-            <div class="sb">
-              <div class="sb-icon">🌙</div>
-              <div class="sb-name">Spot Cierre</div>
-              <div class="sb-desc">Despedida. Última impresión antes de que el viewer salga.</div>
-              <div class="sb-from">Desde <strong>$200</strong>/mes</div>
-            </div>
+        <div class="stream-mock">
+          <div class="stream-live">● LIVE</div>
+          <div class="stream-body">
+            <!-- Cuando tengas la captura del live: agrega <img src="images/stream-live.jpg" ...> aquí -->
+            <div style="font-size:2.5rem;opacity:0.15">📷</div>
+            <div class="stream-ph">Captura del livestream pendiente</div>
           </div>
-
-          <!-- Tabla Pico -->
-          <div class="ptable">
-            <div class="pt-hdr-row">
-              <div class="pt-hdr-title">🔥 Spot Pico — Hora de mayor audiencia</div>
-              <span style="font-size:0.62rem;color:var(--muted)">Paquete mensual</span>
-            </div>
-            <div class="pt-col-hdr"><div>Frecuencia</div><div>Apar./mes</div><div>Total/mes</div><div>Ahorro</div></div>
-            <div class="pt-rows">
-              <div class="pt-row"><div>1×/semana</div><div>4</div><div class="pt-total">$400</div><div>—</div></div>
-              <div class="pt-row"><div>2×/semana</div><div>8</div><div class="pt-total">$760</div><div><span class="save-badge">-5%</span> $40</div></div>
-              <div class="pt-row"><div>3×/semana</div><div>12</div><div class="pt-total">$1,080</div><div><span class="save-badge">-10%</span> $120</div></div>
-              <div class="pt-row"><div>4×/semana</div><div>16</div><div class="pt-total">$1,360</div><div><span class="save-badge">-15%</span> $240</div></div>
-              <div class="pt-row pt-full"><div>5×/semana ⭐</div><div>20</div><div class="pt-total">$1,600</div><div><span class="save-badge">-20%</span> $400</div></div>
-            </div>
+          <div class="cintillo-strip">
+            <!-- Cuando tengas el cintillo de ejemplo: reemplaza este div por <img src="images/cintillo-ejemplo.png" ...> -->
+            <div class="cintillo-strip-ph">Tu cintillo aquí · 1920 × 216 px</div>
           </div>
-
-          <!-- Tabla Inicio -->
-          <div class="ptable">
-            <div class="pt-hdr-row">
-              <div class="pt-hdr-title">🌅 Spot Inicio — Apertura del live</div>
-              <span style="font-size:0.62rem;color:var(--muted)">Paquete mensual</span>
-            </div>
-            <div class="pt-col-hdr"><div>Frecuencia</div><div>Apar./mes</div><div>Total/mes</div><div>Ahorro</div></div>
-            <div class="pt-rows">
-              <div class="pt-row"><div>1×/semana</div><div>4</div><div class="pt-total">$280</div><div>—</div></div>
-              <div class="pt-row"><div>2×/semana</div><div>8</div><div class="pt-total">$532</div><div><span class="save-badge">-5%</span> $28</div></div>
-              <div class="pt-row"><div>3×/semana</div><div>12</div><div class="pt-total">$756</div><div><span class="save-badge">-10%</span> $84</div></div>
-              <div class="pt-row"><div>4×/semana</div><div>16</div><div class="pt-total">$952</div><div><span class="save-badge">-15%</span> $168</div></div>
-              <div class="pt-row pt-full"><div>5×/semana ⭐</div><div>20</div><div class="pt-total">$1,120</div><div><span class="save-badge">-20%</span> $280</div></div>
-            </div>
-          </div>
-
-          <!-- Tabla Cierre -->
-          <div class="ptable">
-            <div class="pt-hdr-row">
-              <div class="pt-hdr-title">🌙 Spot Cierre — Despedida del live</div>
-              <span style="font-size:0.62rem;color:var(--muted)">Paquete mensual</span>
-            </div>
-            <div class="pt-col-hdr"><div>Frecuencia</div><div>Apar./mes</div><div>Total/mes</div><div>Ahorro</div></div>
-            <div class="pt-rows">
-              <div class="pt-row"><div>1×/semana</div><div>4</div><div class="pt-total">$200</div><div>—</div></div>
-              <div class="pt-row"><div>2×/semana</div><div>8</div><div class="pt-total">$380</div><div><span class="save-badge">-5%</span> $20</div></div>
-              <div class="pt-row"><div>3×/semana</div><div>12</div><div class="pt-total">$540</div><div><span class="save-badge">-10%</span> $60</div></div>
-              <div class="pt-row"><div>4×/semana</div><div>16</div><div class="pt-total">$680</div><div><span class="save-badge">-15%</span> $120</div></div>
-              <div class="pt-row pt-full"><div>5×/semana ⭐</div><div>20</div><div class="pt-total">$800</div><div><span class="save-badge">-20%</span> $200</div></div>
-            </div>
-          </div>
-
         </div>
-      </div>
 
-    </div>
-  </div>
-</section>
-
-<!-- BUNDLE -->
-<section id="bundle">
-  <div class="container">
-    <div class="bundle-box">
-      <div class="bundle-txt">
-        <h3>Combina ambos servicios y obtén 15% extra de descuento.</h3>
-        <p>Elige tu plan de contenido y tus cintillos. Al tomar los dos juntos, aplicamos un 15% adicional automáticamente sobre el total. Pruébalo ahora mismo en el calculador de arriba.</p>
-        <div class="bundle-steps-row">
-          <div class="bs"><div class="bs-num">1</div><div class="bs-title">Elige contenido</div><div class="bs-desc">Semanal o Intensivo</div></div>
-          <div class="bs"><div class="bs-num">2</div><div class="bs-title">Elige cintillos</div><div class="bs-desc">Spots y frecuencias</div></div>
-          <div class="bs"><div class="bs-num">3</div><div class="bs-title">15% extra</div><div class="bs-desc">Se aplica automáticamente</div></div>
+        <div class="vis-col-label" style="margin-top:1.5rem">Cintillos activos</div>
+        <div class="cin-gallery">
+          <!-- Cuando tengas las imágenes: <img src="images/cintillo-1.png" alt="..."> dentro de cada .cin-item -->
+          <div class="cin-item"><div class="cin-ph">Cintillo #1 — pendiente</div></div>
+          <div class="cin-item"><div class="cin-ph">Cintillo #2 — pendiente</div></div>
+          <div class="cin-item"><div class="cin-ph">Cintillo #3 — pendiente</div></div>
         </div>
-      </div>
-      <div class="bundle-badge">
-        <div class="bundle-pct">15%</div>
-        <div class="bundle-pct-lbl">Descuento bundle</div>
+
+        <div class="specs-card">
+          <div class="specs-title">Especificaciones de diseño</div>
+          <div class="spec-row"><span class="spec-k">Dimensiones</span><span class="spec-v">1920 × 216 px</span></div>
+          <div class="spec-row"><span class="spec-k">Formato</span><span class="spec-v">PNG (con o sin transparencia)</span></div>
+          <div class="spec-row"><span class="spec-k">Modo de color</span><span class="spec-v">RGB</span></div>
+          <div class="spec-row"><span class="spec-k">Zona segura</span><span class="spec-v">80 px de margen a cada lado</span></div>
+          <div class="spec-row"><span class="spec-k">Animado</span><span class="spec-v">Consultar disponibilidad</span></div>
+          <a href="mailto:anonimustradelive@outlook.com?subject=Envío%20de%20diseño%20de%20cintillo" class="specs-cta">📤 Enviar mi diseño por correo</a>
+        </div>
+
       </div>
     </div>
   </div>
@@ -662,9 +606,7 @@ function recalc() {
   const upsellEl  = document.getElementById('upsell');
 
   let lines = [];
-  if (cC > 0) {
-    lines.push([state.contenido === 'semanal' ? 'Contenido Semanal (4 piezas)' : 'Contenido Intensivo (8 piezas)', fmt(cC)]);
-  }
+  if (cC  > 0) lines.push([state.contenido === 'semanal' ? 'Contenido Semanal (4 piezas)' : 'Contenido Intensivo (8 piezas)', fmt(cC)]);
   if (cP  > 0) lines.push([SPOT_NAMES.pico   + ' · ' + FREQ_LABELS[state.pico],   fmt(cP)]);
   if (cI  > 0) lines.push([SPOT_NAMES.inicio  + ' · ' + FREQ_LABELS[state.inicio],  fmt(cI)]);
   if (cCi > 0) lines.push([SPOT_NAMES.cierre  + ' · ' + FREQ_LABELS[state.cierre],  fmt(cCi)]);
@@ -684,21 +626,10 @@ function recalc() {
 
   document.getElementById('sum-total').textContent = fmt(total);
 
-  if (!hayC && !hayCin) {
-    upsellEl.style.display = 'none';
-  } else if (hayC && !hayCin) {
-    upsellEl.style.display = 'block';
-    upsellEl.textContent = '💡 Agrega cintillos y obtén 15% de descuento adicional sobre tu total.';
-  } else if (!hayC && hayCin) {
-    upsellEl.style.display = 'block';
-    upsellEl.textContent = '💡 Agrega contenido orgánico y obtén 15% de descuento adicional sobre tu total.';
-  } else {
-    upsellEl.style.display = 'none';
-  }
-}
-
-function toggleAcc(trigger) {
-  trigger.closest('.acc-item').classList.toggle('open');
+  if (!hayC && !hayCin)       { upsellEl.style.display = 'none'; }
+  else if (hayC && !hayCin)   { upsellEl.style.display = 'block'; upsellEl.textContent = '💡 Agrega cintillos y obtén 15% de descuento adicional sobre tu total.'; }
+  else if (!hayC && hayCin)   { upsellEl.style.display = 'block'; upsellEl.textContent = '💡 Agrega contenido orgánico y obtén 15% de descuento adicional sobre tu total.'; }
+  else                         { upsellEl.style.display = 'none'; }
 }
 
 function fmt(n) { return '$' + n.toLocaleString('en-US'); }

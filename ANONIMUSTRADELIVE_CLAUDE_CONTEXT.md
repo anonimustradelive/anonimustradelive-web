@@ -276,6 +276,16 @@ Script PHP que corre periódicamente (cron en cPanel).
 
 ## Historial de cambios recientes
 
+### 2026-06-26 (4)
+- Rediseño y compactación de `ads/index.html`: de 6 secciones a 5
+- Eliminadas: sección Audiencia completa, accordion de Servicios, sección Bundle separada
+- Añadidas: strip de 4 estadísticas de audiencia (compacto, debajo del hero), sección Formatos (2 tarjetas: Cintillo vs Contenido), sección Visuales (fan deck + mockup livestream + galería cintillos + specs)
+- Hero: soporte para imagen de fondo (placeholder gradient, comentario con instrucciones para reemplazar con foto real)
+- Sección Formatos: explica diferencia clave — cintillo=solo exposición, contenido=endorsement+IG collab aparece en perfil del cliente
+- Sección Visuales: 3 tarjetas fan-deck (top reels con hover, placeholders listos para imágenes), mockup 16:9 con cintillo en 20% inferior, galería de 3 cintillos (1920×216), card de specs técnicas
+- Textos más grandes (mínimo 0.82rem), flujo más claro para adultos
+- Próximo paso: usuario pasa imágenes (capturas de reels, foto del live, cintillos existentes, captura de stream)
+
 ### 2026-06-26 (3)
 - Actualización de métricas de plataformas en `ads/index.html` con datos reales de junio 2026
 - YouTube: 76.4K vistas totales, 5.9K espectadores mensuales, 18 viewers simultáneos promedio en live, pico 60, 22 min duración promedio
