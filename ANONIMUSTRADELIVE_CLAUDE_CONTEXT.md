@@ -276,6 +276,14 @@ Script PHP que corre periódicamente (cron en cPanel).
 
 ## Historial de cambios recientes
 
+### 2026-06-26 (3)
+- Actualización de métricas de plataformas en `ads/index.html` con datos reales de junio 2026
+- YouTube: 76.4K vistas totales, 5.9K espectadores mensuales, 18 viewers simultáneos promedio en live, pico 60, 22 min duración promedio
+- TikTok: 284.2K vistas (12 meses), 97.4K viewers únicos, 3.9K seguidores
+- Instagram: 171.7K vistas, 73.5K cuentas alcanzadas
+- Demografía consolidada: 83-87% masculino, ~50% de 25-34 años, top países: RD, EE.UU., Venezuela, Colombia, México
+- Proof items actualizados: crecimiento TikTok (0→3.9K en 6 meses), 22 min promedio en live, datos de edad/nicho
+
 ### 2026-06-26 (2)
 - Rediseño completo `ads/index.html`: psicología de color, "Don't Make Me Think", funnel B2B
 - Paleta: navy oscuro (#06101E) + azul eléctrico (#2563EB) como acento principal, rojo solo en logo
