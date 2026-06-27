@@ -172,7 +172,7 @@ nav {
 .tag-blue { background:linear-gradient(135deg,#EFF6FF,#DBEAFE); color:var(--blue); border:1px solid var(--bdr-b) }
 .calc-hdr h2 { font-size:clamp(1.6rem,4vw,2.4rem); font-weight:800; letter-spacing:-0.02em; margin-bottom:0.4rem }
 .calc-hdr p { font-size:0.9rem; color:var(--muted) }
-.calc-top-grid { display:grid; grid-template-columns:300px 1fr; gap:1.5rem; align-items:stretch; margin-bottom:1.5rem }
+.calc-top-grid { display:grid; grid-template-columns:280px 1fr 280px; gap:1.25rem; align-items:start }
 .calc-step {
   background:var(--bg2); border:1px solid var(--bdr);
   border-radius:12px; padding:1.75rem;
@@ -217,32 +217,43 @@ nav {
 .c-opt-disc--zero { color:#EF4444 }
 .c-opt-disc--win  { color:#059669 }
 
-/* ── TIMELINE ── */
-/* ── SPOT CARDS ── */
+/* ── SPOT CARDS COMPACTAS + DROPDOWN ── */
 .spot-tip {
   font-size:0.82rem; color:var(--blue); font-weight:500; line-height:1.55;
   background:var(--blue-lt); border-left:3px solid var(--blue);
-  border-radius:0 6px 6px 0; padding:8px 12px; margin-bottom:1.1rem;
+  border-radius:0 6px 6px 0; padding:8px 12px; margin-bottom:1rem;
 }
 .spot-tip strong { font-weight:700 }
 .spot-card {
   border:1.5px solid var(--bdr); border-radius:10px;
-  padding:13px 15px; margin-bottom:9px;
+  margin-bottom:8px; overflow:hidden;
   background:var(--bg2); transition:border-color 0.2s, box-shadow 0.2s;
 }
-.spot-card-header {
-  display:flex; align-items:center; justify-content:space-between;
-  margin-bottom:11px;
+.spot-card-row {
+  display:flex; align-items:center; gap:10px;
+  padding:11px 14px; cursor:pointer; user-select:none;
 }
-.spot-card-info { display:flex; align-items:center; gap:10px }
-.spot-card-icon { font-size:1.2rem; line-height:1 }
-.spot-card-name { font-size:0.87rem; font-weight:700 }
-.spot-card-detail { font-size:0.7rem; color:var(--muted); margin-top:2px }
-.spot-card-badge { text-align:right; min-width:95px }
-.spot-badge-price { font-size:0.9rem; font-weight:800 }
-.spot-badge-disc { font-size:0.69rem; color:var(--green); font-weight:700; margin-top:2px }
-.spot-badge-freq { font-size:0.67rem; color:var(--muted); margin-top:1px }
-.spot-badge-off { font-size:0.77rem; color:var(--muted); font-style:italic }
+.spot-card-row:hover { background:var(--bg3) }
+.spot-card-info { display:flex; align-items:center; gap:10px; flex:1; min-width:0 }
+.spot-card-icon { font-size:1.15rem; line-height:1; flex-shrink:0 }
+.spot-card-name { font-size:0.84rem; font-weight:700 }
+.spot-card-detail { font-size:0.67rem; color:var(--muted); margin-top:1px }
+.spot-card-badge { text-align:right; flex-shrink:0 }
+.spot-badge-price { font-size:0.88rem; font-weight:800 }
+.spot-badge-disc { font-size:0.67rem; color:var(--green); font-weight:700; margin-top:1px }
+.spot-badge-freq { font-size:0.65rem; color:var(--muted); margin-top:1px }
+.spot-badge-off { font-size:0.73rem; color:var(--muted); font-style:italic }
+.spot-chevron {
+  font-size:1rem; color:var(--muted); flex-shrink:0;
+  transition:transform 0.2s; line-height:1;
+}
+.spot-card.open .spot-chevron { transform:rotate(90deg) }
+.spot-dropdown {
+  display:none;
+  border-top:1px solid var(--bdr);
+  padding:10px 14px 12px; background:var(--bg3);
+}
+.spot-card.open .spot-dropdown { display:block }
 .spot-pills { display:flex; gap:5px }
 .spot-pill {
   flex:1; padding:8px 2px;
@@ -252,7 +263,7 @@ nav {
   cursor:pointer; text-align:center; transition:all 0.15s;
 }
 .spot-pill:hover:not(.active) { border-color:var(--blue); color:var(--blue) }
-/* Colores activos y borde de tarjeta por spot */
+/* Colores por spot */
 .spot-card[data-spot="inicio"] .spot-pill.active  { background:#16a34a; border-color:#16a34a; color:#fff }
 .spot-card[data-spot="inicio"].has-freq            { border-color:#16a34a; box-shadow:0 2px 10px rgba(22,163,74,0.14) }
 .spot-card[data-spot="inicio"] .spot-card-name    { color:#15803d }
@@ -266,31 +277,27 @@ nav {
 .spot-card[data-spot="cierre"] .spot-card-name    { color:#b91c1c }
 .spot-card[data-spot="cierre"] .spot-badge-price  { color:#b91c1c }
 
-/* ── SUMMARY PANEL ── */
+/* ── SUMMARY PANEL (columna derecha, vertical) ── */
 .calc-summary {
   background:var(--bg2); border:1px solid var(--bdr);
-  border-radius:12px; overflow:hidden;
+  border-radius:12px; overflow:hidden; padding:1rem;
+  position:sticky; top:72px;
   box-shadow:0 4px 6px rgba(0,0,0,0.04),0 20px 40px rgba(37,99,235,0.08);
-  display:flex; align-items:stretch;
-}
-.sum-lines-col {
-  flex:1; padding:1.25rem; min-width:0;
 }
 .sum-receipt {
-  background:var(--bg3); min-width:260px; max-width:320px;
-  padding:1.25rem 1.25rem 1rem calc(16px + 1rem);
-  position:relative; flex-shrink:0;
+  background:var(--bg3);
+  margin:0.6rem -1rem -1rem;
+  padding:0 1rem 0.9rem;
+  position:relative;
 }
 .sum-receipt::before {
   content:'';
-  position:absolute;
-  left:0; top:0; bottom:0;
-  width:16px;
+  display:block; height:16px; margin:0 -1rem 0.85rem;
   background:
-    linear-gradient(45deg,  var(--bg2) 33.33%, transparent 33.33%) 0 0,
-    linear-gradient(-45deg, var(--bg2) 33.33%, transparent 33.33%) 0 8px;
+    linear-gradient(135deg, var(--bg2) 33.33%, transparent 33.33%) 0 0,
+    linear-gradient(-135deg, var(--bg2) 33.33%, transparent 33.33%) 0 0;
   background-size:16px 16px;
-  background-repeat:repeat-y;
+  background-repeat:repeat-x;
   background-color:var(--bg3);
 }
 .sum-title { font-size:0.65rem; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-bottom:0.5rem }
@@ -480,17 +487,12 @@ footer a { color:var(--muted); text-decoration:none }
 footer a:hover { color:var(--ink) }
 
 /* ── RESPONSIVE ── */
-@media(max-width:1024px) {
+@media(max-width:1100px) {
   .calc-top-grid { grid-template-columns:240px 1fr }
+  .calc-summary { grid-column:1/-1; position:static }
 }
 @media(max-width:900px) {
   .calc-top-grid { grid-template-columns:1fr }
-  .calc-summary { flex-direction:column }
-  .sum-receipt {
-    min-width:0; max-width:none;
-    padding:1.25rem;
-    border-top:1px solid var(--bdr);
-  }
   .sum-receipt::before { display:none }
   .sum-note { text-align:center }
   .formats-grid { grid-template-columns:1fr }
@@ -688,7 +690,7 @@ footer a:hover { color:var(--ink) }
 
         <!-- Tarjeta Spot Inicio -->
         <div class="spot-card" data-spot="inicio">
-          <div class="spot-card-header">
+          <div class="spot-card-row" onclick="toggleSpotDropdown('inicio')">
             <div class="spot-card-info">
               <span class="spot-card-icon">🌅</span>
               <div>
@@ -697,20 +699,23 @@ footer a:hover { color:var(--ink) }
               </div>
             </div>
             <div class="spot-card-badge" id="badge-inicio"><div class="spot-badge-off">Sin activar</div></div>
+            <span class="spot-chevron">›</span>
           </div>
-          <div class="spot-pills" role="group" aria-label="Frecuencia Spot Inicio">
-            <button class="spot-pill active" data-val="0"  onclick="setFreq('inicio',0,this)">0/mes</button>
-            <button class="spot-pill"        data-val="4"  onclick="setFreq('inicio',4,this)">4</button>
-            <button class="spot-pill"        data-val="8"  onclick="setFreq('inicio',8,this)">8</button>
-            <button class="spot-pill"        data-val="12" onclick="setFreq('inicio',12,this)">12</button>
-            <button class="spot-pill"        data-val="16" onclick="setFreq('inicio',16,this)">16</button>
-            <button class="spot-pill"        data-val="20" onclick="setFreq('inicio',20,this)">20</button>
+          <div class="spot-dropdown">
+            <div class="spot-pills" role="group" aria-label="Frecuencia Spot Inicio">
+              <button class="spot-pill active" data-val="0"  onclick="setFreq('inicio',0,this)">0/mes</button>
+              <button class="spot-pill"        data-val="4"  onclick="setFreq('inicio',4,this)">4</button>
+              <button class="spot-pill"        data-val="8"  onclick="setFreq('inicio',8,this)">8</button>
+              <button class="spot-pill"        data-val="12" onclick="setFreq('inicio',12,this)">12</button>
+              <button class="spot-pill"        data-val="16" onclick="setFreq('inicio',16,this)">16</button>
+              <button class="spot-pill"        data-val="20" onclick="setFreq('inicio',20,this)">20</button>
+            </div>
           </div>
         </div>
 
         <!-- Tarjeta Spot Pico -->
         <div class="spot-card" data-spot="pico">
-          <div class="spot-card-header">
+          <div class="spot-card-row" onclick="toggleSpotDropdown('pico')">
             <div class="spot-card-info">
               <span class="spot-card-icon">🔥</span>
               <div>
@@ -719,20 +724,23 @@ footer a:hover { color:var(--ink) }
               </div>
             </div>
             <div class="spot-card-badge" id="badge-pico"><div class="spot-badge-off">Sin activar</div></div>
+            <span class="spot-chevron">›</span>
           </div>
-          <div class="spot-pills" role="group" aria-label="Frecuencia Spot Pico">
-            <button class="spot-pill active" data-val="0"  onclick="setFreq('pico',0,this)">0/mes</button>
-            <button class="spot-pill"        data-val="4"  onclick="setFreq('pico',4,this)">4</button>
-            <button class="spot-pill"        data-val="8"  onclick="setFreq('pico',8,this)">8</button>
-            <button class="spot-pill"        data-val="12" onclick="setFreq('pico',12,this)">12</button>
-            <button class="spot-pill"        data-val="16" onclick="setFreq('pico',16,this)">16</button>
-            <button class="spot-pill"        data-val="20" onclick="setFreq('pico',20,this)">20</button>
+          <div class="spot-dropdown">
+            <div class="spot-pills" role="group" aria-label="Frecuencia Spot Pico">
+              <button class="spot-pill active" data-val="0"  onclick="setFreq('pico',0,this)">0/mes</button>
+              <button class="spot-pill"        data-val="4"  onclick="setFreq('pico',4,this)">4</button>
+              <button class="spot-pill"        data-val="8"  onclick="setFreq('pico',8,this)">8</button>
+              <button class="spot-pill"        data-val="12" onclick="setFreq('pico',12,this)">12</button>
+              <button class="spot-pill"        data-val="16" onclick="setFreq('pico',16,this)">16</button>
+              <button class="spot-pill"        data-val="20" onclick="setFreq('pico',20,this)">20</button>
+            </div>
           </div>
         </div>
 
         <!-- Tarjeta Spot Cierre -->
         <div class="spot-card" data-spot="cierre">
-          <div class="spot-card-header">
+          <div class="spot-card-row" onclick="toggleSpotDropdown('cierre')">
             <div class="spot-card-info">
               <span class="spot-card-icon">🌙</span>
               <div>
@@ -741,29 +749,28 @@ footer a:hover { color:var(--ink) }
               </div>
             </div>
             <div class="spot-card-badge" id="badge-cierre"><div class="spot-badge-off">Sin activar</div></div>
+            <span class="spot-chevron">›</span>
           </div>
-          <div class="spot-pills" role="group" aria-label="Frecuencia Spot Cierre">
-            <button class="spot-pill active" data-val="0"  onclick="setFreq('cierre',0,this)">0/mes</button>
-            <button class="spot-pill"        data-val="4"  onclick="setFreq('cierre',4,this)">4</button>
-            <button class="spot-pill"        data-val="8"  onclick="setFreq('cierre',8,this)">8</button>
-            <button class="spot-pill"        data-val="12" onclick="setFreq('cierre',12,this)">12</button>
-            <button class="spot-pill"        data-val="16" onclick="setFreq('cierre',16,this)">16</button>
-            <button class="spot-pill"        data-val="20" onclick="setFreq('cierre',20,this)">20</button>
+          <div class="spot-dropdown">
+            <div class="spot-pills" role="group" aria-label="Frecuencia Spot Cierre">
+              <button class="spot-pill active" data-val="0"  onclick="setFreq('cierre',0,this)">0/mes</button>
+              <button class="spot-pill"        data-val="4"  onclick="setFreq('cierre',4,this)">4</button>
+              <button class="spot-pill"        data-val="8"  onclick="setFreq('cierre',8,this)">8</button>
+              <button class="spot-pill"        data-val="12" onclick="setFreq('cierre',12,this)">12</button>
+              <button class="spot-pill"        data-val="16" onclick="setFreq('cierre',16,this)">16</button>
+              <button class="spot-pill"        data-val="20" onclick="setFreq('cierre',20,this)">20</button>
+            </div>
           </div>
         </div>
       </div>
 
-    </div><!-- /calc-top-grid -->
-
-    <!-- BOTTOM: Desglose de precios (ancho completo) -->
-    <div class="calc-summary">
-      <div class="sum-lines-col">
+      <!-- Columna 3: Desglose de precios -->
+      <div class="calc-summary">
         <div class="sum-title">Tu inversión mensual</div>
         <div class="sum-lines" id="sum-lines">
           <div class="sum-empty">Selecciona opciones para ver el desglose.</div>
         </div>
-      </div>
-      <div class="sum-receipt">
+        <div class="sum-receipt">
           <div class="sum-row-meta">
             <span>Subtotal <strong id="sum-sub">$0</strong></span>
             <span id="sum-saving-badge" style="display:none" class="sum-saving-badge"></span>
@@ -786,7 +793,9 @@ footer a:hover { color:var(--ink) }
           <div id="upsell" class="sum-upsell" style="display:none"></div>
           <div class="sum-note">El calculador no procesa pagos. Toda negociación se formaliza por correo.</div>
         </div>
-    </div><!-- /calc-summary -->
+      </div>
+
+    </div><!-- /calc-top-grid -->
   </div><!-- /container -->
 </section>
 
@@ -941,6 +950,21 @@ function selectContent(plan, el) {
   recalc();
 }
 
+function toggleSpotDropdown(spot) {
+  const card = document.querySelector(`.spot-card[data-spot="${spot}"]`);
+  const isOpen = card.classList.contains('open');
+  // cierra todos
+  document.querySelectorAll('.spot-card').forEach(c => c.classList.remove('open'));
+  // abre este si estaba cerrado
+  if (!isOpen) card.classList.add('open');
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.spot-card')) {
+    document.querySelectorAll('.spot-card').forEach(c => c.classList.remove('open'));
+  }
+});
+
 function setFreq(spot, freq, el) {
   el.closest('.spot-pills').querySelectorAll('.spot-pill').forEach(p => {
     p.classList.remove('active');
@@ -949,7 +973,9 @@ function setFreq(spot, freq, el) {
   el.classList.add('active');
   el.textContent = freq + '/mes';
   state[spot] = freq;
-  el.closest('.spot-card').classList.toggle('has-freq', freq > 0);
+  const card = el.closest('.spot-card');
+  card.classList.toggle('has-freq', freq > 0);
+  card.classList.remove('open');
   updateBadge(spot);
   recalc();
 }
