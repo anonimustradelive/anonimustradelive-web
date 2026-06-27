@@ -679,12 +679,12 @@ footer a:hover { color:var(--ink) }
             <div class="spot-card-badge" id="badge-inicio"><div class="spot-badge-off">Sin activar</div></div>
           </div>
           <div class="spot-pills" role="group" aria-label="Frecuencia Spot Inicio">
-            <button class="spot-pill active" onclick="setFreq('inicio',0,this)">Off</button>
-            <button class="spot-pill" onclick="setFreq('inicio',4,this)">4</button>
-            <button class="spot-pill" onclick="setFreq('inicio',8,this)">8</button>
-            <button class="spot-pill" onclick="setFreq('inicio',12,this)">12</button>
-            <button class="spot-pill" onclick="setFreq('inicio',16,this)">16</button>
-            <button class="spot-pill" onclick="setFreq('inicio',20,this)">20</button>
+            <button class="spot-pill active" data-val="0"  onclick="setFreq('inicio',0,this)">0/mes</button>
+            <button class="spot-pill"        data-val="4"  onclick="setFreq('inicio',4,this)">4</button>
+            <button class="spot-pill"        data-val="8"  onclick="setFreq('inicio',8,this)">8</button>
+            <button class="spot-pill"        data-val="12" onclick="setFreq('inicio',12,this)">12</button>
+            <button class="spot-pill"        data-val="16" onclick="setFreq('inicio',16,this)">16</button>
+            <button class="spot-pill"        data-val="20" onclick="setFreq('inicio',20,this)">20</button>
           </div>
         </div>
 
@@ -701,12 +701,12 @@ footer a:hover { color:var(--ink) }
             <div class="spot-card-badge" id="badge-pico"><div class="spot-badge-off">Sin activar</div></div>
           </div>
           <div class="spot-pills" role="group" aria-label="Frecuencia Spot Pico">
-            <button class="spot-pill active" onclick="setFreq('pico',0,this)">Off</button>
-            <button class="spot-pill" onclick="setFreq('pico',4,this)">4</button>
-            <button class="spot-pill" onclick="setFreq('pico',8,this)">8</button>
-            <button class="spot-pill" onclick="setFreq('pico',12,this)">12</button>
-            <button class="spot-pill" onclick="setFreq('pico',16,this)">16</button>
-            <button class="spot-pill" onclick="setFreq('pico',20,this)">20</button>
+            <button class="spot-pill active" data-val="0"  onclick="setFreq('pico',0,this)">0/mes</button>
+            <button class="spot-pill"        data-val="4"  onclick="setFreq('pico',4,this)">4</button>
+            <button class="spot-pill"        data-val="8"  onclick="setFreq('pico',8,this)">8</button>
+            <button class="spot-pill"        data-val="12" onclick="setFreq('pico',12,this)">12</button>
+            <button class="spot-pill"        data-val="16" onclick="setFreq('pico',16,this)">16</button>
+            <button class="spot-pill"        data-val="20" onclick="setFreq('pico',20,this)">20</button>
           </div>
         </div>
 
@@ -723,12 +723,12 @@ footer a:hover { color:var(--ink) }
             <div class="spot-card-badge" id="badge-cierre"><div class="spot-badge-off">Sin activar</div></div>
           </div>
           <div class="spot-pills" role="group" aria-label="Frecuencia Spot Cierre">
-            <button class="spot-pill active" onclick="setFreq('cierre',0,this)">Off</button>
-            <button class="spot-pill" onclick="setFreq('cierre',4,this)">4</button>
-            <button class="spot-pill" onclick="setFreq('cierre',8,this)">8</button>
-            <button class="spot-pill" onclick="setFreq('cierre',12,this)">12</button>
-            <button class="spot-pill" onclick="setFreq('cierre',16,this)">16</button>
-            <button class="spot-pill" onclick="setFreq('cierre',20,this)">20</button>
+            <button class="spot-pill active" data-val="0"  onclick="setFreq('cierre',0,this)">0/mes</button>
+            <button class="spot-pill"        data-val="4"  onclick="setFreq('cierre',4,this)">4</button>
+            <button class="spot-pill"        data-val="8"  onclick="setFreq('cierre',8,this)">8</button>
+            <button class="spot-pill"        data-val="12" onclick="setFreq('cierre',12,this)">12</button>
+            <button class="spot-pill"        data-val="16" onclick="setFreq('cierre',16,this)">16</button>
+            <button class="spot-pill"        data-val="20" onclick="setFreq('cierre',20,this)">20</button>
           </div>
         </div>
       </div>
@@ -920,8 +920,12 @@ function selectContent(plan, el) {
 }
 
 function setFreq(spot, freq, el) {
-  el.closest('.spot-pills').querySelectorAll('.spot-pill').forEach(p => p.classList.remove('active'));
+  el.closest('.spot-pills').querySelectorAll('.spot-pill').forEach(p => {
+    p.classList.remove('active');
+    p.textContent = p.dataset.val;
+  });
   el.classList.add('active');
+  el.textContent = freq + '/mes';
   state[spot] = freq;
   el.closest('.spot-card').classList.toggle('has-freq', freq > 0);
   updateBadge(spot);
