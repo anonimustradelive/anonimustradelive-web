@@ -190,15 +190,16 @@ nav {
   border-radius:50%; font-size:0.68rem; font-weight:800;
   display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;
 }
-.step-title { font-size:0.85rem; font-weight:500; color:var(--muted); margin-bottom:0.75rem; line-height:1.5 }
+.step-title { font-size:0.85rem; font-weight:500; color:var(--muted); margin-bottom:0.75rem; line-height:1.5; min-height:88px }
 .step-desc { font-size:0.82rem; color:var(--muted); margin-bottom:1rem; line-height:1.6 }
 
-.c-opts { display:flex; flex-direction:column; gap:0.45rem }
+.calc-step { display:flex; flex-direction:column }
+.c-opts { display:flex; flex-direction:column; gap:0.45rem; flex:1 }
 .c-opt {
   display:flex; align-items:center; justify-content:space-between; gap:0.75rem;
   border:1.5px solid var(--bdr); border-radius:8px;
   padding:0.65rem 0.9rem; cursor:pointer;
-  min-height:64px;
+  min-height:64px; flex:1;
   transition:all 0.18s; text-align:left;
   background:var(--bg3); user-select:none;
 }
@@ -225,15 +226,17 @@ nav {
   border-radius:0 6px 6px 0; padding:8px 12px; margin-bottom:1rem;
 }
 .spot-tip strong { font-weight:700 }
+.spot-cards { flex:1; display:flex; flex-direction:column; gap:8px }
 .spot-card {
   border:1.5px solid var(--bdr); border-radius:10px;
-  margin-bottom:8px; position:relative;
+  position:relative; flex:1;
+  display:flex; flex-direction:column;
   background:var(--bg2); transition:border-color 0.2s, box-shadow 0.2s;
 }
 .spot-card-row {
   display:flex; align-items:center; gap:10px;
   padding:11px 14px; cursor:pointer; user-select:none;
-  border-radius:10px;
+  border-radius:10px; flex:1;
 }
 .spot-card-row:hover { background:var(--bg3) }
 .spot-card-info { display:flex; align-items:center; gap:10px; flex:1; min-width:0 }
@@ -301,10 +304,12 @@ nav {
   border-radius:12px; padding:1.75rem;
   position:sticky; top:72px;
   box-shadow:0 1px 2px rgba(0,0,0,0.04),0 6px 20px rgba(0,0,0,0.07);
+  display:flex; flex-direction:column;
 }
+
 .sum-receipt {
   background:var(--bg3);
-  margin:0.75rem -1.75rem -1.75rem;
+  margin:auto -1.75rem -1.75rem;
   padding:0 1.75rem 1rem;
   position:relative;
 }
@@ -704,6 +709,7 @@ footer a:hover { color:var(--ink) }
         <div class="step-lbl"><span class="step-num">2</span> Cintillos en vivo</div>
         <div class="step-title">Aparece en el momento exacto que quieras — al inicio, en el pico de audiencia o al cierre. Puedes activar los tres a la vez, cada uno con su propia frecuencia mensual.</div>
 
+        <div class="spot-cards">
         <!-- Tarjeta Spot Inicio -->
         <div class="spot-card" data-spot="inicio">
           <div class="spot-card-row" onclick="toggleSpotDropdown('inicio')">
@@ -772,6 +778,7 @@ footer a:hover { color:var(--ink) }
             <button class="spot-opt" onclick="setFreq('cierre',20,this)"><span class="opt-left">20/mes</span><span class="opt-right"><span class="opt-disc">−20% off</span><span class="opt-check">✓</span></span></button>
           </div>
         </div>
+        </div><!-- /spot-cards -->
       </div>
 
       <!-- Columna 3: Desglose de precios -->
