@@ -172,7 +172,7 @@ nav {
 .tag-blue { background:linear-gradient(135deg,#EFF6FF,#DBEAFE); color:var(--blue); border:1px solid var(--bdr-b) }
 .calc-hdr h2 { font-size:clamp(1.6rem,4vw,2.4rem); font-weight:800; letter-spacing:-0.02em; margin-bottom:0.4rem }
 .calc-hdr p { font-size:0.9rem; color:var(--muted) }
-.calc-top-grid { display:grid; grid-template-columns:280px 1fr 280px; gap:1.25rem; align-items:start }
+.calc-top-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1.25rem; align-items:start }
 .calc-step {
   background:var(--bg2); border:1px solid var(--bdr);
   border-radius:12px; padding:1.75rem;
@@ -226,12 +226,13 @@ nav {
 .spot-tip strong { font-weight:700 }
 .spot-card {
   border:1.5px solid var(--bdr); border-radius:10px;
-  margin-bottom:8px; overflow:hidden;
+  margin-bottom:8px; position:relative;
   background:var(--bg2); transition:border-color 0.2s, box-shadow 0.2s;
 }
 .spot-card-row {
   display:flex; align-items:center; gap:10px;
   padding:11px 14px; cursor:pointer; user-select:none;
+  border-radius:10px;
 }
 .spot-card-row:hover { background:var(--bg3) }
 .spot-card-info { display:flex; align-items:center; gap:10px; flex:1; min-width:0 }
@@ -244,55 +245,61 @@ nav {
 .spot-badge-freq { font-size:0.65rem; color:var(--muted); margin-top:1px }
 .spot-badge-off { font-size:0.73rem; color:var(--muted); font-style:italic }
 .spot-chevron {
-  font-size:1rem; color:var(--muted); flex-shrink:0;
+  font-size:0.85rem; color:var(--muted); flex-shrink:0;
   transition:transform 0.2s; line-height:1;
 }
-.spot-card.open .spot-chevron { transform:rotate(90deg) }
+.spot-card.open .spot-chevron { transform:rotate(180deg) }
+/* Dropdown flotante — no afecta el layout */
 .spot-dropdown {
   display:none;
-  border-top:1px solid var(--bdr);
-  padding:10px 14px 12px; background:var(--bg3);
+  position:absolute; top:calc(100% + 4px); left:0; right:0;
+  z-index:50;
+  background:var(--bg2); border:1.5px solid var(--bdr);
+  border-radius:8px; overflow:hidden;
+  box-shadow:0 8px 24px rgba(0,0,0,0.14);
 }
 .spot-card.open .spot-dropdown { display:block }
-.spot-pills { display:flex; gap:5px }
-.spot-pill {
-  flex:1; padding:8px 2px;
-  border:1.5px solid var(--bdr); border-radius:6px;
-  background:var(--bg); color:var(--muted);
-  font-size:0.74rem; font-weight:700; font-family:inherit;
-  cursor:pointer; text-align:center; transition:all 0.15s;
+.spot-opt {
+  display:flex; align-items:center; justify-content:space-between;
+  width:100%; padding:9px 14px;
+  background:none; border:none; border-bottom:1px solid var(--bdr);
+  color:var(--ink); font-size:0.82rem; font-weight:600; font-family:inherit;
+  cursor:pointer; text-align:left; transition:background 0.12s;
 }
-.spot-pill:hover:not(.active) { border-color:var(--blue); color:var(--blue) }
+.spot-opt:last-child { border-bottom:none }
+.spot-opt:hover { background:var(--bg3) }
+.spot-opt .opt-check { opacity:0; font-size:0.75rem }
+.spot-opt.active .opt-check { opacity:1 }
 /* Colores por spot */
-.spot-card[data-spot="inicio"] .spot-pill.active  { background:#16a34a; border-color:#16a34a; color:#fff }
-.spot-card[data-spot="inicio"].has-freq            { border-color:#16a34a; box-shadow:0 2px 10px rgba(22,163,74,0.14) }
-.spot-card[data-spot="inicio"] .spot-card-name    { color:#15803d }
-.spot-card[data-spot="inicio"] .spot-badge-price  { color:#15803d }
-.spot-card[data-spot="pico"]   .spot-pill.active  { background:#d97706; border-color:#d97706; color:#fff }
-.spot-card[data-spot="pico"].has-freq              { border-color:#d97706; box-shadow:0 2px 10px rgba(217,119,6,0.14) }
-.spot-card[data-spot="pico"]   .spot-card-name    { color:#b45309 }
-.spot-card[data-spot="pico"]   .spot-badge-price  { color:#b45309 }
-.spot-card[data-spot="cierre"] .spot-pill.active  { background:#dc2626; border-color:#dc2626; color:#fff }
-.spot-card[data-spot="cierre"].has-freq            { border-color:#dc2626; box-shadow:0 2px 10px rgba(220,38,38,0.14) }
-.spot-card[data-spot="cierre"] .spot-card-name    { color:#b91c1c }
-.spot-card[data-spot="cierre"] .spot-badge-price  { color:#b91c1c }
+.spot-card[data-spot="inicio"] .spot-opt.active  { color:#15803d; font-weight:700 }
+.spot-card[data-spot="inicio"].has-freq           { border-color:#16a34a; box-shadow:0 2px 10px rgba(22,163,74,0.14) }
+.spot-card[data-spot="inicio"] .spot-card-name   { color:#15803d }
+.spot-card[data-spot="inicio"] .spot-badge-price { color:#15803d }
+.spot-card[data-spot="pico"]   .spot-opt.active  { color:#b45309; font-weight:700 }
+.spot-card[data-spot="pico"].has-freq             { border-color:#d97706; box-shadow:0 2px 10px rgba(217,119,6,0.14) }
+.spot-card[data-spot="pico"]   .spot-card-name   { color:#b45309 }
+.spot-card[data-spot="pico"]   .spot-badge-price { color:#b45309 }
+.spot-card[data-spot="cierre"] .spot-opt.active  { color:#b91c1c; font-weight:700 }
+.spot-card[data-spot="cierre"].has-freq           { border-color:#dc2626; box-shadow:0 2px 10px rgba(220,38,38,0.14) }
+.spot-card[data-spot="cierre"] .spot-card-name   { color:#b91c1c }
+.spot-card[data-spot="cierre"] .spot-badge-price { color:#b91c1c }
 
-/* ── SUMMARY PANEL (columna derecha, vertical) ── */
+/* ── SUMMARY PANEL (columna 3, mismo estilo que calc-step) ── */
 .calc-summary {
   background:var(--bg2); border:1px solid var(--bdr);
-  border-radius:12px; overflow:hidden; padding:1rem;
+  border-radius:12px; padding:1.75rem;
   position:sticky; top:72px;
-  box-shadow:0 4px 6px rgba(0,0,0,0.04),0 20px 40px rgba(37,99,235,0.08);
+  box-shadow:0 1px 2px rgba(0,0,0,0.04),0 6px 20px rgba(0,0,0,0.07);
 }
 .sum-receipt {
   background:var(--bg3);
-  margin:0.6rem -1rem -1rem;
-  padding:0 1rem 0.9rem;
+  margin:0.75rem -1.75rem -1.75rem;
+  padding:0 1.75rem 1rem;
   position:relative;
 }
 .sum-receipt::before {
   content:'';
-  display:block; height:16px; margin:0 -1rem 0.85rem;
+  display:block; height:16px; margin:0 -1.75rem 0.85rem;
   background:
     linear-gradient(135deg, var(--bg2) 33.33%, transparent 33.33%) 0 0,
     linear-gradient(-135deg, var(--bg2) 33.33%, transparent 33.33%) 0 0;
@@ -488,7 +495,7 @@ footer a:hover { color:var(--ink) }
 
 /* ── RESPONSIVE ── */
 @media(max-width:1100px) {
-  .calc-top-grid { grid-template-columns:240px 1fr }
+  .calc-top-grid { grid-template-columns:1fr 1fr }
   .calc-summary { grid-column:1/-1; position:static }
 }
 @media(max-width:900px) {
@@ -681,12 +688,10 @@ footer a:hover { color:var(--ink) }
         </div>
       </div>
 
-      <!-- Paso 2: Cintillos (columna derecha, ancha) -->
+      <!-- Paso 2: Cintillos -->
       <div class="calc-step">
         <div class="step-lbl"><span class="step-num">2</span> Cintillos en vivo</div>
-        <div class="step-title">¿En qué momento del live quieres aparecer?</div>
-        <p class="step-desc">Tu cintillo visual + mención verbal en pantalla, en el momento exacto que elijas. Activa uno o varios spots y elige la frecuencia mensual de cada uno por separado.</p>
-        <div class="spot-tip">💡 Puedes activar <strong>Inicio, Pico y Cierre al mismo tiempo</strong>, cada uno con frecuencia independiente. A mayor frecuencia, mayor descuento, hasta 20%.</div>
+        <div class="step-title">Aparece en el momento exacto que quieras — al inicio, en el pico de audiencia o al cierre. Puedes activar los tres a la vez, cada uno con su propia frecuencia mensual.</div>
 
         <!-- Tarjeta Spot Inicio -->
         <div class="spot-card" data-spot="inicio">
@@ -699,17 +704,15 @@ footer a:hover { color:var(--ink) }
               </div>
             </div>
             <div class="spot-card-badge" id="badge-inicio"><div class="spot-badge-off">Sin activar</div></div>
-            <span class="spot-chevron">›</span>
+            <span class="spot-chevron">▾</span>
           </div>
           <div class="spot-dropdown">
-            <div class="spot-pills" role="group" aria-label="Frecuencia Spot Inicio">
-              <button class="spot-pill active" data-val="0"  onclick="setFreq('inicio',0,this)">0/mes</button>
-              <button class="spot-pill"        data-val="4"  onclick="setFreq('inicio',4,this)">4</button>
-              <button class="spot-pill"        data-val="8"  onclick="setFreq('inicio',8,this)">8</button>
-              <button class="spot-pill"        data-val="12" onclick="setFreq('inicio',12,this)">12</button>
-              <button class="spot-pill"        data-val="16" onclick="setFreq('inicio',16,this)">16</button>
-              <button class="spot-pill"        data-val="20" onclick="setFreq('inicio',20,this)">20</button>
-            </div>
+            <button class="spot-opt active" onclick="setFreq('inicio',0,this)"><span>Off</span><span class="opt-check">✓</span></button>
+            <button class="spot-opt"        onclick="setFreq('inicio',4,this)"><span>4/mes</span><span class="opt-check">✓</span></button>
+            <button class="spot-opt"        onclick="setFreq('inicio',8,this)"><span>8/mes</span><span class="opt-check">✓</span></button>
+            <button class="spot-opt"        onclick="setFreq('inicio',12,this)"><span>12/mes</span><span class="opt-check">✓</span></button>
+            <button class="spot-opt"        onclick="setFreq('inicio',16,this)"><span>16/mes</span><span class="opt-check">✓</span></button>
+            <button class="spot-opt"        onclick="setFreq('inicio',20,this)"><span>20/mes — mayor descuento</span><span class="opt-check">✓</span></button>
           </div>
         </div>
 
@@ -724,17 +727,15 @@ footer a:hover { color:var(--ink) }
               </div>
             </div>
             <div class="spot-card-badge" id="badge-pico"><div class="spot-badge-off">Sin activar</div></div>
-            <span class="spot-chevron">›</span>
+            <span class="spot-chevron">▾</span>
           </div>
           <div class="spot-dropdown">
-            <div class="spot-pills" role="group" aria-label="Frecuencia Spot Pico">
-              <button class="spot-pill active" data-val="0"  onclick="setFreq('pico',0,this)">0/mes</button>
-              <button class="spot-pill"        data-val="4"  onclick="setFreq('pico',4,this)">4</button>
-              <button class="spot-pill"        data-val="8"  onclick="setFreq('pico',8,this)">8</button>
-              <button class="spot-pill"        data-val="12" onclick="setFreq('pico',12,this)">12</button>
-              <button class="spot-pill"        data-val="16" onclick="setFreq('pico',16,this)">16</button>
-              <button class="spot-pill"        data-val="20" onclick="setFreq('pico',20,this)">20</button>
-            </div>
+            <button class="spot-opt active" onclick="setFreq('pico',0,this)"><span>Off</span><span class="opt-check">✓</span></button>
+            <button class="spot-opt"        onclick="setFreq('pico',4,this)"><span>4/mes</span><span class="opt-check">✓</span></button>
+            <button class="spot-opt"        onclick="setFreq('pico',8,this)"><span>8/mes</span><span class="opt-check">✓</span></button>
+            <button class="spot-opt"        onclick="setFreq('pico',12,this)"><span>12/mes</span><span class="opt-check">✓</span></button>
+            <button class="spot-opt"        onclick="setFreq('pico',16,this)"><span>16/mes</span><span class="opt-check">✓</span></button>
+            <button class="spot-opt"        onclick="setFreq('pico',20,this)"><span>20/mes — mayor descuento</span><span class="opt-check">✓</span></button>
           </div>
         </div>
 
@@ -749,24 +750,22 @@ footer a:hover { color:var(--ink) }
               </div>
             </div>
             <div class="spot-card-badge" id="badge-cierre"><div class="spot-badge-off">Sin activar</div></div>
-            <span class="spot-chevron">›</span>
+            <span class="spot-chevron">▾</span>
           </div>
           <div class="spot-dropdown">
-            <div class="spot-pills" role="group" aria-label="Frecuencia Spot Cierre">
-              <button class="spot-pill active" data-val="0"  onclick="setFreq('cierre',0,this)">0/mes</button>
-              <button class="spot-pill"        data-val="4"  onclick="setFreq('cierre',4,this)">4</button>
-              <button class="spot-pill"        data-val="8"  onclick="setFreq('cierre',8,this)">8</button>
-              <button class="spot-pill"        data-val="12" onclick="setFreq('cierre',12,this)">12</button>
-              <button class="spot-pill"        data-val="16" onclick="setFreq('cierre',16,this)">16</button>
-              <button class="spot-pill"        data-val="20" onclick="setFreq('cierre',20,this)">20</button>
-            </div>
+            <button class="spot-opt active" onclick="setFreq('cierre',0,this)"><span>Off</span><span class="opt-check">✓</span></button>
+            <button class="spot-opt"        onclick="setFreq('cierre',4,this)"><span>4/mes</span><span class="opt-check">✓</span></button>
+            <button class="spot-opt"        onclick="setFreq('cierre',8,this)"><span>8/mes</span><span class="opt-check">✓</span></button>
+            <button class="spot-opt"        onclick="setFreq('cierre',12,this)"><span>12/mes</span><span class="opt-check">✓</span></button>
+            <button class="spot-opt"        onclick="setFreq('cierre',16,this)"><span>16/mes</span><span class="opt-check">✓</span></button>
+            <button class="spot-opt"        onclick="setFreq('cierre',20,this)"><span>20/mes — mayor descuento</span><span class="opt-check">✓</span></button>
           </div>
         </div>
       </div>
 
       <!-- Columna 3: Desglose de precios -->
       <div class="calc-summary">
-        <div class="sum-title">Tu inversión mensual</div>
+        <div class="step-lbl"><span class="step-num">3</span> Tu inversión mensual</div>
         <div class="sum-lines" id="sum-lines">
           <div class="sum-empty">Selecciona opciones para ver el desglose.</div>
         </div>
@@ -966,12 +965,8 @@ document.addEventListener('click', function(e) {
 });
 
 function setFreq(spot, freq, el) {
-  el.closest('.spot-pills').querySelectorAll('.spot-pill').forEach(p => {
-    p.classList.remove('active');
-    p.textContent = p.dataset.val;
-  });
+  el.closest('.spot-dropdown').querySelectorAll('.spot-opt').forEach(p => p.classList.remove('active'));
   el.classList.add('active');
-  el.textContent = freq + '/mes';
   state[spot] = freq;
   const card = el.closest('.spot-card');
   card.classList.toggle('has-freq', freq > 0);
