@@ -171,8 +171,7 @@ nav {
 .tag-blue { background:linear-gradient(135deg,#EFF6FF,#DBEAFE); color:var(--blue); border:1px solid var(--bdr-b) }
 .calc-hdr h2 { font-size:clamp(1.5rem,4vw,2.2rem); font-weight:800; letter-spacing:-0.01em; margin-bottom:0.5rem }
 .calc-hdr p { font-size:0.95rem; color:var(--muted) }
-.calc-step-top { margin-bottom:1.5rem }
-.calc-bottom { display:grid; grid-template-columns:1fr 340px; gap:1.75rem; align-items:start }
+.calc-top-grid { display:grid; grid-template-columns:280px 1fr; gap:1.5rem; align-items:start; margin-bottom:1.5rem }
 .calc-step {
   background:var(--bg2); border:1px solid var(--bdr);
   border-radius:12px; padding:1.75rem;
@@ -266,27 +265,28 @@ nav {
 /* ── SUMMARY PANEL ── */
 .calc-summary {
   background:var(--bg2); border:1px solid var(--bdr);
-  border-radius:12px; padding:1rem;
-  position:sticky; top:72px;
-  overflow:hidden;
+  border-radius:12px; overflow:hidden;
   box-shadow:0 4px 6px rgba(0,0,0,0.04),0 20px 40px rgba(37,99,235,0.08);
+  display:flex; align-items:stretch;
+}
+.sum-lines-col {
+  flex:1; padding:1.25rem; min-width:0;
 }
 .sum-receipt {
-  background:var(--bg3);
-  margin:0.6rem -1rem -1rem;
-  padding:0 1rem 0.9rem;
-  position:relative;
+  background:var(--bg3); min-width:260px; max-width:320px;
+  padding:1.25rem 1.25rem 1rem calc(16px + 1rem);
+  position:relative; flex-shrink:0;
 }
 .sum-receipt::before {
   content:'';
-  display:block;
-  height:16px;
-  margin:0 -1rem 0.85rem;
+  position:absolute;
+  left:0; top:0; bottom:0;
+  width:16px;
   background:
-    linear-gradient(135deg, var(--bg2) 33.33%, transparent 33.33%) 0 0,
-    linear-gradient(-135deg, var(--bg2) 33.33%, transparent 33.33%) 0 0;
+    linear-gradient(45deg,  var(--bg2) 33.33%, transparent 33.33%) 0 0,
+    linear-gradient(-45deg, var(--bg2) 33.33%, transparent 33.33%) 0 8px;
   background-size:16px 16px;
-  background-repeat:repeat-x;
+  background-repeat:repeat-y;
   background-color:var(--bg3);
 }
 .sum-title { font-size:0.65rem; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-bottom:0.5rem }
@@ -477,11 +477,17 @@ footer a:hover { color:var(--ink) }
 
 /* ── RESPONSIVE ── */
 @media(max-width:1024px) {
-  .calc-bottom { grid-template-columns:1fr 300px }
+  .calc-top-grid { grid-template-columns:240px 1fr }
 }
 @media(max-width:900px) {
-  .calc-bottom { grid-template-columns:1fr }
-  .calc-summary { position:static }
+  .calc-top-grid { grid-template-columns:1fr }
+  .calc-summary { flex-direction:column }
+  .sum-receipt {
+    min-width:0; max-width:none;
+    padding:1.25rem;
+    border-top:1px solid var(--bdr);
+  }
+  .sum-receipt::before { display:none }
   .sum-note { text-align:center }
   .formats-grid { grid-template-columns:1fr }
   .visual-grid { grid-template-columns:1fr }
@@ -629,37 +635,37 @@ footer a:hover { color:var(--ink) }
       <h2>Arma tu paquete. Ve tu precio al instante.</h2>
       <p>Elige los formatos y la frecuencia. El precio se actualiza al instante con todos los descuentos incluidos.</p>
     </div>
-    <!-- Paso 1: fila completa -->
-    <div class="calc-step calc-step-top">
-      <div class="step-lbl"><span class="step-num">1</span> Videos de marca</div>
-      <div class="step-title">Nosotros creamos el contenido, tu marca, en nuestra voz</div>
-      <p class="step-desc">Producimos reels y videos donde presentamos tu producto ante una audiencia que ya confía en nuestro criterio. Nuestra cámara, nuestro estilo, nuestro respaldo. Se publica en YouTube y TikTok, y en Instagram como collab, aparece en tu perfil también.</p>
-      <div class="spot-tip">📲 El collab de Instagram es exclusivo de este plan: el reel se publica en nuestro perfil <strong>y en el tuyo al mismo tiempo</strong>, llevas nuestra audiencia directamente a tu cuenta.</div>
-      <div class="c-opts">
-        <div class="c-opt sel" onclick="selectContent('ninguno',this)">
-          <div class="c-opt-lbl">Sin contenido</div>
-          <div class="c-opt-price">$0</div>
-          <div class="c-opt-sub">Solo cintillos</div>
-        </div>
-        <div class="c-opt" onclick="selectContent('semanal',this)">
-          <div class="c-opt-lbl">Plan Semanal</div>
-          <div class="c-opt-price">$650</div>
-          <div class="c-opt-sub">4 videos/mes</div>
-          <div class="c-opt-disc c-opt-disc--zero">0% off</div>
-        </div>
-        <div class="c-opt" onclick="selectContent('intensivo',this)">
-          <div class="c-opt-lbl">Plan Intensivo</div>
-          <div class="c-opt-price">$1,000</div>
-          <div class="c-opt-sub">8 videos/mes</div>
-          <div class="c-opt-disc c-opt-disc--win">23% off</div>
+    <!-- TOP GRID: Paso 1 (izq) + Paso 2 (der) -->
+    <div class="calc-top-grid">
+
+      <!-- Paso 1: Videos (columna izquierda, angosta) -->
+      <div class="calc-step">
+        <div class="step-lbl"><span class="step-num">1</span> Videos de marca</div>
+        <div class="step-title">Nosotros creamos el contenido, tu marca, en nuestra voz</div>
+        <p class="step-desc">Producimos reels y videos donde presentamos tu producto ante una audiencia que ya confía en nuestro criterio. Nuestra cámara, nuestro estilo, nuestro respaldo. Se publica en YouTube y TikTok, y en Instagram como collab, aparece en tu perfil también.</p>
+        <div class="spot-tip">📲 El collab de Instagram es exclusivo de este plan: el reel se publica en nuestro perfil <strong>y en el tuyo al mismo tiempo</strong>, llevas nuestra audiencia directamente a tu cuenta.</div>
+        <div class="c-opts" style="grid-template-columns:1fr">
+          <div class="c-opt sel" onclick="selectContent('ninguno',this)">
+            <div class="c-opt-lbl">Sin contenido</div>
+            <div class="c-opt-price">$0</div>
+            <div class="c-opt-sub">Solo cintillos</div>
+          </div>
+          <div class="c-opt" onclick="selectContent('semanal',this)">
+            <div class="c-opt-lbl">Plan Semanal</div>
+            <div class="c-opt-price">$650</div>
+            <div class="c-opt-sub">4 videos/mes</div>
+            <div class="c-opt-disc c-opt-disc--zero">0% off</div>
+          </div>
+          <div class="c-opt" onclick="selectContent('intensivo',this)">
+            <div class="c-opt-lbl">Plan Intensivo</div>
+            <div class="c-opt-price">$1,000</div>
+            <div class="c-opt-sub">8 videos/mes</div>
+            <div class="c-opt-disc c-opt-disc--win">23% off</div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Paso 2 + Resumen: lado a lado -->
-    <div class="calc-bottom">
-
-      <!-- Paso 2: Cintillos -->
+      <!-- Paso 2: Cintillos (columna derecha, ancha) -->
       <div class="calc-step">
         <div class="step-lbl"><span class="step-num">2</span> Cintillos en vivo</div>
         <div class="step-title">¿En qué momento del live quieres aparecer?</div>
@@ -733,13 +739,17 @@ footer a:hover { color:var(--ink) }
         </div>
       </div>
 
-      <!-- RESUMEN -->
-      <div class="calc-summary">
+    </div><!-- /calc-top-grid -->
+
+    <!-- BOTTOM: Desglose de precios (ancho completo) -->
+    <div class="calc-summary">
+      <div class="sum-lines-col">
         <div class="sum-title">Tu inversión mensual</div>
         <div class="sum-lines" id="sum-lines">
           <div class="sum-empty">Selecciona opciones para ver el desglose.</div>
         </div>
-        <div class="sum-receipt">
+      </div>
+      <div class="sum-receipt">
           <div class="sum-row-meta">
             <span>Subtotal <strong id="sum-sub">$0</strong></span>
             <span id="sum-saving-badge" style="display:none" class="sum-saving-badge"></span>
@@ -762,10 +772,8 @@ footer a:hover { color:var(--ink) }
           <div id="upsell" class="sum-upsell" style="display:none"></div>
           <div class="sum-note">El calculador no procesa pagos. Toda negociación se formaliza por correo.</div>
         </div>
-      </div>
-
-    </div>
-  </div>
+    </div><!-- /calc-summary -->
+  </div><!-- /container -->
 </section>
 
 <!-- VISUALES -->
