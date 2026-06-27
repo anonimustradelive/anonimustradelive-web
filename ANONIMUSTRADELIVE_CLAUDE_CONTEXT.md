@@ -75,7 +75,17 @@ anonimustradelive/
 │   └── index.html             ← página pública de herramientas
 ├── images/                    ← logos, favicon, fotos
 ├── ads/
-│   └── index.html             ← landing page de publicidad (estática, sin backend)
+│   ├── index.html             ← landing page de publicidad (estática, sin backend)
+│   └── ads_img/               ← assets visuales de la landing
+│       ├── hero_img_1.png     ← foto alternativa del live (no usada actualmente)
+│       ├── hero_img_2.png     ← foto del live — fondo actual del hero
+│       ├── live_capture_1.png ← captura del stream (stream mock)
+│       ├── reel_1.png         ← top reel IG (32.7K views)
+│       ├── reel_2.png         ← top reel IG (60.9K views)
+│       ├── reel_3.png         ← top reel IG (2,667 views)
+│       ├── cintillo_pana.gif  ← cintillo animado cliente Pana (1920×216)
+│       ├── cintillo_pp.gif    ← cintillo animado cliente PepperStone (convertido de MP4, 960×108, CSS stretch)
+│       └── cintillo_prado.png ← cintillo estático cliente Prado (1920×216)
 └── Asistente/
     └── contexto-anonimustradelive.md  ← contexto del show (no tocar)
 ```
@@ -275,6 +285,21 @@ Script PHP que corre periódicamente (cron en cPanel).
 ---
 
 ## Historial de cambios recientes
+
+### 2026-06-27 (1)
+- `ads/index.html` + `ads/ads_img/`: múltiples cambios visuales y de copy
+- **Hero**: imagen real del live como fondo (`hero_img_2.png`), gradient horizontal izquierda→derecha para legibilidad del texto
+- **Audience strip**: género separado en "83–87% Hombres · 13–17% Mujeres"; stat débil (22 min) reemplazada por "532K+ vistas totales YouTube+TikTok+IG"; bandera dominicana como SVG inline en desktop (emoji en mobile)
+- **Fan deck reels**: imágenes reales, links directos a cada reel de IG, overlay estilo IG con contador de vistas siempre visible + likes/comentarios con slide-in en hover
+- **Stream mock**: captura real del live + cintillo `cintillo_pp.gif` animado
+- **Galería cintillos**: 3 cintillos reales (Pana, PP, Prado)
+- **Copy**: proofreading general — frases más cortas y directas; em dashes (—) reemplazados por comas; "piezas" → "videos"; pitch y "Ideal si" del cintillo reescritos
+- **Borde rasgado recibo**: efecto zigzag CSS (`linear-gradient` triangulares) en la separación del área de totales del calculador
+- `ads/ads_img/cintillo_pp.gif`: convertido desde MP4 con ffmpeg (960×108, 15fps, paletteuse), CSS hace stretch a 100%
+
+### 2026-06-26 (9)
+- `ads/index.html`: horario corregido a 8:30 AM (hero kicker + timeline); tabs de spot con color por spot: Inicio=verde, Pico=ámbar, Cierre=rojo — borde izquierdo + nombre + fondo activo tintado, coherencia con pins del timeline
+- `.claude/launch.json` (raíz): agregada config `ads-preview` en puerto 5501 sirviendo `ads/` con `python -m http.server --directory` para que el preview funcione desde la sesión raíz
 
 ### 2026-06-26 (8)
 - `ads/index.html`: 5 correcciones de layout y UX en el calculador
