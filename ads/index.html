@@ -33,7 +33,7 @@
 *,*::before,*::after { margin:0; padding:0; box-sizing:border-box }
 html { scroll-behavior:smooth }
 body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--ink); line-height:1.6; font-size:16px }
-.container { max-width:1080px; margin:0 auto; padding:0 clamp(1.25rem,5vw,2.5rem) }
+.container { max-width:1280px; margin:0 auto; padding:0 clamp(1.25rem,5vw,2.5rem) }
 
 /* ── NAV ── */
 nav {
@@ -162,41 +162,43 @@ nav {
 .fmt-from-sub { font-size:0.75rem; color:var(--muted); margin-top:2px }
 
 /* ── CALCULADOR ── */
-.calc-hdr { text-align:center; margin-bottom:2.5rem }
+.calc-hdr { text-align:center; margin-bottom:2rem }
+.calc-eyebrow { font-size:0.68rem; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--blue); margin-bottom:0.6rem }
 .tag {
   display:inline-block; font-size:0.62rem; font-weight:700;
   letter-spacing:0.12em; text-transform:uppercase;
   padding:4px 14px; border-radius:20px; margin-bottom:0.75rem;
 }
 .tag-blue { background:linear-gradient(135deg,#EFF6FF,#DBEAFE); color:var(--blue); border:1px solid var(--bdr-b) }
-.calc-hdr h2 { font-size:clamp(1.5rem,4vw,2.2rem); font-weight:800; letter-spacing:-0.01em; margin-bottom:0.5rem }
-.calc-hdr p { font-size:0.95rem; color:var(--muted) }
-.calc-top-grid { display:grid; grid-template-columns:280px 1fr; gap:1.5rem; align-items:start; margin-bottom:1.5rem }
+.calc-hdr h2 { font-size:clamp(1.6rem,4vw,2.4rem); font-weight:800; letter-spacing:-0.02em; margin-bottom:0.4rem }
+.calc-hdr p { font-size:0.9rem; color:var(--muted) }
+.calc-top-grid { display:grid; grid-template-columns:300px 1fr; gap:1.5rem; align-items:stretch; margin-bottom:1.5rem }
 .calc-step {
   background:var(--bg2); border:1px solid var(--bdr);
   border-radius:12px; padding:1.75rem;
   box-shadow:0 1px 2px rgba(0,0,0,0.04),0 6px 20px rgba(0,0,0,0.07);
 }
 .step-lbl {
-  font-size:0.65rem; font-weight:700; letter-spacing:0.14em;
-  text-transform:uppercase; color:var(--muted);
-  margin-bottom:0.35rem; display:flex; align-items:center; gap:6px;
+  font-size:1.05rem; font-weight:800; letter-spacing:-0.01em;
+  color:var(--ink);
+  margin-bottom:0.4rem; display:flex; align-items:center; gap:8px;
 }
 .step-num {
-  width:22px; height:22px;
+  width:24px; height:24px;
   background:linear-gradient(135deg,#EFF6FF,#DBEAFE);
   border:1px solid var(--bdr-b); color:var(--blue);
-  border-radius:50%; font-size:0.65rem; font-weight:800;
+  border-radius:50%; font-size:0.68rem; font-weight:800;
   display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;
 }
-.step-title { font-size:1rem; font-weight:700; margin-bottom:0.35rem }
-.step-desc { font-size:0.85rem; color:var(--muted); margin-bottom:1.5rem; line-height:1.6 }
+.step-title { font-size:0.85rem; font-weight:500; color:var(--muted); margin-bottom:0.75rem; line-height:1.5 }
+.step-desc { font-size:0.82rem; color:var(--muted); margin-bottom:1rem; line-height:1.6 }
 
-.c-opts { display:grid; grid-template-columns:repeat(3,1fr); gap:0.65rem }
+.c-opts { display:flex; flex-direction:column; gap:0.45rem }
 .c-opt {
+  display:flex; align-items:center; justify-content:space-between; gap:0.75rem;
   border:1.5px solid var(--bdr); border-radius:8px;
-  padding:1.1rem 0.75rem; cursor:pointer;
-  transition:all 0.18s; text-align:center;
+  padding:0.65rem 0.9rem; cursor:pointer;
+  transition:all 0.18s; text-align:left;
   background:var(--bg3); user-select:none;
 }
 .c-opt:hover { border-color:rgba(37,99,235,0.4); background:var(--blue-lt); box-shadow:0 2px 8px rgba(37,99,235,0.10) }
@@ -205,13 +207,15 @@ nav {
   background:linear-gradient(135deg,#EFF6FF,#DBEAFE);
   box-shadow:0 2px 10px rgba(37,99,235,0.15);
 }
-.c-opt-lbl { font-size:0.65rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-bottom:5px }
+.c-opt-meta { flex:1; min-width:0 }
+.c-opt-lbl { font-size:0.72rem; font-weight:700; color:var(--ink) }
 .c-opt.sel .c-opt-lbl { color:var(--blue) }
-.c-opt-price { font-size:1.3rem; font-weight:800 }
-.c-opt-sub { font-size:0.68rem; color:var(--muted); margin-top:3px; line-height:1.3 }
-.c-opt-disc { font-size:0.72rem; font-weight:800; letter-spacing:0.04em; margin-top:4px }
-.c-opt-disc--zero { color:#EF4444; text-shadow:0 0 8px rgba(239,68,68,0.45) }
-.c-opt-disc--win  { color:#059669; text-shadow:0 0 9px rgba(5,150,105,0.5) }
+.c-opt-sub { font-size:0.65rem; color:var(--muted); margin-top:2px }
+.c-opt-right { text-align:right; flex-shrink:0 }
+.c-opt-price { font-size:1.1rem; font-weight:800; white-space:nowrap }
+.c-opt-disc { font-size:0.65rem; font-weight:800; letter-spacing:0.03em; margin-top:2px }
+.c-opt-disc--zero { color:#EF4444 }
+.c-opt-disc--win  { color:#059669 }
 
 /* ── TIMELINE ── */
 /* ── SPOT CARDS ── */
@@ -631,9 +635,9 @@ footer a:hover { color:var(--ink) }
 <section class="section alt" id="calculador">
   <div class="container">
     <div class="calc-hdr">
-      <div class="tag tag-blue">Calculador de inversión</div>
-      <h2>Arma tu paquete. Ve tu precio al instante.</h2>
-      <p>Elige los formatos y la frecuencia. El precio se actualiza al instante con todos los descuentos incluidos.</p>
+      <p class="calc-eyebrow">Calculador de inversión</p>
+      <h2>Elige lo que quieres y ve tu precio al instante</h2>
+      <p>Todos los descuentos se aplican automáticamente.</p>
     </div>
     <!-- TOP GRID: Paso 1 (izq) + Paso 2 (der) -->
     <div class="calc-top-grid">
@@ -641,26 +645,36 @@ footer a:hover { color:var(--ink) }
       <!-- Paso 1: Videos (columna izquierda, angosta) -->
       <div class="calc-step">
         <div class="step-lbl"><span class="step-num">1</span> Videos de marca</div>
-        <div class="step-title">Nosotros creamos el contenido, tu marca, en nuestra voz</div>
-        <p class="step-desc">Producimos reels y videos donde presentamos tu producto ante una audiencia que ya confía en nuestro criterio. Nuestra cámara, nuestro estilo, nuestro respaldo. Se publica en YouTube y TikTok, y en Instagram como collab, aparece en tu perfil también.</p>
-        <div class="spot-tip">📲 El collab de Instagram es exclusivo de este plan: el reel se publica en nuestro perfil <strong>y en el tuyo al mismo tiempo</strong>, llevas nuestra audiencia directamente a tu cuenta.</div>
-        <div class="c-opts" style="grid-template-columns:1fr">
+        <div class="step-title">Hacemos el video con tu marca en nuestro estilo. Se publica en YouTube, TikTok y en Instagram como collab — aparece en tu perfil también.</div>
+        <div class="c-opts">
           <div class="c-opt sel" onclick="selectContent('ninguno',this)">
-            <div class="c-opt-lbl">Sin contenido</div>
-            <div class="c-opt-price">$0</div>
-            <div class="c-opt-sub">Solo cintillos</div>
+            <div class="c-opt-meta">
+              <div class="c-opt-lbl">Sin contenido</div>
+              <div class="c-opt-sub">Solo cintillos</div>
+            </div>
+            <div class="c-opt-right">
+              <div class="c-opt-price">$0</div>
+            </div>
           </div>
           <div class="c-opt" onclick="selectContent('semanal',this)">
-            <div class="c-opt-lbl">Plan Semanal</div>
-            <div class="c-opt-price">$650</div>
-            <div class="c-opt-sub">4 videos/mes</div>
-            <div class="c-opt-disc c-opt-disc--zero">0% off</div>
+            <div class="c-opt-meta">
+              <div class="c-opt-lbl">Plan Semanal</div>
+              <div class="c-opt-sub">4 videos/mes</div>
+            </div>
+            <div class="c-opt-right">
+              <div class="c-opt-price">$650</div>
+              <div class="c-opt-disc c-opt-disc--zero">0% off</div>
+            </div>
           </div>
           <div class="c-opt" onclick="selectContent('intensivo',this)">
-            <div class="c-opt-lbl">Plan Intensivo</div>
-            <div class="c-opt-price">$1,000</div>
-            <div class="c-opt-sub">8 videos/mes</div>
-            <div class="c-opt-disc c-opt-disc--win">23% off</div>
+            <div class="c-opt-meta">
+              <div class="c-opt-lbl">Plan Intensivo</div>
+              <div class="c-opt-sub">8 videos/mes</div>
+            </div>
+            <div class="c-opt-right">
+              <div class="c-opt-price">$1,000</div>
+              <div class="c-opt-disc c-opt-disc--win">23% off</div>
+            </div>
           </div>
         </div>
       </div>
