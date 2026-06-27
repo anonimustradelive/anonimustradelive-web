@@ -69,6 +69,8 @@ anonimustradelive/
 │
 ├── bio/
 │   └── index.html             ← página tipo linktree
+├── libros/
+│   └── index.html             ← biblioteca de libros recomendados (Top 5 + lista completa por categoría)
 ├── utilidades/
 │   └── index.php              ← herramientas premium (protegidas por gate.php)
 ├── herramientas/
@@ -285,6 +287,15 @@ Script PHP que corre periódicamente (cron en cPanel).
 ---
 
 ## Historial de cambios recientes
+
+### 2026-06-27 (3)
+- `libros/index.html`: nueva página `/libros` — biblioteca de libros recomendados
+- Mismo diseño que `/bio` (dark theme, Montserrat, colores purple/red)
+- Sección Top 5 con tarjetas doradas numeradas (1-5) con tagline de por qué leerlos y en qué orden
+- Lista completa organizada en 5 categorías: Psicología/Mentalidad, Gestión de Riesgo, Análisis Técnico, Mentalidad Ganadora, Joyas Ocultas (28 libros total)
+- Links Amazon afiliados tomados de `commands/libros.php`
+- CTAs al final: Únete a la comunidad (Telegram) + Agendar asesoría (Calendly)
+- `.cpanel.yml`: agregado deploy de `libros/index.html`
 
 ### 2026-06-27 (2)
 - `ads/index.html`: rediseño completo del Paso 2 del calculador (Cintillos en vivo)

@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biblioteca — AnonimusTrade Live</title>
+<link rel="icon" type="image/png" href="../images/fab icon anonimustradelive.png">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400&display=swap" rel="stylesheet">
+<link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+<script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
+<style>
+  :root {
+    --red: #C0112B; --red-dark: #8B0D1F;
+    --black: #080810; --black2: #0E0E18; --black3: #14141F; --black4: #1A1A28;
+    --white: #F0EFFF;
+    --purple: #7C3AED; --purple-dark: #4C1D95;
+    --purple-light: #A78BFA; --purple-glow: rgba(124,58,237,0.18);
+    --gray: #252535; --gray2: #333348; --text-muted: #7070A0; --green: #22C55E;
+    --gold: #F59E0B;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Montserrat', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2.5rem 1.25rem 5rem;
+  }
+
+  .bio-wrap {
+    width: 100%;
+    max-width: 460px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ── CABECERA ── */
+  .bio-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    padding-bottom: 1.5rem;
+  }
+
+  .bio-back {
+    align-self: flex-start;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    margin-bottom: 1.5rem;
+    transition: color 0.2s;
+  }
+  .bio-back:hover { color: var(--purple-light); }
+
+  .bio-logo {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    margin-bottom: 0.6rem;
+    filter: drop-shadow(0 0 10px rgba(124,58,237,0.3));
+  }
+
+  .bio-name {
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--white);
+  }
+
+  .bio-handle {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--purple-light);
+    margin-top: 0.2rem;
+    letter-spacing: 0.04em;
+  }
+
+  .page-title {
+    font-size: 1.45rem;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    margin-top: 1.5rem;
+    color: var(--white);
+  }
+
+  .page-sub {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    line-height: 1.6;
+  }
+
+  /* ── DIVISOR ── */
+  .bio-divider {
+    width: 36px;
+    height: 2px;
+    background: var(--red);
+    border-radius: 1px;
+    margin: 1.5rem 0;
+  }
+
+  /* ── SECCIÓN LABEL ── */
+  .bio-section-label {
+    width: 100%;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 1.5rem 0 0.6rem;
+    padding-left: 2px;
+  }
+
+  /* ── LINKS (lista completa) ── */
+  .bio-links {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  .bio-link {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.85rem 1.1rem;
+    background: var(--black3);
+    border: 1px solid var(--gray);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--white);
+    transition: border-color 0.2s, background 0.2s, transform 0.2s;
+    width: 100%;
+  }
+
+  .bio-link:hover {
+    border-color: var(--purple-light);
+    background: var(--black4);
+    transform: translateY(-1px);
+  }
+
+  .bio-link.v-purple {
+    background: var(--purple-glow);
+    border-color: rgba(124,58,237,0.5);
+  }
+  .bio-link.v-purple:hover { background: rgba(124,58,237,0.28); border-color: var(--purple); }
+  .bio-link.v-purple .bio-link-title { color: var(--purple-light); }
+
+  .bio-link-emoji {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .bio-link-body { flex: 1; min-width: 0; }
+
+  .bio-link-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .bio-link-desc {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-top: 0.18rem;
+  }
+
+  .bio-link-arrow {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  /* ── TOP 5 CARDS ── */
+  .top5-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .top5-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.1rem;
+    background: var(--black3);
+    border: 1px solid var(--gray);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--white);
+    transition: border-color 0.2s, background 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .top5-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(245,158,11,0.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .top5-card:hover {
+    border-color: var(--gold);
+    background: var(--black4);
+    transform: translateY(-1px);
+  }
+
+  .top5-num {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: rgba(245,158,11,0.15);
+    border: 1.5px solid rgba(245,158,11,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 900;
+    color: var(--gold);
+  }
+
+  .top5-card:nth-child(1) .top5-num {
+    background: rgba(245,158,11,0.22);
+    border-color: var(--gold);
+    font-size: 0.9rem;
+  }
+
+  .top5-body { flex: 1; min-width: 0; }
+
+  .top5-title {
+    font-size: 0.84rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--white);
+  }
+
+  .top5-author {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-top: 0.2rem;
+  }
+
+  .top5-tag {
+    font-size: 0.6rem;
+    color: var(--gold);
+    font-weight: 600;
+    margin-top: 0.25rem;
+    opacity: 0.85;
+  }
+
+  .top5-arrow {
+    color: var(--gold);
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    opacity: 0.6;
+    line-height: 1;
+  }
+
+  .top5-card:hover .top5-arrow { opacity: 1; }
+
+  /* ── ORDEN LECTURA BADGE ── */
+  .order-note {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    background: rgba(245,158,11,0.08);
+    border: 1px solid rgba(245,158,11,0.2);
+    border-left: 3px solid var(--gold);
+    border-radius: 6px;
+    font-size: 0.68rem;
+    color: rgba(245,158,11,0.85);
+    line-height: 1.55;
+    margin-bottom: 0.25rem;
+  }
+
+  /* ── CTAs ── */
+  .cta-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+  }
+
+  /* ── FOOTER ── */
+  .bio-footer {
+    margin-top: 3rem;
+    text-align: center;
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+  }
+
+  .bio-footer a { color: var(--purple-light); text-decoration: none; }
+  .bio-footer a:hover { color: var(--white); }
+</style>
+</head>
+<body>
+
+<div class="bio-wrap">
+
+  <!-- CABECERA -->
+  <div class="bio-header">
+    <a class="bio-back" href="../bio/">← Volver a los links</a>
+    <img class="bio-logo" src="https://anonimustradelive.com/images/logo.png" alt="AnonimusTrade Live">
+    <p class="bio-name">AnonimusTrade Live</p>
+    <p class="bio-handle">@anonimustradelive</p>
+    <h1 class="page-title">📚 Biblioteca</h1>
+    <p class="page-sub">Libros esenciales para traders serios.<br>Sin humo, sin relleno, solo lo que funciona.</p>
+  </div>
+
+  <div class="bio-divider"></div>
+
+  <div class="bio-links">
+
+    <!-- ── TOP 5 ── -->
+    <p class="bio-section-label">Top 5 — Lectura obligatoria</p>
+
+    <div class="order-note">
+      📖 Léelos en este orden, uno detrás del otro. Son la base de la mentalidad que separa a los traders que sobreviven del resto.
+    </div>
+
+    <div class="top5-list">
+
+      <a class="top5-card" href="https://amzn.to/3RBpGGQ" target="_blank" rel="noopener">
+        <div class="top5-num">1</div>
+        <div class="top5-body">
+          <div class="top5-title">Trading en la zona</div>
+          <div class="top5-author">Mark Douglas</div>
+          <div class="top5-tag">El libro #1 de psicología para traders</div>
+        </div>
+        <span class="top5-arrow">›</span>
+      </a>
+
+      <a class="top5-card" href="https://amzn.to/4dW8xiE" target="_blank" rel="noopener">
+        <div class="top5-num">2</div>
+        <div class="top5-body">
+          <div class="top5-title">Hábitos atómicos</div>
+          <div class="top5-author">James Clear</div>
+          <div class="top5-tag">Cómo construir la disciplina del trader</div>
+        </div>
+        <span class="top5-arrow">›</span>
+      </a>
+
+      <a class="top5-card" href="https://amzn.to/437unun" target="_blank" rel="noopener">
+        <div class="top5-num">3</div>
+        <div class="top5-body">
+          <div class="top5-title">El trader disciplinado</div>
+          <div class="top5-author">Mark Douglas</div>
+          <div class="top5-tag">La mentalidad que separa a los ganadores</div>
+        </div>
+        <span class="top5-arrow">›</span>
+      </a>
+
+      <a class="top5-card" href="https://amzn.to/4o5hLhe" target="_blank" rel="noopener">
+        <div class="top5-num">4</div>
+        <div class="top5-body">
+          <div class="top5-title">The Mental Game of Trading</div>
+          <div class="top5-author">Jared Tendler</div>
+          <div class="top5-tag">Gestión emocional bajo presión real</div>
+        </div>
+        <span class="top5-arrow">›</span>
+      </a>
+
+      <a class="top5-card" href="https://amzn.to/4dFFcdh" target="_blank" rel="noopener">
+        <div class="top5-num">5</div>
+        <div class="top5-body">
+          <div class="top5-title">La psicología del dinero</div>
+          <div class="top5-author">Morgan Housel</div>
+          <div class="top5-tag">Cómo piensan los mejores sobre el dinero</div>
+        </div>
+        <span class="top5-arrow">›</span>
+      </a>
+
+    </div>
+
+    <div class="bio-divider" style="margin: 0.5rem 0 0;"></div>
+
+    <!-- ── BIBLIOTECA COMPLETA ── -->
+
+    <!-- Psicología y Mentalidad -->
+    <p class="bio-section-label">🧠 Psicología y Mentalidad del Trader</p>
+
+    <a class="bio-link" href="https://amzn.to/3RBpGGQ" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">📘</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">Trading en la zona</div>
+        <div class="bio-link-desc">Mark Douglas</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://amzn.to/437unun" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">📘</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">El trader disciplinado</div>
+        <div class="bio-link-desc">Mark Douglas</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://amzn.to/4uJPT4F" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">📘</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">Vivir del trading</div>
+        <div class="bio-link-desc">Alexander Elder</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://amzn.to/4dFFcdh" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">📘</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">La psicología del dinero</div>
+        <div class="bio-link-desc">Morgan Housel</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://amzn.to/4nWojhP" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">📘</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">Pensar rápido, pensar despacio</div>
+        <div class="bio-link-desc">Daniel Kahneman</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://amzn.to/4fduegj" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">📘</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">The Inner Voice of Trading</div>
+        <div class="bio-link-desc">Michael Martin</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://amzn.to/4u6gM1u" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">📘</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">Why You Win or Lose</div>
+        <div class="bio-link-desc">Fred Kelly</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://amzn.to/4o5hLhe" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">📘</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">The Mental Game of Trading</div>
+        <div class="bio-link-desc">Jared Tendler</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://amzn.to/4dZJvyZ" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">📘</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">Mastering the Trade</div>
+        <div class="bio-link-desc">John Carter</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://amzn.to/4dW8xiE" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">📘</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">Hábitos atómicos</div>
+        <div class="bio-link-desc">James Clear</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <!-- Gestión de Riesgo -->
+    <p class="bio-section-label">💰 Gestión de Riesgo y Capital</p>
+
+    <a class="bio-link" href="https://amzn.to/4viHXXR" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">📙</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">Recuerdos de un Operador de Acciones en la Bolsa</div>
+        <div class="bio-link-desc">Edwin Lefèvre</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://amzn.to/4vFlzID" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">📙</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">The Zurich Axioms</div>
+        <div class="bio-link-desc">Max Gunther</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://amzn.to/3PMguPl" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">📙</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">Tener éxito en trading</div>
+        <div class="bio-link-desc">Van Tharp</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://amzn.to/4a1Zawu" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">📙</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">The Art of Risk</div>
+        <div class="bio-link-desc">Kayt Sukel</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://amzn.to/3RwGzm3" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">📙</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">¿Existe la suerte?</div>
+        <div class="bio-link-desc">Nassim Taleb</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://amzn.to/437vJFt" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">📙</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">El Cisne Negro</div>
+        <div class="bio-link-desc">Nassim Taleb</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <!-- Análisis Técnico -->
+    <p class="bio-section-label">📈 Análisis Técnico y Estrategia</p>
+
+    <a class="bio-link" href="https://amzn.to/3PTyUxp" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">📗</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">Análisis técnico de los mercados financieros</div>
+        <div class="bio-link-desc">John Murphy</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://amzn.to/49AlFsm" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">📗</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">Las velas japonesas</div>
+        <div class="bio-link-desc">Steve Nison</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://amzn.to/4dFt7EW" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">📗</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">Cómo ganar dinero con las acciones</div>
+        <div class="bio-link-desc">William O'Neil</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://amzn.to/4edcu3E" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">📗</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">Encyclopedia of Chart Patterns</div>
+        <div class="bio-link-desc">Thomas Bulkowski</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://amzn.to/4x0sDRi" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">📗</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">The Art and Science of Technical Analysis</div>
+        <div class="bio-link-desc">Adam Grimes</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <!-- Mentalidad Ganadora -->
+    <p class="bio-section-label">🏆 Mentalidad Ganadora y Alto Rendimiento</p>
+
+    <a class="bio-link" href="https://amzn.to/49z3seJ" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">📕</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">Mindset: la actitud del éxito</div>
+        <div class="bio-link-desc">Carol Dweck</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://amzn.to/4vpjCjo" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">📕</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">El obstáculo es el camino</div>
+        <div class="bio-link-desc">Ryan Holiday</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://amzn.to/49zDCHn" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">📕</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">Extreme Ownership</div>
+        <div class="bio-link-desc">Jocko Willink</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <!-- Joyas Ocultas -->
+    <p class="bio-section-label">💎 Joyas Ocultas</p>
+
+    <a class="bio-link" href="https://amzn.to/4dFtP54" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">💎</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">Best Loser Wins</div>
+        <div class="bio-link-desc">Tom Hougaard</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://amzn.to/4dFHaub" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">💎</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">The Daily Trading Coach</div>
+        <div class="bio-link-desc">Brett Steenbarger</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://amzn.to/4fQSUv9" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">💎</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">Enhancing Trader Performance</div>
+        <div class="bio-link-desc">Brett Steenbarger</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://amzn.to/3RwnZKO" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">💎</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">La biología de la toma de riesgos</div>
+        <div class="bio-link-desc">John Coates</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://amzn.to/4uH8q1k" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">💎</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">Mente y mercados</div>
+        <div class="bio-link-desc">James Dalton</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link" href="https://amzn.to/49wactR" target="_blank" rel="noopener">
+      <div class="bio-link-emoji">💎</div>
+      <div class="bio-link-body">
+        <div class="bio-link-title">The Art of Execution</div>
+        <div class="bio-link-desc">Lee Freeman-Shor</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <!-- ── CTAs ── -->
+    <div class="bio-divider" style="margin: 1rem 0 0.25rem;"></div>
+    <p class="bio-section-label">¿Quieres aprender en comunidad?</p>
+
+    <div class="cta-section">
+      <a class="bio-link v-purple" href="https://t.me/anonimustradelive_bot" target="_blank" rel="noopener">
+        <img style="width:34px;height:34px;object-fit:contain;flex-shrink:0;" src="https://anonimustradelive.com/images/Telegram_logo.svg.png" alt="Telegram">
+        <div class="bio-link-body">
+          <div class="bio-link-title">Únete a la comunidad</div>
+          <div class="bio-link-desc">Requiere cuenta en Pepperstone · Regístrate con nuestro bot</div>
+        </div>
+        <span class="bio-link-arrow">›</span>
+      </a>
+
+      <a class="bio-link v-purple" href="" onclick="Calendly.showPopupWidget('https://calendly.com/anonimustradelive/mentoria1a1?hide_gdpr_banner=1'); return false;">
+        <div class="bio-link-emoji">🎯</div>
+        <div class="bio-link-body">
+          <div class="bio-link-title">Agendar asesoría 1:1</div>
+          <div class="bio-link-desc">1 hora · Richard y Ridolfi · Solución personalizada</div>
+        </div>
+        <span class="bio-link-arrow">›</span>
+      </a>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="bio-footer">
+    <p><a href="https://anonimustradelive.com">Ver sitio web completo →</a></p>
+    <p style="margin-top:0.35rem;">Los enlaces de Amazon son de afiliado. No cambian el precio para ti.</p>
+    <p style="margin-top:0.5rem;">© 2026 AnonimusTrade Live · República Dominicana</p>
+  </div>
+
+</div>
+
+<script>
+  window.addEventListener('load', function() {
+    if (window.Calendly) {
+      Calendly.initBadgeWidget({
+        url: 'https://calendly.com/anonimustradelive/mentoria1a1?hide_gdpr_banner=1',
+        text: 'Agendar asesoría',
+        color: '#7C3AED',
+        textColor: '#F0EFFF',
+        branding: false,
+      });
+    }
+  });
+</script>
+</body>
+</html>

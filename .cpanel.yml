@@ -26,6 +26,8 @@ deployment:
     - /bin/cp ads/index.html /home/ntpsrnlfrg/anonimustradelive.com/ads/
     - /bin/mkdir -p /home/ntpsrnlfrg/anonimustradelive.com/ads/ads_img
     - /bin/cp -r ads/ads_img /home/ntpsrnlfrg/anonimustradelive.com/ads/
+    - /bin/mkdir -p /home/ntpsrnlfrg/anonimustradelive.com/libros
+    - /bin/cp libros/index.html /home/ntpsrnlfrg/anonimustradelive.com/libros/
     - /bin/mkdir -p /home/ntpsrnlfrg/reg.anonimustradelive.com
     - /bin/cp reg/webhook.php /home/ntpsrnlfrg/reg.anonimustradelive.com/
     - /bin/cp reg/index.php /home/ntpsrnlfrg/reg.anonimustradelive.com/
