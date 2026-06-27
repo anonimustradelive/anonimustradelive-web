@@ -286,6 +286,14 @@ Script PHP que corre periódicamente (cron en cPanel).
 
 ## Historial de cambios recientes
 
+### 2026-06-27 (2)
+- `ads/index.html`: rediseño completo del Paso 2 del calculador (Cintillos en vivo)
+- **Eliminado**: timeline visual, tabs de spot, slider único compartido (noUiSlider), CDN links de noUiSlider
+- **Nuevo**: 3 tarjetas de spot independientes (Inicio/Pico/Cierre), cada una con control de 6 píldoras (Off · 4 · 8 · 12 · 16 · 20) y badge de precio+descuento+frecuencia en tiempo real
+- **Colores por spot**: Inicio=verde (#16a34a), Pico=ámbar (#d97706), Cierre=rojo (#dc2626); borde y sombra de la tarjeta se activan al seleccionar frecuencia
+- **JS**: `setFreq()` + `updateBadge()` reemplazan toda la lógica de slider; PRECIOS cintillos ahora usa claves mensuales (0,4,8,12,16,20); `cinDiscount()` usa precio en 4/mes como base para calcular ahorro
+- **Acceptance test verificado**: Intensivo + los 3 spots a 20/mes → Subtotal $4,520, Bundle −$678, **Total $3,842** ✓
+
 ### 2026-06-27 (1)
 - `ads/index.html` + `ads/ads_img/`: múltiples cambios visuales y de copy
 - **Hero**: imagen real del live como fondo (`hero_img_2.png`), gradient horizontal izquierda→derecha para legibilidad del texto
