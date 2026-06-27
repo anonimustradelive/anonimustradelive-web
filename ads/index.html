@@ -171,8 +171,8 @@ nav {
 .tag-blue { background:linear-gradient(135deg,#EFF6FF,#DBEAFE); color:var(--blue); border:1px solid var(--bdr-b) }
 .calc-hdr h2 { font-size:clamp(1.5rem,4vw,2.2rem); font-weight:800; letter-spacing:-0.01em; margin-bottom:0.5rem }
 .calc-hdr p { font-size:0.95rem; color:var(--muted) }
-.calc-layout { display:grid; grid-template-columns:1fr 360px; gap:1.75rem; align-items:start }
-.calc-controls { display:flex; flex-direction:column; gap:1.5rem }
+.calc-step-top { margin-bottom:1.5rem }
+.calc-bottom { display:grid; grid-template-columns:1fr 340px; gap:1.75rem; align-items:start }
 .calc-step {
   background:var(--bg2); border:1px solid var(--bdr);
   border-radius:12px; padding:1.75rem;
@@ -293,7 +293,7 @@ nav {
 .sd-freq { font-size:1rem; font-weight:700 }
 .sd-price { font-size:1.15rem; font-weight:800; color:var(--blue) }
 .sd-disc { font-size:0.75rem; font-weight:700; color:var(--green); margin-top:2px }
-.slider-wrap { padding:0 4px 2px }
+.slider-wrap { padding:4px 6px 2.5rem }
 
 /* noUiSlider theming */
 .noUi-target {
@@ -304,17 +304,20 @@ nav {
   border-radius:3px;
 }
 .noUi-connect { background:var(--blue); border-radius:3px }
-.noUi-handle {
-  width:26px; height:26px;
+.noUi-horizontal .noUi-handle {
+  width:24px; height:24px;
   border-radius:50%;
   background:#fff;
-  border:2px solid var(--blue);
+  border:2.5px solid var(--blue);
   box-shadow:0 2px 8px rgba(37,99,235,0.3);
   cursor:pointer;
-  right:-13px; top:-10px;
+  right:-12px; top:-9px;
+  box-sizing:border-box;
+  padding:0;
 }
-.noUi-handle:focus { outline:none }
-.noUi-handle::before, .noUi-handle::after { display:none }
+.noUi-horizontal .noUi-handle:focus { outline:none }
+.noUi-horizontal .noUi-handle::before,
+.noUi-horizontal .noUi-handle::after { display:none }
 .noUi-horizontal { height:6px }
 .noUi-pips-horizontal { padding:8px 0 0; height:auto }
 .noUi-pip-large { display:none }
@@ -482,8 +485,11 @@ footer a { color:var(--muted); text-decoration:none }
 footer a:hover { color:var(--ink) }
 
 /* ── RESPONSIVE ── */
+@media(max-width:1024px) {
+  .calc-bottom { grid-template-columns:1fr 300px }
+}
 @media(max-width:900px) {
-  .calc-layout { grid-template-columns:1fr }
+  .calc-bottom { grid-template-columns:1fr }
   .calc-summary { position:static }
   .formats-grid { grid-template-columns:1fr }
   .visual-grid { grid-template-columns:1fr }
@@ -492,6 +498,8 @@ footer a:hover { color:var(--ink) }
 @media(max-width:660px) {
   .metrics-bar { grid-template-columns:1fr }
   .c-opts { grid-template-columns:1fr }
+  .spot-tabs { grid-template-columns:1fr }
+  .tl-pin-label { font-size:0.62rem }
   .fan-deck { width:160px; height:237px }
   .fan-card { width:160px; height:237px }
   .fan-card:nth-child(1) { transform:rotate(-13deg) translateX(-60px) }
@@ -617,94 +625,91 @@ footer a:hover { color:var(--ink) }
       <h2>Arma tu paquete. Ve tu precio al instante.</h2>
       <p>Selecciona los formatos y frecuencias. El total se actualiza en tiempo real con todos los descuentos aplicados.</p>
     </div>
-    <div class="calc-layout">
+    <!-- Paso 1: fila completa -->
+    <div class="calc-step calc-step-top">
+      <div class="step-lbl"><span class="step-num">1</span> Contenido orgánico</div>
+      <div class="step-title">¿Quieres contenido de marca?</div>
+      <p class="step-desc">Videos/reels con integración natural + CTA. En YouTube, TikTok y en tu perfil de Instagram (collab).</p>
+      <div class="c-opts">
+        <div class="c-opt sel" onclick="selectContent('ninguno',this)">
+          <div class="c-opt-lbl">Sin contenido</div>
+          <div class="c-opt-price">$0</div>
+          <div class="c-opt-sub">Solo cintillos</div>
+        </div>
+        <div class="c-opt" onclick="selectContent('semanal',this)">
+          <div class="c-opt-lbl">Plan Semanal</div>
+          <div class="c-opt-price">$650</div>
+          <div class="c-opt-sub">4 piezas/mes</div>
+        </div>
+        <div class="c-opt" onclick="selectContent('intensivo',this)">
+          <div class="c-opt-lbl">Plan Intensivo</div>
+          <div class="c-opt-price">$1,000</div>
+          <div class="c-opt-sub">8 piezas/mes · 23% off</div>
+        </div>
+      </div>
+    </div>
 
-      <div class="calc-controls">
+    <!-- Paso 2 + Resumen: lado a lado -->
+    <div class="calc-bottom">
 
-        <!-- Paso 1: Contenido -->
-        <div class="calc-step">
-          <div class="step-lbl"><span class="step-num">1</span> Contenido orgánico</div>
-          <div class="step-title">¿Quieres contenido de marca?</div>
-          <p class="step-desc">Videos/reels con integración natural + CTA. En YouTube, TikTok y en tu perfil de Instagram (collab).</p>
-          <div class="c-opts">
-            <div class="c-opt sel" onclick="selectContent('ninguno',this)">
-              <div class="c-opt-lbl">Sin contenido</div>
-              <div class="c-opt-price">$0</div>
-              <div class="c-opt-sub">Solo cintillos</div>
+      <!-- Paso 2: Cintillos -->
+      <div class="calc-step">
+        <div class="step-lbl"><span class="step-num">2</span> Cintillos en vivo</div>
+        <div class="step-title">¿Cuántas veces por semana aparecer?</div>
+        <p class="step-desc">Tu marca en pantalla + mención verbal en el live. Elige el momento y la frecuencia — a mayor frecuencia, mayor descuento.</p>
+
+        <!-- Timeline visual del live -->
+        <div class="tl-outer">
+          <div class="tl-header">
+            <span class="tl-live-badge"><span class="tl-live-dot">●</span> LIVE · L–V</span>
+            <span class="tl-times">9:00 AM → ~12:00 PM</span>
+          </div>
+          <div class="tl-row">
+            <div class="tl-track"></div>
+            <div class="tl-pin-wrap" data-spot="inicio" onclick="tabClick('inicio')" style="left:10%">
+              <div class="tl-pin tl-pin--inicio"></div>
+              <div class="tl-pin-label">🌅 Inicio</div>
             </div>
-            <div class="c-opt" onclick="selectContent('semanal',this)">
-              <div class="c-opt-lbl">Plan Semanal</div>
-              <div class="c-opt-price">$650</div>
-              <div class="c-opt-sub">4 piezas/mes</div>
+            <div class="tl-pin-wrap active" data-spot="pico" onclick="tabClick('pico')" style="left:42%">
+              <div class="tl-pin tl-pin--pico"></div>
+              <div class="tl-pin-label">🔥 Pico</div>
             </div>
-            <div class="c-opt" onclick="selectContent('intensivo',this)">
-              <div class="c-opt-lbl">Plan Intensivo</div>
-              <div class="c-opt-price">$1,000</div>
-              <div class="c-opt-sub">8 piezas/mes · 23% off</div>
+            <div class="tl-pin-wrap" data-spot="cierre" onclick="tabClick('cierre')" style="left:90%">
+              <div class="tl-pin tl-pin--cierre"></div>
+              <div class="tl-pin-label">🌙 Cierre</div>
             </div>
           </div>
         </div>
 
-        <!-- Paso 2: Cintillos -->
-        <div class="calc-step">
-          <div class="step-lbl"><span class="step-num">2</span> Cintillos en vivo</div>
-          <div class="step-title">¿Cuántas veces por semana aparecer?</div>
-          <p class="step-desc">Tu marca en pantalla + mención verbal en el live. Elige el momento del live y la frecuencia — a mayor frecuencia, mayor descuento.</p>
-
-          <!-- Timeline visual del live -->
-          <div class="tl-outer">
-            <div class="tl-header">
-              <span class="tl-live-badge"><span class="tl-live-dot">●</span> LIVE · L–V</span>
-              <span class="tl-times">9:00 AM → ~12:00 PM</span>
-            </div>
-            <div class="tl-row">
-              <div class="tl-track"></div>
-              <div class="tl-pin-wrap" data-spot="inicio" onclick="tabClick('inicio')" style="left:10%">
-                <div class="tl-pin tl-pin--inicio"></div>
-                <div class="tl-pin-label">🌅 Inicio</div>
-              </div>
-              <div class="tl-pin-wrap active" data-spot="pico" onclick="tabClick('pico')" style="left:42%">
-                <div class="tl-pin tl-pin--pico"></div>
-                <div class="tl-pin-label">🔥 Pico</div>
-              </div>
-              <div class="tl-pin-wrap" data-spot="cierre" onclick="tabClick('cierre')" style="left:90%">
-                <div class="tl-pin tl-pin--cierre"></div>
-                <div class="tl-pin-label">🌙 Cierre</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Selector de spot -->
-          <div class="spot-tabs">
-            <button class="spot-tab active" data-spot="pico" onclick="tabClick('pico')">
-              <span class="spot-tab-name">🔥 Spot Pico</span>
-              <span class="spot-tab-detail">Mayor audiencia ⭐</span>
-              <span class="spot-tab-status" id="tab-status-pico">Off</span>
-            </button>
-            <button class="spot-tab" data-spot="inicio" onclick="tabClick('inicio')">
-              <span class="spot-tab-name">🌅 Spot Inicio</span>
-              <span class="spot-tab-detail">Apertura del live</span>
-              <span class="spot-tab-status" id="tab-status-inicio">Off</span>
-            </button>
-            <button class="spot-tab" data-spot="cierre" onclick="tabClick('cierre')">
-              <span class="spot-tab-name">🌙 Spot Cierre</span>
-              <span class="spot-tab-detail">Despedida del live</span>
-              <span class="spot-tab-status" id="tab-status-cierre">Off</span>
-            </button>
-          </div>
-
-          <!-- Slider único activo -->
-          <div class="slider-display" id="disp-active">
-            <div class="disp-left">
-              <span class="sd-instruction">Desliza para elegir con cuánta frecuencia semanal aparecer</span>
-            </div>
-            <div class="disp-right" id="disp-right-active"></div>
-          </div>
-          <div class="slider-wrap">
-            <div id="sl-active"></div>
-          </div>
+        <!-- Selector de spot: orden Inicio | Pico | Cierre -->
+        <div class="spot-tabs">
+          <button class="spot-tab" data-spot="inicio" onclick="tabClick('inicio')">
+            <span class="spot-tab-name">🌅 Spot Inicio</span>
+            <span class="spot-tab-detail">Apertura del live</span>
+            <span class="spot-tab-status" id="tab-status-inicio">Off</span>
+          </button>
+          <button class="spot-tab active" data-spot="pico" onclick="tabClick('pico')">
+            <span class="spot-tab-name">🔥 Spot Pico</span>
+            <span class="spot-tab-detail">Mayor audiencia ⭐</span>
+            <span class="spot-tab-status" id="tab-status-pico">Off</span>
+          </button>
+          <button class="spot-tab" data-spot="cierre" onclick="tabClick('cierre')">
+            <span class="spot-tab-name">🌙 Spot Cierre</span>
+            <span class="spot-tab-detail">Despedida del live</span>
+            <span class="spot-tab-status" id="tab-status-cierre">Off</span>
+          </button>
         </div>
 
+        <!-- Slider único activo -->
+        <div class="slider-display" id="disp-active">
+          <div class="disp-left">
+            <span class="sd-instruction">Desliza para elegir con cuánta frecuencia semanal aparecer</span>
+          </div>
+          <div class="disp-right" id="disp-right-active"></div>
+        </div>
+        <div class="slider-wrap">
+          <div id="sl-active"></div>
+        </div>
       </div>
 
       <!-- RESUMEN -->

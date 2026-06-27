@@ -276,6 +276,14 @@ Script PHP que corre periódicamente (cron en cPanel).
 
 ## Historial de cambios recientes
 
+### 2026-06-26 (8)
+- `ads/index.html`: 5 correcciones de layout y UX en el calculador
+- Layout calculador: paso 1 (contenido) ahora ocupa fila completa; paso 2 + resumen en grid lado a lado (1fr + 340px) — mejor uso del espacio horizontal
+- Orden de tabs corregido: Inicio | Pico | Cierre (coincide con el orden de izquierda a derecha del timeline)
+- Slider thumb: `.noUi-horizontal .noUi-handle` con `box-sizing:border-box; padding:0` — círculo perfecto 24×24px
+- Slider pips: `padding: 4px 6px 2.5rem` en `.slider-wrap` para que Off/1×/2×… no sean cortados
+- Responsive: breakpoint 1024px (340px panel), 900px (stacked), 660px (spot-tabs en columna)
+
 ### 2026-06-26 (7)
 - `ads/index.html`: pasada de profundidad visual — degradados, sombras en capas, hover lift
 - Botones (nav-cta, hero-cta, sum-cta): gradiente azul 135°, sombra azul, translateY(-1/-2px) en hover
