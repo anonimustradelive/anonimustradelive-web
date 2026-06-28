@@ -332,6 +332,8 @@ nav {
   margin:auto -1.75rem -1.75rem;
   padding:0 1.75rem 1rem;
   position:relative;
+  border-bottom-left-radius:11px;
+  border-bottom-right-radius:11px;
 }
 .sum-receipt::before {
   content:'';
@@ -562,7 +564,9 @@ footer a:hover { color:var(--ink) }
 }
 @media(max-width:900px) {
   .calc-top-grid { grid-template-columns:1fr }
-  .sum-receipt::before { display:none }
+  .sum-lines { padding-bottom:1.25rem }
+  .sum-receipt { padding:0 1.25rem 1.25rem }
+  .sum-receipt::before { height:20px; margin:0 -1.25rem 1rem; background-size:20px 20px }
   .sum-note { text-align:center }
   .formats-grid { grid-template-columns:1fr }
   .visual-grid { grid-template-columns:1fr }
@@ -1132,7 +1136,7 @@ function recalc() {
     if (bundleRow.style.display !== 'none') hideEl(bundleRow);
   }
 
-  document.getElementById('sum-total').textContent = fmt(total);
+  document.getElementById('sum-total').innerHTML = fmt(total) + '<span style="font-size:0.55em;font-weight:600;opacity:0.5;letter-spacing:0.04em;margin-left:4px">USD</span>';
 
   const totalDiscRow = document.getElementById('total-disc-row');
   const totalAllSavings = totalSaving + desc;
