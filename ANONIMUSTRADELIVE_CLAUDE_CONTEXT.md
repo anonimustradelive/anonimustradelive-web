@@ -288,6 +288,18 @@ Script PHP que corre periódicamente (cron en cPanel).
 
 ## Historial de cambios recientes
 
+### 2026-06-28
+- `ads/index.html`: animación upsell corregida — `max-height` + `opacity` CSS transition; el botón precio/CTA desliza suavemente cuando aparece/desaparece el mensaje de bundle
+- Fix: etiqueta de frecuencia en desglose mostraba "5/sem/sem" (doble sufijo) → corregido a "5/sem"
+- Botón de contacto cambiado de mostrar el email a decir "Enviar correo"
+- Spot Pico: quitada estrella ⭐ del nombre
+- Planes renombrados: **Plan Premium** (👑, fondo dorado) y **Plan Deluxe** (💎, fondo violeta) con hover intenso por color
+- Descripciones de spots actualizadas: Inicio y Cierre → "Audiencia moderada"; Pico queda como "Mayor audiencia"
+- Spots con color propio: Inicio=naranja, Pico=rojo, Cierre=verde; cada card tiene fondo tintado + hover intenso igual que los planes
+- Especificaciones rediseñadas: "Formato fijo: PNG, JPG · sin transparencia" y "Formato animado: GIF, MP4" (eliminado "Consultar disponibilidad")
+- Stream mock actualizado a `cintillo_pana.gif`
+- Galería cintillos reordenada: Prado → PP → Pana
+
 ### 2026-06-27 (3)
 - `libros/index.html`: nueva página `/libros` — biblioteca de libros recomendados
 - Mismo diseño que `/bio` (dark theme, Montserrat, colores purple/red)
