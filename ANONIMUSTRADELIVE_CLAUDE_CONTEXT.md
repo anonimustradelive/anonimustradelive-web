@@ -288,7 +288,11 @@ Script PHP que corre periódicamente (cron en cPanel).
 
 ## Historial de cambios recientes
 
-### 2026-06-28
+### 2026-06-28 (2)
+- `ads/index.html`: botones "Solicitar propuesta" y "Enviar correo" ahora generan el cuerpo del correo dinámicamente con la selección del usuario (plan, spots, frecuencias, descuentos, total)
+- Función `updateMailtoLinks()` llamada al final de `recalc()` — actualiza el `href` de `.sum-cta` y `.contact-email` con `?subject=...&body=...` URL-encoded
+
+### 2026-06-28 (1)
 - `ads/index.html`: animación upsell corregida — `max-height` + `opacity` CSS transition; el botón precio/CTA desliza suavemente cuando aparece/desaparece el mensaje de bundle
 - Fix: etiqueta de frecuencia en desglose mostraba "5/sem/sem" (doble sufijo) → corregido a "5/sem"
 - Botón de contacto cambiado de mostrar el email a decir "Enviar correo"
