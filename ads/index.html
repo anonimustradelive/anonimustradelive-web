@@ -1155,6 +1155,63 @@ function recalc() {
   } else {
     upsellEl.classList.remove('visible');
   }
+
+  updateMailtoLinks(sub, desc, totalAllSavings, total);
+}
+
+function updateMailtoLinks(sub, bundle, totalDisc, total) {
+  const PLAN_LABEL = { ninguno: null, semanal: 'Plan Premium — 1 video/sem · 4/mes', intensivo: 'Plan Deluxe — 2 videos/sem · 8/mes' };
+  const SPOT_LABEL = { pico: 'Spot Pico', inicio: 'Spot Inicio', cierre: 'Spot Cierre' };
+
+  const lines = [];
+
+  if (state.contenido !== 'ninguno') {
+    const cC  = PRECIOS.contenido[state.contenido];
+    const disc = contentDiscount(state.contenido);
+    const discTxt = disc ? ` (−${disc.pct}% off, ahorras ${fmt(disc.saving)})` : '';
+    lines.push('CONTENIDO ORGÁNICO');
+    lines.push(`  ${PLAN_LABEL[state.contenido]} — ${fmt(cC)}/mes${discTxt}`);
+    lines.push('');
+  }
+
+  const spots = [['pico', state.pico], ['inicio', state.inicio], ['cierre', state.cierre]].filter(([,f]) => f > 0);
+  if (spots.length > 0) {
+    lines.push('CINTILLOS EN VIVO');
+    spots.forEach(([spot, freq]) => {
+      const price = PRECIOS.cintillos[spot][freq];
+      const disc  = cinDiscount(spot, freq);
+      const discTxt = disc ? ` (−${disc.pct}% off, ahorras ${fmt(disc.saving)})` : '';
+      lines.push(`  ${SPOT_LABEL[spot]} — ${freq}/mes · ${FREQ_SEM[freq]} — ${fmt(price)}/mes${discTxt}`);
+    });
+    lines.push('');
+  }
+
+  if (sub === 0) {
+    lines.push('(Sin selección aún — por favor indicar qué servicios le interesan)');
+    lines.push('');
+  } else {
+    lines.push(`Subtotal: ${fmt(sub)}/mes`);
+    if (bundle > 0) lines.push(`Bundle −15%: −${fmt(bundle)}`);
+    if (totalDisc > 0) lines.push(`Descuento total: −${fmt(totalDisc)}`);
+    lines.push(`TOTAL: ${fmt(total)}/mes`);
+    lines.push('');
+  }
+
+  const body = [
+    'Hola,',
+    '',
+    'Me interesa anunciarme en AnonimusTrade Live. Adjunto mi selección del calculador:',
+    '',
+    '─────────────────────────',
+    ...lines,
+    '─────────────────────────',
+    '',
+    'Quedo a la espera de su propuesta.',
+    '',
+  ].join('\n');
+
+  const mailto = `mailto:anonimustradelive@outlook.com?subject=${encodeURIComponent('Solicitud de propuesta publicitaria')}&body=${encodeURIComponent(body)}`;
+  document.querySelectorAll('.sum-cta, .contact-email').forEach(el => el.href = mailto);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
