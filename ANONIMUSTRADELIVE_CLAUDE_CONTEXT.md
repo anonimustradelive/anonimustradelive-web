@@ -288,6 +288,13 @@ Script PHP que corre periódicamente (cron en cPanel).
 
 ## Historial de cambios recientes
 
+### 2026-06-28 (4)
+- `ads/index.html`: descripción de planes cambiada a dos líneas con `<br>` en mobile (evita punto flotante al hacer wrap)
+
+### 2026-06-28 (3)
+- `ads/index.html`: precio total muestra "USD" como label pequeño junto al monto
+- Dentado del recibo en mobile: restaurado (se había ocultado con `display:none`), zigzag más prominente (20px en lugar de 16px), más padding arriba y abajo, `border-bottom-radius:11px` en `.sum-receipt` para respetar el `border-radius` del card
+
 ### 2026-06-28 (2)
 - `ads/index.html`: botones "Solicitar propuesta" y "Enviar correo" ahora generan el cuerpo del correo dinámicamente con la selección del usuario (plan, spots, frecuencias, descuentos, total)
 - Función `updateMailtoLinks()` llamada al final de `recalc()` — actualiza el `href` de `.sum-cta` y `.contact-email` con `?subject=...&body=...` URL-encoded
