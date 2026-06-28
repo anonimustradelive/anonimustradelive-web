@@ -219,6 +219,20 @@ nav {
 .c-opt-disc--zero { color:#EF4444 }
 .c-opt-disc--win  { color:#059669 }
 
+/* Plan Premium */
+.c-opt--premium { border-color:rgba(245,158,11,0.35); background:linear-gradient(135deg,#FFFBEB,#FEF3C7) }
+.c-opt--premium .c-opt-lbl { color:#92400E }
+.c-opt--premium:hover { border-color:rgba(245,158,11,0.7); background:linear-gradient(135deg,#FEF3C7,#FDE68A); box-shadow:0 2px 10px rgba(245,158,11,0.18) }
+.c-opt--premium.sel { border-color:#D97706; background:linear-gradient(135deg,#FEF3C7,#FDE68A); box-shadow:0 2px 14px rgba(245,158,11,0.28) }
+.c-opt--premium.sel .c-opt-lbl { color:#92400E }
+
+/* Plan Deluxe */
+.c-opt--deluxe { border-color:rgba(139,92,246,0.35); background:linear-gradient(135deg,#F5F3FF,#EDE9FE) }
+.c-opt--deluxe .c-opt-lbl { color:#5B21B6 }
+.c-opt--deluxe:hover { border-color:rgba(139,92,246,0.7); background:linear-gradient(135deg,#EDE9FE,#DDD6FE); box-shadow:0 2px 10px rgba(139,92,246,0.18) }
+.c-opt--deluxe.sel { border-color:#7C3AED; background:linear-gradient(135deg,#EDE9FE,#DDD6FE); box-shadow:0 2px 14px rgba(139,92,246,0.28) }
+.c-opt--deluxe.sel .c-opt-lbl { color:#5B21B6 }
+
 /* ── SPOT CARDS COMPACTAS + DROPDOWN ── */
 .spot-tip {
   font-size:0.82rem; color:var(--blue); font-weight:500; line-height:1.55;
@@ -231,14 +245,17 @@ nav {
   border:1.5px solid var(--bdr); border-radius:10px;
   position:relative; flex:1;
   display:flex; flex-direction:column;
-  background:var(--bg2); transition:border-color 0.2s, box-shadow 0.2s;
+  background:var(--bg2); transition:border-color 0.18s, box-shadow 0.18s, background 0.18s;
 }
 .spot-card-row {
   display:flex; align-items:center; gap:10px;
   padding:11px 14px; cursor:pointer; user-select:none;
   border-radius:10px; flex:1;
 }
-.spot-card-row:hover { background:var(--bg3) }
+.spot-card-row:hover { background:transparent }
+.spot-card[data-spot="inicio"]:hover { border-color:rgba(234,88,12,0.6); background:linear-gradient(135deg,#FFEDD5,#FED7AA); box-shadow:0 2px 10px rgba(234,88,12,0.18) }
+.spot-card[data-spot="pico"]:hover   { border-color:rgba(220,38,38,0.6);  background:linear-gradient(135deg,#FFE4E6,#FECDD3); box-shadow:0 2px 10px rgba(220,38,38,0.18) }
+.spot-card[data-spot="cierre"]:hover { border-color:rgba(22,163,74,0.6);  background:linear-gradient(135deg,#DCFCE7,#BBF7D0); box-shadow:0 2px 10px rgba(22,163,74,0.18) }
 .spot-card-info { display:flex; align-items:center; gap:10px; flex:1; min-width:0 }
 .spot-card-icon { font-size:1.15rem; line-height:1; flex-shrink:0 }
 .spot-card-name { font-size:0.84rem; font-weight:700 }
@@ -285,18 +302,21 @@ nav {
 .sum-lines { display:flex; flex-direction:column; gap:0.25rem; min-height:148px }
 .sum-disc-area { min-height:62px }
 /* Colores por spot */
-.spot-card[data-spot="inicio"] .spot-opt.active  { color:#15803d; font-weight:700 }
-.spot-card[data-spot="inicio"].has-freq           { border-color:#16a34a; box-shadow:0 2px 10px rgba(22,163,74,0.14) }
-.spot-card[data-spot="inicio"] .spot-card-name   { color:#15803d }
-.spot-card[data-spot="inicio"] .spot-badge-price { color:#15803d }
-.spot-card[data-spot="pico"]   .spot-opt.active  { color:#b45309; font-weight:700 }
-.spot-card[data-spot="pico"].has-freq             { border-color:#d97706; box-shadow:0 2px 10px rgba(217,119,6,0.14) }
-.spot-card[data-spot="pico"]   .spot-card-name   { color:#b45309 }
-.spot-card[data-spot="pico"]   .spot-badge-price { color:#b45309 }
-.spot-card[data-spot="cierre"] .spot-opt.active  { color:#b91c1c; font-weight:700 }
-.spot-card[data-spot="cierre"].has-freq           { border-color:#dc2626; box-shadow:0 2px 10px rgba(220,38,38,0.14) }
-.spot-card[data-spot="cierre"] .spot-card-name   { color:#b91c1c }
-.spot-card[data-spot="cierre"] .spot-badge-price { color:#b91c1c }
+.spot-card[data-spot="inicio"]                   { background:linear-gradient(135deg,#FFF7ED,#FFEDD5); border-color:rgba(234,88,12,0.25) }
+.spot-card[data-spot="inicio"] .spot-opt.active  { color:#C2410C; font-weight:700 }
+.spot-card[data-spot="inicio"].has-freq           { border-color:#EA580C; box-shadow:0 2px 10px rgba(234,88,12,0.18) }
+.spot-card[data-spot="inicio"] .spot-card-name   { color:#C2410C }
+.spot-card[data-spot="inicio"] .spot-badge-price { color:#C2410C }
+.spot-card[data-spot="pico"]                     { background:linear-gradient(135deg,#FFF1F2,#FFE4E6); border-color:rgba(220,38,38,0.25) }
+.spot-card[data-spot="pico"]   .spot-opt.active  { color:#B91C1C; font-weight:700 }
+.spot-card[data-spot="pico"].has-freq             { border-color:#DC2626; box-shadow:0 2px 10px rgba(220,38,38,0.18) }
+.spot-card[data-spot="pico"]   .spot-card-name   { color:#B91C1C }
+.spot-card[data-spot="pico"]   .spot-badge-price { color:#B91C1C }
+.spot-card[data-spot="cierre"]                   { background:linear-gradient(135deg,#F0FDF4,#DCFCE7); border-color:rgba(22,163,74,0.25) }
+.spot-card[data-spot="cierre"] .spot-opt.active  { color:#15803D; font-weight:700 }
+.spot-card[data-spot="cierre"].has-freq           { border-color:#16A34A; box-shadow:0 2px 10px rgba(22,163,74,0.18) }
+.spot-card[data-spot="cierre"] .spot-card-name   { color:#15803D }
+.spot-card[data-spot="cierre"] .spot-badge-price { color:#15803D }
 
 /* ── SUMMARY PANEL (columna 3, mismo estilo que calc-step) ── */
 .calc-summary {
@@ -674,7 +694,7 @@ footer a:hover { color:var(--ink) }
         <div class="fmt-from">
           <div class="fmt-from-lbl">Desde</div>
           <div class="fmt-from-price">$650<span style="font-size:1rem;font-weight:500;color:var(--muted)">/mes</span></div>
-          <div class="fmt-from-sub">Plan Semanal: 4 videos/mes · Plan Intensivo: 8 videos/mes</div>
+          <div class="fmt-from-sub">Plan Premium: 1 vid/sem · Plan Deluxe: 2 vid/sem</div>
         </div>
       </div>
 
@@ -707,20 +727,20 @@ footer a:hover { color:var(--ink) }
               <div class="c-opt-price">$0</div>
             </div>
           </div>
-          <div class="c-opt" onclick="selectContent('semanal',this)">
+          <div class="c-opt c-opt--premium" onclick="selectContent('semanal',this)">
             <div class="c-opt-meta">
-              <div class="c-opt-lbl">Plan Semanal</div>
-              <div class="c-opt-sub">4 videos/mes</div>
+              <div class="c-opt-lbl">👑 Plan Premium</div>
+              <div class="c-opt-sub">1 video/sem · 4/mes</div>
             </div>
             <div class="c-opt-right">
               <div class="c-opt-price">$650</div>
               <div class="c-opt-disc c-opt-disc--zero">0% off</div>
             </div>
           </div>
-          <div class="c-opt" onclick="selectContent('intensivo',this)">
+          <div class="c-opt c-opt--deluxe" onclick="selectContent('intensivo',this)">
             <div class="c-opt-meta">
-              <div class="c-opt-lbl">Plan Intensivo</div>
-              <div class="c-opt-sub">8 videos/mes</div>
+              <div class="c-opt-lbl">💎 Plan Deluxe</div>
+              <div class="c-opt-sub">2 videos/sem · 8/mes</div>
             </div>
             <div class="c-opt-right">
               <div class="c-opt-price">$1,000</div>
@@ -743,7 +763,7 @@ footer a:hover { color:var(--ink) }
               <span class="spot-card-icon">🌅</span>
               <div>
                 <div class="spot-card-name">Spot Inicio</div>
-                <div class="spot-card-detail">Apertura del live · ~8:30 AM</div>
+                <div class="spot-card-detail">Audiencia moderada · ~8:30 AM</div>
               </div>
             </div>
             <div class="spot-card-badge" id="badge-inicio"><div class="spot-badge-off">Sin activar</div></div>
@@ -765,7 +785,7 @@ footer a:hover { color:var(--ink) }
             <div class="spot-card-info">
               <span class="spot-card-icon">🔥</span>
               <div>
-                <div class="spot-card-name">Spot Pico ⭐</div>
+                <div class="spot-card-name">Spot Pico</div>
                 <div class="spot-card-detail">Mayor audiencia · ~10:00 AM</div>
               </div>
             </div>
@@ -789,7 +809,7 @@ footer a:hover { color:var(--ink) }
               <span class="spot-card-icon">🌙</span>
               <div>
                 <div class="spot-card-name">Spot Cierre</div>
-                <div class="spot-card-detail">Despedida del live · ~12:00 PM</div>
+                <div class="spot-card-detail">Audiencia moderada · ~12:00 PM</div>
               </div>
             </div>
             <div class="spot-card-badge" id="badge-cierre"><div class="spot-badge-off">Sin activar</div></div>
@@ -910,24 +930,24 @@ footer a:hover { color:var(--ink) }
             <img src="ads_img/live_capture_1.png" alt="Captura del live" style="width:100%;height:100%;object-fit:cover;display:block">
           </div>
           <div class="cintillo-strip" style="padding:0">
-            <img src="ads_img/cintillo_pp.gif" alt="Cintillo animado" style="width:100%;height:100%;display:block;object-fit:fill">
+            <img src="ads_img/cintillo_pana.gif" alt="Cintillo animado" style="width:100%;height:100%;display:block;object-fit:fill">
           </div>
         </div>
 
         <div class="vis-col-label" style="margin-top:1.5rem">Cintillos activos</div>
         <div class="cin-gallery">
-          <div class="cin-item"><img src="ads_img/cintillo_pana.gif" alt="Cintillo Pana" style="width:100%;height:100%;object-fit:fill;display:block"></div>
-          <div class="cin-item"><img src="ads_img/cintillo_pp.gif"   alt="Cintillo PP"   style="width:100%;height:100%;object-fit:fill;display:block"></div>
           <div class="cin-item"><img src="ads_img/cintillo_prado.png" alt="Cintillo Prado" style="width:100%;height:100%;object-fit:fill;display:block"></div>
+          <div class="cin-item"><img src="ads_img/cintillo_pp.gif"   alt="Cintillo PP"   style="width:100%;height:100%;object-fit:fill;display:block"></div>
+          <div class="cin-item"><img src="ads_img/cintillo_pana.gif" alt="Cintillo Pana" style="width:100%;height:100%;object-fit:fill;display:block"></div>
         </div>
 
         <div class="specs-card">
           <div class="specs-title">Especificaciones de diseño</div>
           <div class="spec-row"><span class="spec-k">Dimensiones</span><span class="spec-v">1920 × 216 px</span></div>
-          <div class="spec-row"><span class="spec-k">Formato</span><span class="spec-v">PNG (con o sin transparencia)</span></div>
+          <div class="spec-row"><span class="spec-k">Formato fijo</span><span class="spec-v">PNG, JPG · sin transparencia</span></div>
+          <div class="spec-row"><span class="spec-k">Formato animado</span><span class="spec-v">GIF, MP4</span></div>
           <div class="spec-row"><span class="spec-k">Modo de color</span><span class="spec-v">RGB</span></div>
           <div class="spec-row"><span class="spec-k">Zona segura</span><span class="spec-v">80 px de margen a cada lado</span></div>
-          <div class="spec-row"><span class="spec-k">Animado</span><span class="spec-v">Consultar disponibilidad</span></div>
           <a href="mailto:anonimustradelive@outlook.com?subject=Envío%20de%20diseño%20de%20cintillo" class="specs-cta">📤 Enviar mi diseño por correo</a>
         </div>
       </div>
@@ -944,7 +964,7 @@ footer a:hover { color:var(--ink) }
       <h2>Solicita tu propuesta formal.</h2>
       <p>Escríbenos con tu selección o con tus dudas. Respondemos rápido y armamos tu propuesta sin compromiso.</p>
       <a href="mailto:anonimustradelive@outlook.com?subject=Solicitud%20de%20propuesta%20publicitaria" class="contact-email">
-        📧 anonimustradelive@outlook.com
+        📧 Enviar correo
       </a>
       <p class="contact-note">Toda la negociación es por correo electrónico.</p>
     </div>
@@ -1079,12 +1099,12 @@ function recalc() {
   }
 
   if (cC  > 0) pushLine(
-    state.contenido === 'semanal' ? 'Contenido Semanal (4 videos)' : 'Contenido Intensivo (8 videos)',
+    state.contenido === 'semanal' ? 'Contenido Premium (1 vid/sem · 4/mes)' : 'Contenido Deluxe (2 vid/sem · 8/mes)',
     cC, contentDiscount(state.contenido)
   );
-  if (cP  > 0) pushLine('Spot Pico · '   + state.pico   + '/mes · ' + FREQ_SEM[state.pico]   + '/sem', cP,  cinDiscount('pico',   state.pico));
-  if (cI  > 0) pushLine('Spot Inicio · ' + state.inicio + '/mes · ' + FREQ_SEM[state.inicio] + '/sem', cI,  cinDiscount('inicio', state.inicio));
-  if (cCi > 0) pushLine('Spot Cierre · ' + state.cierre + '/mes · ' + FREQ_SEM[state.cierre] + '/sem', cCi, cinDiscount('cierre', state.cierre));
+  if (cP  > 0) pushLine('Spot Pico · '   + state.pico   + '/mes · ' + FREQ_SEM[state.pico],   cP,  cinDiscount('pico',   state.pico));
+  if (cI  > 0) pushLine('Spot Inicio · ' + state.inicio + '/mes · ' + FREQ_SEM[state.inicio], cI,  cinDiscount('inicio', state.inicio));
+  if (cCi > 0) pushLine('Spot Cierre · ' + state.cierre + '/mes · ' + FREQ_SEM[state.cierre], cCi, cinDiscount('cierre', state.cierre));
 
   const linesEl = document.getElementById('sum-lines');
   linesEl.innerHTML = lines.length
