@@ -373,7 +373,13 @@ nav {
 .sum-upsell {
   font-size:0.75rem; color:var(--gold);
   background:var(--gold-g); border:1px solid rgba(245,158,11,0.2);
-  border-radius:6px; padding:6px 9px; margin-top:0.4rem; line-height:1.5;
+  border-radius:6px; line-height:1.5;
+  max-height:0; overflow:hidden; opacity:0;
+  padding:0 9px; margin-top:0;
+  transition:max-height 0.25s ease, opacity 0.22s ease, padding 0.25s ease, margin-top 0.25s ease;
+}
+.sum-upsell.visible {
+  max-height:80px; opacity:1; padding:6px 9px; margin-top:0.4rem;
 }
 .sum-note { font-size:0.62rem; color:var(--muted); text-align:left; margin-top:0.35rem; line-height:1.4 }
 
@@ -508,6 +514,26 @@ nav {
 footer { border-top:1px solid var(--bdr); padding:1.75rem; text-align:center; font-size:0.7rem; color:var(--muted) }
 footer a { color:var(--muted); text-decoration:none }
 footer a:hover { color:var(--ink) }
+
+/* ── ANIMACIONES DESGLOSE ── */
+@keyframes fadeSlideIn {
+  from { opacity:0; transform:translateY(-6px) }
+  to   { opacity:1; transform:translateY(0) }
+}
+@keyframes fadeSlideUp {
+  from { opacity:0; transform:translateY(6px) }
+  to   { opacity:1; transform:translateY(0) }
+}
+@keyframes fadeSlideOut {
+  from { opacity:1; transform:translateY(0) }
+  to   { opacity:0; transform:translateY(8px) }
+}
+.sum-item { animation:fadeSlideIn 0.22s ease-out both }
+
+/* ── ALTURA FIJA COLUMNAS (desktop) ── */
+@media(min-width:901px) {
+  .calc-step, .calc-summary { min-height:510px }
+}
 
 /* ── RESPONSIVE ── */
 @media(max-width:1100px) {
@@ -809,7 +835,7 @@ footer a:hover { color:var(--ink) }
             <div class="sum-total-val" id="sum-total">$0</div>
             <a href="mailto:anonimustradelive@outlook.com?subject=Solicitud%20de%20propuesta%20publicitaria" class="sum-cta">Solicitar propuesta</a>
           </div>
-          <div id="upsell" class="sum-upsell" style="display:none"></div>
+          <div id="upsell" class="sum-upsell"></div>
           <div class="sum-note">El calculador no procesa pagos. Toda negociación se formaliza por correo.</div>
         </div>
       </div>
@@ -1013,6 +1039,25 @@ function updateBadge(spot) {
     <div class="spot-badge-freq">${freq}/mes · ${FREQ_SEM[freq]}</div>`;
 }
 
+function showEl(el, disp, anim) {
+  if (el._hideTimer) { clearTimeout(el._hideTimer); el._hideTimer = null; }
+  el.style.display = disp || 'block';
+  el.style.animation = 'none';
+  el.offsetHeight; // reflow para reiniciar animación
+  el.style.animation = (anim || 'fadeSlideIn') + ' 0.22s ease-out both';
+}
+function hideEl(el) {
+  if (el._hideTimer) return;
+  el.style.animation = 'none';
+  el.offsetHeight;
+  el.style.animation = 'fadeSlideOut 0.2s ease-in forwards';
+  el._hideTimer = setTimeout(() => {
+    el.style.display = 'none';
+    el.style.animation = '';
+    el._hideTimer = null;
+  }, 210);
+}
+
 function recalc() {
   const cC  = PRECIOS.contenido[state.contenido];
   const cP  = PRECIOS.cintillos.pico[state.pico];
@@ -1043,9 +1088,9 @@ function recalc() {
 
   const linesEl = document.getElementById('sum-lines');
   linesEl.innerHTML = lines.length
-    ? lines.map(({ label, price, disc }) => {
+    ? lines.map(({ label, price, disc }, idx) => {
         const discHtml = disc ? `<div class="sum-disc-row">−${disc.pct}% · ahorras ${fmt(disc.saving)}</div>` : '';
-        return `<div class="sum-item"><div class="sum-line"><span class="sum-line-k">${label}</span><span class="sum-line-v">${fmt(price)}</span></div>${discHtml}</div>`;
+        return `<div class="sum-item" style="animation-delay:${idx * 0.07}s"><div class="sum-line"><span class="sum-line-k">${label}</span><span class="sum-line-v">${fmt(price)}</span></div>${discHtml}</div>`;
       }).join('')
     : '<div class="sum-empty">Selecciona opciones para ver el desglose.</div>';
 
@@ -1061,10 +1106,10 @@ function recalc() {
 
   const bundleRow = document.getElementById('bundle-row');
   if (bundle) {
-    bundleRow.style.display = 'flex';
     document.getElementById('bundle-amt').textContent = '−' + fmt(desc);
+    if (bundleRow.style.display === 'none' || !bundleRow.style.display) showEl(bundleRow, 'flex', 'fadeSlideUp');
   } else {
-    bundleRow.style.display = 'none';
+    if (bundleRow.style.display !== 'none') hideEl(bundleRow);
   }
 
   document.getElementById('sum-total').textContent = fmt(total);
@@ -1072,17 +1117,24 @@ function recalc() {
   const totalDiscRow = document.getElementById('total-disc-row');
   const totalAllSavings = totalSaving + desc;
   if (totalAllSavings > 0) {
-    totalDiscRow.style.display = 'flex';
     document.getElementById('total-disc-amt').textContent = '−' + fmt(totalAllSavings);
+    if (totalDiscRow.style.display === 'none' || !totalDiscRow.style.display) showEl(totalDiscRow, 'flex', 'fadeSlideUp');
   } else {
-    totalDiscRow.style.display = 'none';
+    if (totalDiscRow.style.display !== 'none') hideEl(totalDiscRow);
   }
 
   const upsellEl = document.getElementById('upsell');
-  if (!hayC && !hayCin)     { upsellEl.style.display = 'none'; }
-  else if (hayC && !hayCin) { upsellEl.style.display = 'block'; upsellEl.textContent = '💡 Agrega cintillos y obtén 15% de descuento adicional sobre el total.'; }
-  else if (!hayC && hayCin) { upsellEl.style.display = 'block'; upsellEl.textContent = '💡 Agrega contenido orgánico y obtén 15% de descuento adicional sobre el total.'; }
-  else                       { upsellEl.style.display = 'none'; }
+  if (!hayC && !hayCin) {
+    upsellEl.classList.remove('visible');
+  } else if (hayC && !hayCin) {
+    upsellEl.textContent = '💡 Agrega cintillos y obtén 15% de descuento adicional sobre el total.';
+    upsellEl.classList.add('visible');
+  } else if (!hayC && hayCin) {
+    upsellEl.textContent = '💡 Agrega contenido orgánico y obtén 15% de descuento adicional sobre el total.';
+    upsellEl.classList.add('visible');
+  } else {
+    upsellEl.classList.remove('visible');
+  }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
