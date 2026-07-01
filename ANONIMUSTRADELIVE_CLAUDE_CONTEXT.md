@@ -288,6 +288,22 @@ Script PHP que corre periódicamente (cron en cPanel).
 
 ## Historial de cambios recientes
 
+### 2026-07-01 — Rediseño oferta de contenido orgánico + paleta mono-marca
+- `ads/index.html`: nueva oferta de contenido orgánico, reemplazando Plan Premium/Deluxe antiguos (por videos/semana) por dos paquetes con propósito distinto:
+  - **Deluxe** ("Tope de gama") — alta producción, 2 videos/mes, $1,900/mes. Es el ancla cara (no se busca vender, pero si se vende está bien remunerado)
+  - **Premium** ("Más popular") — máximo alcance, 4 videos/mes, $550/mes. Es el paquete que sí se quiere vender (mejor deal, más barato que antes)
+  - Ambos con checkbox opcional **"Derecho a publicidad pagada"** (+$400 cada uno, antes Deluxe era +$700, unificado a pedido del usuario) — consentimiento para uso comercial/pauta pagada de la imagen, distinto del uso orgánico incluido
+  - Botón ⓘ con popover explicando el derecho a publicidad pagada en cada tarjeta
+- **Zona 4 nueva**: sección explicativa fija debajo del calculador — "¿Orgánico o publicidad pagada?" con: explicación, ejemplo hipotético (💡), aviso legal de infracción de derechos de autor/imagen si se usa sin permiso (⚠️), y cierre de buena fe (🤝). Solo informativa, sin interacción, para no romper el flujo 1-2-3
+- **Paleta rediseñada a mono-marca** (antes 6 colores compitiendo: azul+dorado+púrpura+naranja+rojo+verde): ahora neutro + azul como único acento en toda la calculadora. Tiers y spots se diferencian por insignia (`.c-tier-badge`) o ícono, no por color de tarjeta. Checkbox "off" y precio nunca se pintan de color de marca (evita que la opción nula/$0 compita visualmente con el CTA)
+- Spots (columna 2) rediseñados para ser pixel-consistentes con columna 1: mismo tamaño de fuente, mismo fondo "off" (`var(--bg3)`), botón ⓘ en posición fija (pie de tarjeta con borde punteado, como el addon de publicidad pagada) en vez de inline (evita que dependa del largo del nombre/badge)
+- Distribución de info en spots: horario en negro (peso 600, igual que "Derecho a publicidad pagada"), frecuencia mensual en gris — todo reservado con `min-height` para que la tarjeta no cambie de tamaño al activar/desactivar
+- `.c-tier-badge`: `margin-left:5px` en desktop (como antes), `margin-left:0` solo en mobile (`@media max-width:900px`) para que al saltar de línea quede alineado al inicio del nombre
+- **Validación del CTA**: "Solicitar propuesta" ahora bloquea la navegación del mailto y muestra un aviso en rojo ("Selecciona al menos un servicio...") si el usuario no seleccionó nada; se oculta automáticamente al hacer una selección (`validateCtaClick()`)
+- Altura fija de las 3 columnas del calculador (crítica, costó horas ajustar originalmente): se mantiene estable en **515px** (subió ligeramente de 510px por el pie de tarjeta nuevo en spots, verificado sin salto entre estado off/on)
+- Orden de tarjetas en sección Formatos invertido: Contenido orgánico primero (destacada), Cintillo en vivo segundo
+- Emojis quitados de nombres de spots (Spot Inicio/Pico/Cierre) por pedido explícito — "quita profesionalismo"
+
 ### 2026-06-28 (4)
 - `ads/index.html`: descripción de planes cambiada a dos líneas con `<br>` en mobile (evita punto flotante al hacer wrap)
 

@@ -196,22 +196,32 @@ nav {
 .calc-step { display:flex; flex-direction:column }
 .c-opts { display:flex; flex-direction:column; gap:0.45rem; flex:1 }
 .c-opt {
-  display:flex; align-items:center; justify-content:space-between; gap:0.75rem;
+  display:flex; flex-direction:column; justify-content:center; gap:0.5rem;
   border:1.5px solid var(--bdr); border-radius:8px;
-  padding:0.65rem 0.9rem; cursor:pointer;
+  padding:0.6rem 0.85rem; cursor:pointer;
   min-height:64px; flex:1;
-  transition:all 0.18s; text-align:left;
+  transition:border-color 0.18s, background 0.18s, box-shadow 0.18s; text-align:left;
   background:var(--bg3); user-select:none;
+  position:relative;
 }
+.c-opt-main { display:flex; align-items:center; justify-content:space-between; gap:0.75rem }
 .c-opt:hover { border-color:rgba(37,99,235,0.4); background:var(--blue-lt); box-shadow:0 2px 8px rgba(37,99,235,0.10) }
 .c-opt.sel {
   border-color:var(--blue);
-  background:linear-gradient(135deg,#EFF6FF,#DBEAFE);
+  background:var(--blue-lt);
   box-shadow:0 2px 10px rgba(37,99,235,0.15);
 }
+.c-opt.sel .c-opt-lbl { color:var(--blue) }
+/* Opción nula "Sin contenido": se mantiene neutral, no celebra el $0 con el color de marca */
+.c-opt[data-plan="ninguno"]:hover { border-color:#CBD5E1; background:#F8FAFC; box-shadow:0 2px 8px rgba(15,23,42,0.07) }
+.c-opt[data-plan="ninguno"].sel { border-color:#94A3B8; background:linear-gradient(135deg,#F8FAFC,#F1F5F9); box-shadow:0 2px 10px rgba(15,23,42,0.10) }
+.c-opt[data-plan="ninguno"].sel .c-opt-lbl { color:var(--ink) }
 .c-opt-meta { flex:1; min-width:0 }
 .c-opt-lbl { font-size:0.72rem; font-weight:700; color:var(--ink) }
-.c-opt.sel .c-opt-lbl { color:var(--blue) }
+/* Insignias de tier — distinguen Deluxe/Premium sin colorear toda la tarjeta */
+.c-tier-badge { font-size:0.56rem; font-weight:700; padding:1px 6px; border-radius:20px; margin-left:5px; vertical-align:middle; letter-spacing:0.02em; white-space:nowrap }
+.c-tier-badge--top { background:#1E293B; color:#fff }
+.c-tier-badge--pop { background:#DBEAFE; color:#1E40AF }
 .c-opt-sub { font-size:0.65rem; color:var(--muted); margin-top:2px }
 .c-opt-right { text-align:right; flex-shrink:0 }
 .c-opt-price { font-size:1.1rem; font-weight:800; white-space:nowrap }
@@ -219,19 +229,44 @@ nav {
 .c-opt-disc--zero { color:#EF4444 }
 .c-opt-disc--win  { color:#059669 }
 
-/* Plan Premium */
-.c-opt--premium { border-color:rgba(245,158,11,0.35); background:linear-gradient(135deg,#FFFBEB,#FEF3C7) }
-.c-opt--premium .c-opt-lbl { color:#92400E }
-.c-opt--premium:hover { border-color:rgba(245,158,11,0.7); background:linear-gradient(135deg,#FEF3C7,#FDE68A); box-shadow:0 2px 10px rgba(245,158,11,0.18) }
-.c-opt--premium.sel { border-color:#D97706; background:linear-gradient(135deg,#FEF3C7,#FDE68A); box-shadow:0 2px 14px rgba(245,158,11,0.28) }
-.c-opt--premium.sel .c-opt-lbl { color:#92400E }
+/* Add-on: derecho a publicidad pagada */
+.c-opt-addon {
+  display:flex; align-items:center; gap:0.45rem;
+  padding-top:0.5rem; border-top:1px dashed rgba(0,0,0,0.14);
+  font-size:0.66rem; font-weight:600; color:var(--ink); cursor:pointer;
+}
+.c-opt-check {
+  width:15px; height:15px; flex-shrink:0; border-radius:3px;
+  border:1.5px solid currentColor; opacity:0.7;
+  display:inline-flex; align-items:center; justify-content:center; line-height:1;
+}
+.c-opt-addon.checked .c-opt-check { background:var(--blue); border-color:var(--blue); opacity:1 }
+.c-opt-addon.checked .c-opt-check::after { content:'✓'; color:#fff; font-size:0.6rem; font-weight:800 }
+.c-opt-check { transition:opacity 0.15s, box-shadow 0.15s }
+.c-opt-addon:hover .c-opt-check { opacity:1; box-shadow:0 0 0 3px rgba(0,0,0,0.08) }
+.c-opt-addon:hover .c-opt-addon-txt { text-decoration:underline; text-underline-offset:2px }
+.c-opt-addon-txt { flex:1; line-height:1.25 }
+.c-opt-addon-price { font-weight:800; white-space:nowrap }
+.c-opt-info {
+  flex-shrink:0; width:16px; height:16px; border-radius:50%;
+  border:1.3px solid currentColor; color:inherit; opacity:0.55;
+  font-size:0.58rem; font-weight:800; line-height:1; font-style:italic;
+  display:inline-flex; align-items:center; justify-content:center;
+  background:none; cursor:pointer; font-family:Georgia, serif;
+}
+.c-opt-info:hover { opacity:1 }
+.c-info-pop {
+  display:none; position:absolute; bottom:calc(100% + 6px); right:0;
+  width:230px; z-index:60; background:var(--bg2);
+  border:1.5px solid var(--bdr); border-radius:8px; padding:9px 11px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.16);
+  font-size:0.68rem; font-weight:500; color:var(--ink); line-height:1.45;
+  text-align:left; cursor:default;
+}
+.c-opt.info-open .c-info-pop { display:block }
 
-/* Plan Deluxe */
-.c-opt--deluxe { border-color:rgba(139,92,246,0.35); background:linear-gradient(135deg,#F5F3FF,#EDE9FE) }
-.c-opt--deluxe .c-opt-lbl { color:#5B21B6 }
-.c-opt--deluxe:hover { border-color:rgba(139,92,246,0.7); background:linear-gradient(135deg,#EDE9FE,#DDD6FE); box-shadow:0 2px 10px rgba(139,92,246,0.18) }
-.c-opt--deluxe.sel { border-color:#7C3AED; background:linear-gradient(135deg,#EDE9FE,#DDD6FE); box-shadow:0 2px 14px rgba(139,92,246,0.28) }
-.c-opt--deluxe.sel .c-opt-lbl { color:#5B21B6 }
+/* Mono-marca: los tiers usan tarjeta neutral + estado azul genérico.
+   Se diferencian por la insignia (.c-tier-badge), no por color de fondo. */
 
 /* ── SPOT CARDS COMPACTAS + DROPDOWN ── */
 .spot-tip {
@@ -240,29 +275,27 @@ nav {
   border-radius:0 6px 6px 0; padding:8px 12px; margin-bottom:1rem;
 }
 .spot-tip strong { font-weight:700 }
-.spot-cards { flex:1; display:flex; flex-direction:column; gap:8px }
+.spot-cards { flex:1; display:flex; flex-direction:column; gap:6px }
 .spot-card {
   border:1.5px solid var(--bdr); border-radius:10px;
   position:relative; flex:1;
   display:flex; flex-direction:column;
-  background:var(--bg2); transition:border-color 0.18s, box-shadow 0.18s, background 0.18s;
+  background:var(--bg3); transition:border-color 0.18s, box-shadow 0.18s, background 0.18s;
 }
 .spot-card-row {
   display:flex; align-items:center; gap:10px;
-  padding:11px 14px; cursor:pointer; user-select:none;
+  padding:8px 14px; cursor:pointer; user-select:none;
   border-radius:10px; flex:1;
 }
 .spot-card-row:hover { background:transparent }
-.spot-card[data-spot="inicio"]:hover { border-color:rgba(234,88,12,0.6); background:linear-gradient(135deg,#FFEDD5,#FED7AA); box-shadow:0 2px 10px rgba(234,88,12,0.18) }
-.spot-card[data-spot="pico"]:hover   { border-color:rgba(220,38,38,0.6);  background:linear-gradient(135deg,#FFE4E6,#FECDD3); box-shadow:0 2px 10px rgba(220,38,38,0.18) }
-.spot-card[data-spot="cierre"]:hover { border-color:rgba(22,163,74,0.6);  background:linear-gradient(135deg,#DCFCE7,#BBF7D0); box-shadow:0 2px 10px rgba(22,163,74,0.18) }
+.spot-card:hover { border-color:rgba(37,99,235,0.45); background:var(--blue-lt); box-shadow:0 2px 10px rgba(37,99,235,0.12) }
 .spot-card-info { display:flex; align-items:center; gap:10px; flex:1; min-width:0 }
 .spot-card-icon { font-size:1.15rem; line-height:1; flex-shrink:0 }
-.spot-card-name { font-size:0.84rem; font-weight:700 }
-.spot-card-detail { font-size:0.67rem; color:var(--muted); margin-top:1px }
+.spot-card-name { font-size:0.72rem; font-weight:700 }
+.spot-card-detail { font-size:0.65rem; color:var(--ink); font-weight:600; margin-top:2px }
 .spot-card-badge {
   text-align:right; flex-shrink:0;
-  min-height:46px; display:flex; flex-direction:column; justify-content:center;
+  min-height:42px; display:flex; flex-direction:column; justify-content:center;
 }
 .spot-badge-price { font-size:0.88rem; font-weight:800 }
 .spot-badge-disc { font-size:0.67rem; color:var(--green); font-weight:700; margin-top:1px }
@@ -296,27 +329,41 @@ nav {
 .opt-right { display:flex; align-items:center; gap:8px; flex-shrink:0 }
 .opt-disc { font-size:0.71rem; font-weight:700; color:var(--green) }
 .opt-no-disc { font-size:0.71rem; color:var(--muted) }
-.spot-opt--off .opt-left { color:var(--muted) }
+.spot-opt--off .opt-left, .spot-opt--off .opt-check { color:var(--muted) }
 .opt-check { font-size:0.75rem; opacity:0 }
 .spot-opt.active .opt-check { opacity:1 }
 .sum-lines { display:flex; flex-direction:column; gap:0.25rem; min-height:148px }
 .sum-disc-area { min-height:62px }
-/* Colores por spot */
-.spot-card[data-spot="inicio"]                   { background:linear-gradient(135deg,#FFF7ED,#FFEDD5); border-color:rgba(234,88,12,0.25) }
-.spot-card[data-spot="inicio"] .spot-opt.active  { color:#C2410C; font-weight:700 }
-.spot-card[data-spot="inicio"].has-freq           { border-color:#EA580C; box-shadow:0 2px 10px rgba(234,88,12,0.18) }
-.spot-card[data-spot="inicio"] .spot-card-name   { color:#C2410C }
-.spot-card[data-spot="inicio"] .spot-badge-price { color:#C2410C }
-.spot-card[data-spot="pico"]                     { background:linear-gradient(135deg,#FFF1F2,#FFE4E6); border-color:rgba(220,38,38,0.25) }
-.spot-card[data-spot="pico"]   .spot-opt.active  { color:#B91C1C; font-weight:700 }
-.spot-card[data-spot="pico"].has-freq             { border-color:#DC2626; box-shadow:0 2px 10px rgba(220,38,38,0.18) }
-.spot-card[data-spot="pico"]   .spot-card-name   { color:#B91C1C }
-.spot-card[data-spot="pico"]   .spot-badge-price { color:#B91C1C }
-.spot-card[data-spot="cierre"]                   { background:linear-gradient(135deg,#F0FDF4,#DCFCE7); border-color:rgba(22,163,74,0.25) }
-.spot-card[data-spot="cierre"] .spot-opt.active  { color:#15803D; font-weight:700 }
-.spot-card[data-spot="cierre"].has-freq           { border-color:#16A34A; box-shadow:0 2px 10px rgba(22,163,74,0.18) }
-.spot-card[data-spot="cierre"] .spot-card-name   { color:#15803D }
-.spot-card[data-spot="cierre"] .spot-badge-price { color:#15803D }
+/* Spots — mono-marca: neutral en reposo, azul al activar.
+   El precio se queda en --ink (igual que .c-opt-price en la columna 1); solo el nombre cambia a azul. */
+.spot-card .spot-opt.active  { color:var(--blue); font-weight:700 }
+.spot-card.has-freq          { border-color:var(--blue); background:var(--blue-lt); box-shadow:0 2px 10px rgba(37,99,235,0.16) }
+.spot-card.has-freq .spot-card-name { color:var(--blue) }
+/* Pie de tarjeta — mismo patrón que .c-opt-addon: línea con borde punteado arriba.
+   Reparte lo que antes iba apretado arriba: horario (línea fija) + frecuencia
+   (línea reservada, vacía si "Off", para que la tarjeta no cambie de tamaño) + info. */
+.spot-card-foot {
+  display:flex; align-items:center; gap:8px;
+  margin:0 14px; padding:0.2rem 0 0.25rem;
+  border-top:1px dashed rgba(0,0,0,0.14);
+}
+.spot-foot-info { flex:1; min-width:0 }
+.spot-foot-freq { font-size:0.63rem; color:var(--muted); margin-top:1px; min-height:16px }
+.spot-info {
+  flex-shrink:0; width:16px; height:16px; border-radius:50%;
+  border:1.3px solid currentColor; color:var(--ink); opacity:0.55;
+  font-size:0.58rem; font-weight:800; line-height:1; font-style:italic;
+  display:inline-flex; align-items:center; justify-content:center;
+  background:none; cursor:pointer; font-family:Georgia, serif;
+}
+.spot-info:hover { opacity:1 }
+.spot-info-pop {
+  display:none; position:absolute; bottom:calc(100% + 6px); left:0; right:0;
+  z-index:60; background:var(--bg2); border:1.5px solid var(--bdr);
+  border-radius:8px; padding:9px 11px; box-shadow:0 8px 24px rgba(0,0,0,0.16);
+  font-size:0.68rem; font-weight:500; color:var(--ink); line-height:1.45; text-align:left; cursor:default;
+}
+.spot-card.info-open .spot-info-pop { display:block }
 
 /* ── SUMMARY PANEL (columna 3, mismo estilo que calc-step) ── */
 .calc-summary {
@@ -392,6 +439,7 @@ nav {
   transition:all 0.2s;
 }
 .sum-cta:hover { box-shadow:0 6px 18px rgba(37,99,235,0.4), 0 0 22px 5px rgba(37,99,235,0.40); transform:translateY(-1px) }
+.cta-warning { font-size:0.68rem; font-weight:600; color:#DC2626; text-align:center; margin-top:0.5rem }
 .sum-upsell {
   font-size:0.75rem; color:var(--gold);
   background:var(--gold-g); border:1px solid rgba(245,158,11,0.2);
@@ -552,6 +600,17 @@ footer a:hover { color:var(--ink) }
 }
 .sum-item { animation:fadeSlideIn 0.22s ease-out both }
 
+/* ── ZONA 4: explicador orgánico vs publicidad pagada ── */
+.rights-explainer { max-width:760px; margin:2.75rem auto 0; }
+.rights-title { font-size:1.05rem; font-weight:800; color:var(--ink); margin-bottom:0.55rem; text-align:center }
+.rights-lead { font-size:0.84rem; color:var(--muted); line-height:1.7; margin-bottom:1rem; text-align:center }
+.rights-box { font-size:0.8rem; line-height:1.6; border-radius:10px; padding:0.85rem 1.1rem; margin-bottom:0.7rem }
+.rights-box strong { color:var(--ink) }
+.rights-box--tip  { background:var(--blue-lt); border:1px solid rgba(37,99,235,0.18); color:var(--muted) }
+.rights-box--warn { background:#FEF2F2; border:1px solid rgba(220,38,38,0.22); color:#7F1D1D }
+.rights-box--warn strong { color:#991B1B }
+.rights-goodfaith { font-size:0.8rem; color:var(--muted); line-height:1.6; text-align:center; margin-top:0.9rem }
+
 /* ── ALTURA FIJA COLUMNAS (desktop) ── */
 @media(min-width:901px) {
   .calc-step, .calc-summary { min-height:510px }
@@ -573,6 +632,9 @@ footer a:hover { color:var(--ink) }
   .aud-strip-inner { grid-template-columns:1fr 1fr }
   .flag-svg   { display:none }
   .flag-emoji { display:inline }
+  /* En vertical/mobile las columnas se angostan y el badge de tier puede saltar de línea;
+     sin margen queda alineado al inicio del nombre en vez de desfasado hacia la derecha. */
+  .c-tier-badge { margin-left:0 }
 }
 @media(max-width:660px) {
   .metrics-bar { grid-template-columns:1fr }
@@ -666,6 +728,24 @@ footer a:hover { color:var(--ink) }
     <p class="sec-sub">Elige el formato que mejor encaja con tu objetivo. Si contratas los dos, obtienes 15% de descuento adicional sobre el total.</p>
     <div class="formats-grid">
 
+      <div class="fmt-card feat">
+        <div class="fmt-icon">🎬</div>
+        <div>
+          <div class="fmt-name">Contenido orgánico</div>
+          <p class="fmt-pitch">Creamos contenido con tu marca incluida de forma natural, en nuestro estilo. Dos paquetes según tu objetivo.</p>
+        </div>
+        <div class="fmt-ideal"><strong>Ideal si:</strong> quieres nuestro respaldo en cámara y que el contenido aparezca en tus redes, no solo en las nuestras.</div>
+        <div class="fmt-platforms">
+          <div class="fmt-pl">YouTube + TikTok (en nuestro canal)</div>
+          <div class="fmt-pl">Instagram (collab, aparece en tu perfil también)</div>
+        </div>
+        <div class="fmt-from">
+          <div class="fmt-from-lbl">Desde</div>
+          <div class="fmt-from-price">$550<span style="font-size:1rem;font-weight:500;color:var(--muted)">/mes</span></div>
+          <div class="fmt-from-sub">Premium · máximo alcance · 4 videos/mes<br>Deluxe · alta producción · 2 videos/mes</div>
+        </div>
+      </div>
+
       <div class="fmt-card">
         <div class="fmt-icon">📺</div>
         <div>
@@ -681,24 +761,6 @@ footer a:hover { color:var(--ink) }
           <div class="fmt-from-lbl">Desde</div>
           <div class="fmt-from-price">$200<span style="font-size:1rem;font-weight:500;color:var(--muted)">/mes</span></div>
           <div class="fmt-from-sub">Descuento automático a mayor frecuencia · hasta 20%</div>
-        </div>
-      </div>
-
-      <div class="fmt-card feat">
-        <div class="fmt-icon">🎬</div>
-        <div>
-          <div class="fmt-name">Contenido orgánico</div>
-          <p class="fmt-pitch">Hacemos un video o reel con tu marca incluida de forma natural, en nuestro estilo. En Instagram, la publicación aparece también en tu perfil como colaboración.</p>
-        </div>
-        <div class="fmt-ideal"><strong>Ideal si:</strong> quieres nuestro respaldo en cámara y que el contenido aparezca en tus redes, no solo en las nuestras.</div>
-        <div class="fmt-platforms">
-          <div class="fmt-pl">YouTube + TikTok (en nuestro canal)</div>
-          <div class="fmt-pl">Instagram (collab, aparece en tu perfil también)</div>
-        </div>
-        <div class="fmt-from">
-          <div class="fmt-from-lbl">Desde</div>
-          <div class="fmt-from-price">$650<span style="font-size:1rem;font-weight:500;color:var(--muted)">/mes</span></div>
-          <div class="fmt-from-sub">Plan Premium: 1 video a la semana (4/mes)<br>Plan Deluxe: 2 videos a la semana (8/mes)</div>
         </div>
       </div>
 
@@ -720,35 +782,53 @@ footer a:hover { color:var(--ink) }
       <!-- Paso 1: Videos (columna izquierda, angosta) -->
       <div class="calc-step">
         <div class="step-lbl"><span class="step-num">1</span> Videos de marca</div>
-        <div class="step-title">Hacemos el video con tu marca en nuestro estilo. Se publica en YouTube, TikTok y en Instagram como collab — aparece en tu perfil también.</div>
+        <div class="step-title">Creamos contenido con tu marca y lo publicamos en nuestro estilo (YouTube, TikTok e Instagram como collab, aparece en tu perfil también). Elige el nivel de producción según tu objetivo.</div>
         <div class="c-opts">
-          <div class="c-opt sel" onclick="selectContent('ninguno',this)">
-            <div class="c-opt-meta">
-              <div class="c-opt-lbl">Sin contenido</div>
-              <div class="c-opt-sub">Solo cintillos</div>
-            </div>
-            <div class="c-opt-right">
-              <div class="c-opt-price">$0</div>
-            </div>
-          </div>
-          <div class="c-opt c-opt--premium" onclick="selectContent('semanal',this)">
-            <div class="c-opt-meta">
-              <div class="c-opt-lbl">👑 Plan Premium</div>
-              <div class="c-opt-sub">1 video/sem · 4/mes</div>
-            </div>
-            <div class="c-opt-right">
-              <div class="c-opt-price">$650</div>
-              <div class="c-opt-disc c-opt-disc--zero">0% off</div>
+          <div class="c-opt sel" data-plan="ninguno" onclick="selectContent('ninguno',this)">
+            <div class="c-opt-main">
+              <div class="c-opt-meta">
+                <div class="c-opt-lbl">Sin contenido</div>
+                <div class="c-opt-sub">Solo cintillos</div>
+              </div>
+              <div class="c-opt-right">
+                <div class="c-opt-price">$0</div>
+              </div>
             </div>
           </div>
-          <div class="c-opt c-opt--deluxe" onclick="selectContent('intensivo',this)">
-            <div class="c-opt-meta">
-              <div class="c-opt-lbl">💎 Plan Deluxe</div>
-              <div class="c-opt-sub">2 videos/sem · 8/mes</div>
+          <div class="c-opt c-opt--deluxe" data-plan="deluxe" onclick="selectContent('deluxe',this)">
+            <div class="c-opt-main">
+              <div class="c-opt-meta">
+                <div class="c-opt-lbl">Deluxe <span class="c-tier-badge c-tier-badge--top">Tope de gama</span></div>
+                <div class="c-opt-sub">Alta producción · 2 videos/mes</div>
+              </div>
+              <div class="c-opt-right">
+                <div class="c-opt-price">$1,900</div>
+              </div>
             </div>
-            <div class="c-opt-right">
-              <div class="c-opt-price">$1,000</div>
-              <div class="c-opt-disc c-opt-disc--win">23% off</div>
+            <div class="c-opt-addon" onclick="toggleAdRights('deluxe',event)">
+              <span class="c-opt-check"></span>
+              <span class="c-opt-addon-txt">Derecho a publicidad pagada</span>
+              <span class="c-opt-addon-price">+$400</span>
+              <button type="button" class="c-opt-info" onclick="toggleInfo(event,this)" aria-label="Más info">i</button>
+              <div class="c-info-pop">Permite usar nuestra imagen en anuncios pagados, en cualquier plataforma. Sin esto, el contenido es solo para uso orgánico. Más detalles abajo ↓</div>
+            </div>
+          </div>
+          <div class="c-opt c-opt--premium" data-plan="premium" onclick="selectContent('premium',this)">
+            <div class="c-opt-main">
+              <div class="c-opt-meta">
+                <div class="c-opt-lbl">Premium <span class="c-tier-badge c-tier-badge--pop">Más popular</span></div>
+                <div class="c-opt-sub">Máximo alcance · 4 videos/mes</div>
+              </div>
+              <div class="c-opt-right">
+                <div class="c-opt-price">$550</div>
+              </div>
+            </div>
+            <div class="c-opt-addon" onclick="toggleAdRights('premium',event)">
+              <span class="c-opt-check"></span>
+              <span class="c-opt-addon-txt">Derecho a publicidad pagada</span>
+              <span class="c-opt-addon-price">+$400</span>
+              <button type="button" class="c-opt-info" onclick="toggleInfo(event,this)" aria-label="Más info">i</button>
+              <div class="c-info-pop">Permite usar nuestra imagen en anuncios pagados, en cualquier plataforma. Sin esto, el contenido es solo para uso orgánico. Más detalles abajo ↓</div>
             </div>
           </div>
         </div>
@@ -764,15 +844,21 @@ footer a:hover { color:var(--ink) }
         <div class="spot-card" data-spot="inicio">
           <div class="spot-card-row" onclick="toggleSpotDropdown('inicio')">
             <div class="spot-card-info">
-              <span class="spot-card-icon">🌅</span>
               <div>
                 <div class="spot-card-name">Spot Inicio</div>
-                <div class="spot-card-detail">Audiencia moderada · ~8:30 AM</div>
               </div>
             </div>
             <div class="spot-card-badge" id="badge-inicio"><div class="spot-badge-off">Sin activar</div></div>
             <span class="spot-chevron">▾</span>
           </div>
+          <div class="spot-card-foot">
+            <div class="spot-foot-info">
+              <div class="spot-card-detail">Audiencia moderada · ~8:30 AM</div>
+              <div class="spot-foot-freq" id="freq-inicio"></div>
+            </div>
+            <button type="button" class="spot-info" onclick="toggleSpotInfo(event,this)" aria-label="Más info">i</button>
+          </div>
+          <div class="spot-info-pop">Apertura del live (~8:30 AM). Audiencia moderada que se conecta al arrancar la transmisión: buen primer impacto mientras la audiencia va creciendo.</div>
           <div class="spot-dropdown">
             <button class="spot-opt spot-opt--off active" onclick="setFreq('inicio',0,this)"><span class="opt-left">Off</span><span class="opt-right"><span class="opt-check">✓</span></span></button>
             <button class="spot-opt" onclick="setFreq('inicio',4,this)"><span class="opt-left">4/mes</span><span class="opt-right"><span class="opt-no-disc">sin descuento</span><span class="opt-check">✓</span></span></button>
@@ -787,15 +873,21 @@ footer a:hover { color:var(--ink) }
         <div class="spot-card" data-spot="pico">
           <div class="spot-card-row" onclick="toggleSpotDropdown('pico')">
             <div class="spot-card-info">
-              <span class="spot-card-icon">🔥</span>
               <div>
-                <div class="spot-card-name">Spot Pico</div>
-                <div class="spot-card-detail">Mayor audiencia · ~10:00 AM</div>
+                <div class="spot-card-name">Spot Pico <span class="c-tier-badge c-tier-badge--top">Recomendado</span></div>
               </div>
             </div>
             <div class="spot-card-badge" id="badge-pico"><div class="spot-badge-off">Sin activar</div></div>
             <span class="spot-chevron">▾</span>
           </div>
+          <div class="spot-card-foot">
+            <div class="spot-foot-info">
+              <div class="spot-card-detail">Máxima exposición · ~10:00 AM</div>
+              <div class="spot-foot-freq" id="freq-pico"></div>
+            </div>
+            <button type="button" class="spot-info" onclick="toggleSpotInfo(event,this)" aria-label="Más info">i</button>
+          </div>
+          <div class="spot-info-pop">Pico de audiencia (~10:00 AM). El momento con más espectadores simultáneos del día: la franja de máxima exposición para tu marca.</div>
           <div class="spot-dropdown">
             <button class="spot-opt spot-opt--off active" onclick="setFreq('pico',0,this)"><span class="opt-left">Off</span><span class="opt-right"><span class="opt-check">✓</span></span></button>
             <button class="spot-opt" onclick="setFreq('pico',4,this)"><span class="opt-left">4/mes</span><span class="opt-right"><span class="opt-no-disc">sin descuento</span><span class="opt-check">✓</span></span></button>
@@ -810,15 +902,21 @@ footer a:hover { color:var(--ink) }
         <div class="spot-card" data-spot="cierre">
           <div class="spot-card-row" onclick="toggleSpotDropdown('cierre')">
             <div class="spot-card-info">
-              <span class="spot-card-icon">🌙</span>
               <div>
                 <div class="spot-card-name">Spot Cierre</div>
-                <div class="spot-card-detail">Audiencia moderada · ~12:00 PM</div>
               </div>
             </div>
             <div class="spot-card-badge" id="badge-cierre"><div class="spot-badge-off">Sin activar</div></div>
             <span class="spot-chevron">▾</span>
           </div>
+          <div class="spot-card-foot">
+            <div class="spot-foot-info">
+              <div class="spot-card-detail">Audiencia moderada · ~12:00 PM</div>
+              <div class="spot-foot-freq" id="freq-cierre"></div>
+            </div>
+            <button type="button" class="spot-info" onclick="toggleSpotInfo(event,this)" aria-label="Más info">i</button>
+          </div>
+          <div class="spot-info-pop">Cierre del live (~12:00 PM). Audiencia moderada que se queda hasta el final: los espectadores más comprometidos y fieles.</div>
           <div class="spot-dropdown">
             <button class="spot-opt spot-opt--off active" onclick="setFreq('cierre',0,this)"><span class="opt-left">Off</span><span class="opt-right"><span class="opt-check">✓</span></span></button>
             <button class="spot-opt" onclick="setFreq('cierre',4,this)"><span class="opt-left">4/mes</span><span class="opt-right"><span class="opt-no-disc">sin descuento</span><span class="opt-check">✓</span></span></button>
@@ -857,14 +955,25 @@ footer a:hover { color:var(--ink) }
           </div>
           <div class="sum-bottom">
             <div class="sum-total-val" id="sum-total">$0</div>
-            <a href="mailto:anonimustradelive@outlook.com?subject=Solicitud%20de%20propuesta%20publicitaria" class="sum-cta">Solicitar propuesta</a>
+            <a href="mailto:anonimustradelive@outlook.com?subject=Solicitud%20de%20propuesta%20publicitaria" class="sum-cta" onclick="return validateCtaClick(event)">Solicitar propuesta</a>
           </div>
+          <div id="cta-warning" class="cta-warning" style="display:none">Selecciona al menos un servicio antes de solicitar tu propuesta.</div>
           <div id="upsell" class="sum-upsell"></div>
           <div class="sum-note">El calculador no procesa pagos. Toda negociación se formaliza por correo.</div>
         </div>
       </div>
 
     </div><!-- /calc-top-grid -->
+
+    <!-- ZONA 4: explicador orgánico vs publicidad pagada -->
+    <div class="rights-explainer">
+      <h3 class="rights-title">¿Orgánico o publicidad pagada?</h3>
+      <p class="rights-lead">Todo nuestro contenido se entrega para <strong>uso orgánico</strong>: lo publicamos de forma natural en nuestras redes (y en colaboración con las tuyas). Si quieres usar nuestra imagen en <strong>campañas de publicidad pagada</strong> (anuncios), necesitas activar el <strong>derecho a publicidad pagada</strong>: nuestro consentimiento expreso para aparecer en tu pauta promocionada.</p>
+      <div class="rights-box rights-box--tip">💡 <strong>Ejemplo rápido.</strong> Grabamos un reel con tu marca y lo subimos en colaboración con tu perfil → eso es <strong>orgánico</strong>, ya incluido. Pero si tomas ese contenido y le pones presupuesto para promocionarlo como <strong>anuncio pagado en cualquier plataforma</strong> (Instagram, Facebook, YouTube, TikTok, Google u otra) → eso es <strong>publicidad pagada</strong> y requiere el derecho.</div>
+      <div class="rights-box rights-box--warn">⚠️ <strong>Importante.</strong> Usar el contenido en publicidad pagada en cualquier medio o plataforma sin haber adquirido el derecho correspondiente —sin nuestro consentimiento expreso para el uso comercial de nuestra imagen— constituye una <strong>infracción de derechos de autor y de imagen</strong>, y puede dar lugar a <strong>reclamaciones legales e indemnizaciones</strong>.</div>
+      <p class="rights-goodfaith">🤝 Valoramos cada marca que confía en nosotros y apostamos por relaciones largas y transparentes. Trabajemos de buena fe.</p>
+    </div>
+
   </div><!-- /container -->
 </section>
 
@@ -982,7 +1091,11 @@ footer a:hover { color:var(--ink) }
 <script>
 /* ── PRECIOS (fuente de verdad — nunca mostrar precio por aparición individual) ── */
 const PRECIOS = {
-  contenido: { ninguno:0, semanal:650, intensivo:1000 },
+  contenido: {
+    ninguno: { base:0,    ads:0   },
+    deluxe:  { base:1900, ads:400 },
+    premium: { base:550,  ads:400 }
+  },
   cintillos: {
     pico:   { 0:0, 4:400,  8:760,  12:1080, 16:1360, 20:1600 },
     inicio: { 0:0, 4:280,  8:532,  12:756,  16:952,  20:1120 },
@@ -990,9 +1103,14 @@ const PRECIOS = {
   }
 };
 
+const CONTENT_LABEL = {
+  deluxe:  'Contenido Deluxe · Alta producción (2 videos/mes)',
+  premium: 'Contenido Premium · Máximo alcance (4 videos/mes)'
+};
+
 const FREQ_SEM = { 4:'1/sem', 8:'2/sem', 12:'3/sem', 16:'4/sem', 20:'5/sem' };
 
-let state = { contenido:'ninguno', pico:0, inicio:0, cierre:0 };
+let state = { contenido:'ninguno', adRights:false, pico:0, inicio:0, cierre:0 };
 
 function fmt(n) { return '$' + n.toLocaleString('en-US') }
 
@@ -1005,32 +1123,79 @@ function cinDiscount(spot, freq) {
   return { saving, pct: Math.round(saving / full * 100) };
 }
 
-function contentDiscount(plan) {
-  if (plan !== 'intensivo') return null;
-  const base   = PRECIOS.contenido.semanal * 2;
-  const saving = base - PRECIOS.contenido.intensivo;
-  return { saving, pct: Math.round(saving / base * 100) };
+function validateCtaClick(ev) {
+  const hayC   = state.contenido !== 'ninguno';
+  const hayCin = (state.pico > 0) || (state.inicio > 0) || (state.cierre > 0);
+  if (!hayC && !hayCin) {
+    ev.preventDefault();
+    showEl(document.getElementById('cta-warning'), 'block', 'fadeSlideUp');
+    return false;
+  }
+  return true;
 }
 
 function selectContent(plan, el) {
-  document.querySelectorAll('.c-opt').forEach(e => e.classList.remove('sel'));
-  el.classList.add('sel');
   state.contenido = plan;
+  state.adRights = false; // selección nueva arranca sin add-on
+  syncContentUI();
   recalc();
 }
+
+function toggleAdRights(plan, ev) {
+  ev.stopPropagation(); // no disparar selectContent del card
+  if (state.contenido !== plan) {
+    // marcar el checkbox de un paquete no seleccionado lo selecciona con add-on activo
+    state.contenido = plan;
+    state.adRights = true;
+  } else {
+    state.adRights = !state.adRights;
+  }
+  syncContentUI();
+  recalc();
+}
+
+function syncContentUI() {
+  document.querySelectorAll('.c-opt').forEach(c => {
+    const plan = c.dataset.plan;
+    c.classList.toggle('sel', plan === state.contenido);
+    const addon = c.querySelector('.c-opt-addon');
+    if (addon) addon.classList.toggle('checked', plan === state.contenido && state.adRights);
+  });
+}
+
+function toggleInfo(ev, btn) {
+  ev.stopPropagation();
+  const card = btn.closest('.c-opt');
+  const wasOpen = card.classList.contains('info-open');
+  document.querySelectorAll('.c-opt').forEach(c => c.classList.remove('info-open'));
+  if (!wasOpen) card.classList.add('info-open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.c-opt-info') && !e.target.closest('.c-info-pop')) {
+    document.querySelectorAll('.c-opt').forEach(c => c.classList.remove('info-open'));
+  }
+});
 
 function toggleSpotDropdown(spot) {
   const card = document.querySelector(`.spot-card[data-spot="${spot}"]`);
   const isOpen = card.classList.contains('open');
-  // cierra todos
-  document.querySelectorAll('.spot-card').forEach(c => c.classList.remove('open'));
+  // cierra todos (dropdown e info)
+  document.querySelectorAll('.spot-card').forEach(c => { c.classList.remove('open'); c.classList.remove('info-open'); });
   // abre este si estaba cerrado
   if (!isOpen) card.classList.add('open');
 }
 
+function toggleSpotInfo(ev, btn) {
+  ev.stopPropagation(); // no abrir el dropdown de frecuencia
+  const card = btn.closest('.spot-card');
+  const wasOpen = card.classList.contains('info-open');
+  document.querySelectorAll('.spot-card').forEach(c => { c.classList.remove('info-open'); c.classList.remove('open'); });
+  if (!wasOpen) card.classList.add('info-open');
+}
+
 document.addEventListener('click', function(e) {
   if (!e.target.closest('.spot-card')) {
-    document.querySelectorAll('.spot-card').forEach(c => c.classList.remove('open'));
+    document.querySelectorAll('.spot-card').forEach(c => { c.classList.remove('open'); c.classList.remove('info-open'); });
   }
 });
 
@@ -1046,10 +1211,12 @@ function setFreq(spot, freq, el) {
 }
 
 function updateBadge(spot) {
-  const freq  = state[spot];
-  const badge = document.getElementById('badge-' + spot);
+  const freq     = state[spot];
+  const badge    = document.getElementById('badge-' + spot);
+  const freqLine = document.getElementById('freq-' + spot);
   if (freq === 0) {
     badge.innerHTML = '<div class="spot-badge-off">Sin activar</div>';
+    freqLine.textContent = '';
     return;
   }
   const price = PRECIOS.cintillos[spot][freq];
@@ -1059,8 +1226,8 @@ function updateBadge(spot) {
     : '';
   badge.innerHTML = `
     <div class="spot-badge-price">${fmt(price)}/mes</div>
-    ${discHtml}
-    <div class="spot-badge-freq">${freq}/mes · ${FREQ_SEM[freq]}</div>`;
+    ${discHtml}`;
+  freqLine.textContent = `${freq}/mes · ${FREQ_SEM[freq]}`;
 }
 
 function showEl(el, disp, anim) {
@@ -1083,7 +1250,9 @@ function hideEl(el) {
 }
 
 function recalc() {
-  const cC  = PRECIOS.contenido[state.contenido];
+  const cObj = PRECIOS.contenido[state.contenido];
+  const cAds = (state.contenido !== 'ninguno' && state.adRights) ? cObj.ads : 0;
+  const cC  = cObj.base + cAds;
   const cP  = PRECIOS.cintillos.pico[state.pico];
   const cI  = PRECIOS.cintillos.inicio[state.inicio];
   const cCi = PRECIOS.cintillos.cierre[state.cierre];
@@ -1092,6 +1261,11 @@ function recalc() {
   const hayCin = (state.pico > 0) || (state.inicio > 0) || (state.cierre > 0);
   const bundle = hayC && hayCin;
   const desc   = bundle ? Math.round(sub * 0.15) : 0;
+
+  if (sub > 0) {
+    const warn = document.getElementById('cta-warning');
+    if (warn.style.display !== 'none') hideEl(warn);
+  }
   const total  = sub - desc;
 
   let totalSaving = 0;
@@ -1102,10 +1276,10 @@ function recalc() {
     lines.push({ label, price, disc });
   }
 
-  if (cC  > 0) pushLine(
-    state.contenido === 'semanal' ? 'Contenido Premium (1 vid/sem · 4/mes)' : 'Contenido Deluxe (2 vid/sem · 8/mes)',
-    cC, contentDiscount(state.contenido)
-  );
+  if (cObj.base > 0) {
+    pushLine(CONTENT_LABEL[state.contenido], cObj.base, null);
+    if (cAds > 0) pushLine('Derecho a publicidad pagada', cAds, null);
+  }
   if (cP  > 0) pushLine('Spot Pico · '   + state.pico   + '/mes · ' + FREQ_SEM[state.pico],   cP,  cinDiscount('pico',   state.pico));
   if (cI  > 0) pushLine('Spot Inicio · ' + state.inicio + '/mes · ' + FREQ_SEM[state.inicio], cI,  cinDiscount('inicio', state.inicio));
   if (cCi > 0) pushLine('Spot Cierre · ' + state.cierre + '/mes · ' + FREQ_SEM[state.cierre], cCi, cinDiscount('cierre', state.cierre));
@@ -1164,17 +1338,16 @@ function recalc() {
 }
 
 function updateMailtoLinks(sub, bundle, totalDisc, total) {
-  const PLAN_LABEL = { ninguno: null, semanal: 'Plan Premium — 1 video/sem · 4/mes', intensivo: 'Plan Deluxe — 2 videos/sem · 8/mes' };
+  const PLAN_LABEL = { ninguno: null, deluxe: 'Deluxe — Alta producción · 2 videos/mes', premium: 'Premium — Máximo alcance · 4 videos/mes' };
   const SPOT_LABEL = { pico: 'Spot Pico', inicio: 'Spot Inicio', cierre: 'Spot Cierre' };
 
   const lines = [];
 
   if (state.contenido !== 'ninguno') {
-    const cC  = PRECIOS.contenido[state.contenido];
-    const disc = contentDiscount(state.contenido);
-    const discTxt = disc ? ` (−${disc.pct}% off, ahorras ${fmt(disc.saving)})` : '';
+    const cObj = PRECIOS.contenido[state.contenido];
     lines.push('CONTENIDO ORGÁNICO');
-    lines.push(`  ${PLAN_LABEL[state.contenido]} — ${fmt(cC)}/mes${discTxt}`);
+    lines.push(`  ${PLAN_LABEL[state.contenido]} — ${fmt(cObj.base)}/mes`);
+    if (state.adRights) lines.push(`  + Derecho a publicidad pagada — ${fmt(cObj.ads)}/mes`);
     lines.push('');
   }
 
