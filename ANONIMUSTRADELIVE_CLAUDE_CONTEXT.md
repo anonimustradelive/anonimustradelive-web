@@ -288,6 +288,14 @@ Script PHP que corre periódicamente (cron en cPanel).
 
 ## Historial de cambios recientes
 
+### 2026-07-15 — Nuevo partner Zoomex en bio
+- `bio/index.html`: nueva tarjeta "Abrir cuenta en Zoomex" (`https://partner.zoomex.com/aff/ZX904826`), colocada justo debajo de Pepperstone en la sección Apóyanos
+- `images/Zoomex_logo_black-and-green.png`: logo tipo wordmark (1160×342, fondo sólido #05080A, acento teal #0BD9BD) — a diferencia de los demás logos del bio (cuadrados con transparencia), este necesitó tratamiento especial
+- Nueva variante `.bio-link.v-teal` + variables `--teal: #0BD9BD` y `--zoomex-bg: #05080A`: el fondo de la tarjeta se fijó al mismo color exacto del fondo del logo (muestreado con PIL) para que quede "seamless" sin caja/borde visible alrededor del wordmark
+- Nueva clase `.bio-link-icon--wide` (height:26px, width:auto, max-width:110px) para logos wordmark anchos — el patrón `.bio-link-icon` normal (34×34 cuadrado) solo sirve para logos cuadrados/transparentes como Pepperstone
+- `.claude/launch.json`: `ads-preview` cambiado de `--directory "."` (relativo, ambiguo según cwd — a veces resolvía a `ads/` en vez de la raíz del proyecto) a ruta absoluta del proyecto, para que sirva correctamente tanto `ads/` como `bio/` e `images/`
+- Regla para futuros partners con logo tipo wordmark (no cuadrado/transparente): muestrear el color de fondo del PNG con PIL (`im.getpixel()`) y usarlo como `background` exacto de la tarjeta en vez de intentar aproximarlo a ojo
+
 ### 2026-07-01 — Rediseño oferta de contenido orgánico + paleta mono-marca
 - `ads/index.html`: nueva oferta de contenido orgánico, reemplazando Plan Premium/Deluxe antiguos (por videos/semana) por dos paquetes con propósito distinto:
   - **Deluxe** ("Tope de gama") — alta producción, 2 videos/mes, $1,900/mes. Es el ancla cara (no se busca vender, pero si se vende está bien remunerado)

@@ -16,6 +16,7 @@
     --purple: #7C3AED; --purple-dark: #4C1D95; --purple-mid: #6D28D9;
     --purple-light: #A78BFA; --purple-glow: rgba(124,58,237,0.18);
     --gray: #252535; --gray2: #333348; --text-muted: #7070A0; --green: #22C55E;
+    --teal: #0BD9BD; --zoomex-bg: #05080A;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -199,11 +200,26 @@
   .bio-link.v-red:hover { background: rgba(192,17,43,0.18); border-color: var(--red); }
   .bio-link.v-red .bio-link-title { color: #FF6B6B; }
 
+  /* Zoomex: fondo idéntico al del logo (#05080A) para que quede seamless, sin recorte visible */
+  .bio-link.v-teal {
+    background: var(--zoomex-bg);
+    border-color: rgba(11,217,189,0.35);
+  }
+  .bio-link.v-teal:hover { background: #0A1013; border-color: var(--teal); }
+  .bio-link.v-teal .bio-link-title { color: var(--teal); }
+
   .bio-link-icon {
     width: 34px;
     height: 34px;
     flex-shrink: 0;
     object-fit: contain;
+  }
+
+  /* Logo tipo wordmark (ancho), como el de Zoomex — no es un ícono cuadrado */
+  .bio-link-icon--wide {
+    width: auto;
+    height: 26px;
+    max-width: 110px;
   }
 
   .bio-link-emoji {
@@ -487,6 +503,15 @@
       <div class="bio-link-body">
         <div class="bio-link-title">Abrir cuenta en Pepperstone</div>
         <div class="bio-link-desc">Requisito de acceso a la comunidad · Broker Forex regulado</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
+    <a class="bio-link v-teal" href="https://partner.zoomex.com/aff/ZX904826" target="_blank" rel="noopener">
+      <img class="bio-link-icon bio-link-icon--wide" src="https://anonimustradelive.com/images/Zoomex_logo_black-and-green.png" alt="Zoomex">
+      <div class="bio-link-body">
+        <div class="bio-link-title">Abrir cuenta en Zoomex</div>
+        <div class="bio-link-desc">Exchange de crypto · Enlace de referido</div>
       </div>
       <span class="bio-link-arrow">›</span>
     </a>

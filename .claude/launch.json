@@ -4,7 +4,7 @@
     {
       "name": "ads-preview",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "5500", "--directory", "."],
+      "runtimeArgs": ["-m", "http.server", "5500", "--directory", "C:/Users/cejas/OneDrive/Desktop/anonimustradelive"],
       "port": 5500
     }
   ]
