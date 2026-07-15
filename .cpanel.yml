@@ -34,3 +34,4 @@ deployment:
     - /bin/cp reg/login.php /home/ntpsrnlfrg/reg.anonimustradelive.com/
     - /bin/cp reg/logout.php /home/ntpsrnlfrg/reg.anonimustradelive.com/
     - /bin/cp reg/setup.php /home/ntpsrnlfrg/reg.anonimustradelive.com/
+    - /bin/cp reg/fix_zoomex_platform.php /home/ntpsrnlfrg/reg.anonimustradelive.com/

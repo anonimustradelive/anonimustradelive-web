@@ -288,6 +288,12 @@ Script PHP que corre periódicamente (cron en cPanel).
 
 ## Historial de cambios recientes
 
+### 2026-07-15 (3) — Fix registros Zoomex corruptos (platform vacío)
+- Bug detectado: 2 registros (`El Mejorrrrr`, `Angel`) llegaron eligiendo Zoomex en el bot **antes** de que el usuario corriera `setup.php`. Como el ENUM `platform` todavía no incluía `'zoomex'`, MySQL en modo no estricto guardó `platform=''` en vez de dar error — por eso no aparecían con el tag "Zoomex" ni al filtrar por esa plataforma en el panel admin
+- `reg/fix_zoomex_platform.php`: script de un solo uso (mismo patrón que `setup.php`) que 1) asegura el ALTER del ENUM y 2) busca registros con `platform` inválido/vacío y los repara a `'zoomex'` (es la única plataforma que puede producir este bug, ya que pepperstone/bingx/bitunix siempre fueron valores válidos del ENUM)
+- `.cpanel.yml`: agregada línea de deploy para `fix_zoomex_platform.php`
+- ⚠️ **Pendiente:** visitar `reg.anonimustradelive.com/setup.php` primero, luego `reg.anonimustradelive.com/fix_zoomex_platform.php` una vez para reparar los registros afectados. Ambos scripts son de un solo uso — se pueden eliminar del servidor después de confirmar que funcionaron
+
 ### 2026-07-15 (2) — Zoomex como tercer exchange en el bot de registro
 - `reg/webhook.php`: nueva opción "Zoomex" en el paso de selección de exchange crypto (`asset_crypto`), en paralelo con BingX (con KYC) y Bitunix (sin KYC). Zoomex se trata igual que Bitunix — **sin verificación KYC**
 - Nuevo `case 'platform_zoomex'` con el link de referido `https://partner.zoomex.com/aff/ZX904826`, mismo patrón que `platform_bitunix`
