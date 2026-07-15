@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS registrations (
     telegram_username   VARCHAR(255),
     profile_type        ENUM('principiante','trader') NOT NULL,
     asset_type          ENUM('crypto','tradicional')  NULL,
-    platform            ENUM('pepperstone','bingx','bitunix') NOT NULL,
+    platform            ENUM('pepperstone','bingx','bitunix','zoomex') NOT NULL,
     platform_user_id    VARCHAR(255) NOT NULL,
     status              ENUM('pending','accepted','rejected') NOT NULL DEFAULT 'pending',
     invite_link         VARCHAR(500) NULL,
@@ -55,6 +55,10 @@ try {
 
 try {
     $pdo->exec("ALTER TABLE registrations ADD COLUMN patience_sent TINYINT(1) NOT NULL DEFAULT 0 AFTER migration_status;");
+} catch (PDOException $e) {}
+
+try {
+    $pdo->exec("ALTER TABLE registrations MODIFY COLUMN platform ENUM('pepperstone','bingx','bitunix','zoomex') NOT NULL;");
 } catch (PDOException $e) {}
 
 try {

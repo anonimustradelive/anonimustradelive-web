@@ -117,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['id'
                 if ($link) {
                     $pdo->prepare("UPDATE registrations SET status='accepted', invite_link=?, updated_at=NOW() WHERE id=?")
                         ->execute([$link, $id]);
-                    $plabels = ['pepperstone' => 'Pepperstone', 'bingx' => 'BingX', 'bitunix' => 'Bitunix'];
+                    $plabels = ['pepperstone' => 'Pepperstone', 'bingx' => 'BingX', 'bitunix' => 'Bitunix', 'zoomex' => 'Zoomex'];
                     $pl = $plabels[$reg['platform']] ?? $reg['platform'];
                     tgSend((int)$reg['telegram_user_id'],
                         "🎉 *¡Felicidades\\! Tu registro fue aprobado\\.*\n\n" .
@@ -146,8 +146,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['id'
                     'pepperstone' => 'https://trk.pepperstonepartners.com/aff_c?offer_id=367&aff_id=45363',
                     'bingx'       => 'https://bingxdao.com/partner/AnonimusTrade/',
                     'bitunix'     => 'https://www.bitunix.com/register?vipCode=KMrN',
+                    'zoomex'      => 'https://partner.zoomex.com/aff/ZX904826',
                 ];
-                $plabels2 = ['pepperstone' => 'Pepperstone', 'bingx' => 'BingX', 'bitunix' => 'Bitunix'];
+                $plabels2 = ['pepperstone' => 'Pepperstone', 'bingx' => 'BingX', 'bitunix' => 'Bitunix', 'zoomex' => 'Zoomex'];
                 $pname    = $plabels2[$reg['platform']] ?? $reg['platform'];
                 $ref_url  = $ref_urls[$reg['platform']] ?? '#';
                 tgSend((int)$reg['telegram_user_id'],
@@ -218,7 +219,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['id'
 
 // ── FILTROS ──────────────────────────────────────────────────────────────────
 $filter          = in_array($_GET['filter']   ?? '', ['all','pending','accepted','rejected'])  ? $_GET['filter']            : 'pending';
-$platform_filter = in_array($_GET['platform'] ?? '', ['all','pepperstone','bingx','bitunix'])  ? ($_GET['platform'] ?? 'all') : 'all';
+$platform_filter = in_array($_GET['platform'] ?? '', ['all','pepperstone','bingx','bitunix','zoomex'])  ? ($_GET['platform'] ?? 'all') : 'all';
 
 $where_parts = [];
 if ($filter !== 'all')          $where_parts[] = "status = "   . $pdo->quote($filter);
@@ -253,7 +254,7 @@ $raw_counts = $pdo->query("SELECT status, COUNT(*) n FROM registrations GROUP BY
 $counts = ['pending' => 0, 'accepted' => 0, 'rejected' => 0, 'all' => 0];
 foreach ($raw_counts as $r) { $counts[$r['status']] = (int)$r['n']; $counts['all'] += (int)$r['n']; }
 
-$plabels  = ['pepperstone' => 'Pepperstone', 'bingx' => 'BingX', 'bitunix' => 'Bitunix'];
+$plabels  = ['pepperstone' => 'Pepperstone', 'bingx' => 'BingX', 'bitunix' => 'Bitunix', 'zoomex' => 'Zoomex'];
 $prlabels = ['principiante' => 'Principiante', 'trader' => 'Trader'];
 
 function relTime(string $ts): string {
@@ -658,7 +659,7 @@ function tgSendPlain(int $chat_id, string $text): void {
     </div>
     <div class="filter-row">
       <span class="filter-label">Plataforma:</span>
-      <?php foreach (['all' => 'Todas', 'pepperstone' => 'Pepperstone', 'bingx' => 'BingX', 'bitunix' => 'Bitunix'] as $pf => $pl): ?>
+      <?php foreach (['all' => 'Todas', 'pepperstone' => 'Pepperstone', 'bingx' => 'BingX', 'bitunix' => 'Bitunix', 'zoomex' => 'Zoomex'] as $pf => $pl): ?>
       <a class="filter-btn <?= $platform_filter === $pf ? 'active' : '' ?>" href="?filter=<?= $filter ?>&platform=<?= $pf ?>"><?= $pl ?></a>
       <?php endforeach; ?>
     </div>

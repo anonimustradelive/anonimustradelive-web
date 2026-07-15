@@ -127,7 +127,7 @@ function handleMessage(PDO $pdo, array $user, int $chat_id, string $text): void 
         }
         $d = $session['data'];
         $d['email'] = $text;
-        $plabels = ['pepperstone' => 'Pepperstone', 'bingx' => 'BingX', 'bitunix' => 'Bitunix'];
+        $plabels = ['pepperstone' => 'Pepperstone', 'bingx' => 'BingX', 'bitunix' => 'Bitunix', 'zoomex' => 'Zoomex'];
         $pname = $plabels[$d['platform']] ?? $d['platform'];
         setState($pdo, $uid, 'awaiting_platform_id', $d);
         tgSend($chat_id,
@@ -142,7 +142,7 @@ function handleMessage(PDO $pdo, array $user, int $chat_id, string $text): void 
     // ── awaiting_platform_id — valida y muestra confirmación ────────────────
     if ($session['state'] === 'awaiting_platform_id') {
         $d = $session['data'];
-        $plabels = ['pepperstone' => 'Pepperstone', 'bingx' => 'BingX', 'bitunix' => 'Bitunix'];
+        $plabels = ['pepperstone' => 'Pepperstone', 'bingx' => 'BingX', 'bitunix' => 'Bitunix', 'zoomex' => 'Zoomex'];
         $pname = $plabels[$d['platform'] ?? 'pepperstone'] ?? 'la plataforma';
 
         if (!preg_match('/^\d{4,20}$/', $text)) {
@@ -256,6 +256,7 @@ function handleCallback(PDO $pdo, array $user, int $chat_id, string $cb, int $ms
                 [
                     [['text' => '✅ Con verificación — BingX',   'callback_data' => 'platform_bingx']],
                     [['text' => '🔒 Sin verificación — Bitunix', 'callback_data' => 'platform_bitunix']],
+                    [['text' => '🔒 Sin verificación — Zoomex',  'callback_data' => 'platform_zoomex']],
                 ]
             );
             setState($pdo, $uid, 'awaiting_crypto_platform', ['profile' => 'trader', 'asset' => 'crypto']);
@@ -309,6 +310,21 @@ function handleCallback(PDO $pdo, array $user, int $chat_id, string $cb, int $ms
                 ]]]
             );
             setState($pdo, $uid, 'awaiting_email', ['profile' => 'trader', 'asset' => 'crypto', 'platform' => 'bitunix']);
+            break;
+
+        case 'platform_zoomex':
+            tgEdit($chat_id, $msg_id,
+                "🔒 *Zoomex — Sin verificación KYC*\n\n" .
+                "No necesitas subir documentos de identidad\\. Puedes empezar a operar de inmediato\\.\n\n" .
+                "*Paso 1 →* Abre tu cuenta con el botón de abajo\n" .
+                "*Paso 2 →* Regresa aquí y escribe tu correo de Zoomex\n\n" .
+                "_Tómate tu tiempo, el bot te estará esperando aquí\\. 🕐_",
+                [[[
+                    'text' => '🔒 Registrarse en Zoomex',
+                    'url'  => 'https://partner.zoomex.com/aff/ZX904826'
+                ]]]
+            );
+            setState($pdo, $uid, 'awaiting_email', ['profile' => 'trader', 'asset' => 'crypto', 'platform' => 'zoomex']);
             break;
 
         // ── MIGRACIÓN ─────────────────────────────────────────────────────────
@@ -406,7 +422,7 @@ function handleCallback(PDO $pdo, array $user, int $chat_id, string $cb, int $ms
                 );
             }
 
-            $plabels = ['pepperstone' => 'Pepperstone', 'bingx' => 'BingX', 'bitunix' => 'Bitunix'];
+            $plabels = ['pepperstone' => 'Pepperstone', 'bingx' => 'BingX', 'bitunix' => 'Bitunix', 'zoomex' => 'Zoomex'];
             $notif = "🔔 *Nueva solicitud de registro*" . ($is_migration ? " — _migración_" : "") . "\n\n" .
                 "👤 " . mdEscape($name) . "\n" .
                 "🆔 @" . mdEscape($user['username'] ?? 'sin username') . "\n" .
@@ -423,7 +439,7 @@ function handleCallback(PDO $pdo, array $user, int $chat_id, string $cb, int $ms
             unset($d['email'], $d['platform_id']);
             setState($pdo, $uid, 'awaiting_email', $d);
 
-            $plabels = ['pepperstone' => 'Pepperstone', 'bingx' => 'BingX', 'bitunix' => 'Bitunix'];
+            $plabels = ['pepperstone' => 'Pepperstone', 'bingx' => 'BingX', 'bitunix' => 'Bitunix', 'zoomex' => 'Zoomex'];
             $pname = $plabels[$d['platform'] ?? 'pepperstone'] ?? 'la plataforma';
 
             tgEdit($chat_id, $msg_id, "✏️ *Vamos a corregirlos\\.*");

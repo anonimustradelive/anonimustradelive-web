@@ -288,6 +288,14 @@ Script PHP que corre periódicamente (cron en cPanel).
 
 ## Historial de cambios recientes
 
+### 2026-07-15 (2) — Zoomex como tercer exchange en el bot de registro
+- `reg/webhook.php`: nueva opción "Zoomex" en el paso de selección de exchange crypto (`asset_crypto`), en paralelo con BingX (con KYC) y Bitunix (sin KYC). Zoomex se trata igual que Bitunix — **sin verificación KYC**
+- Nuevo `case 'platform_zoomex'` con el link de referido `https://partner.zoomex.com/aff/ZX904826`, mismo patrón que `platform_bitunix`
+- Los 4 mapas `$plabels` del archivo (confirmación, corrección de datos, notificación al admin) actualizados con `'zoomex' => 'Zoomex'`
+- `reg/index.php`: filtro de plataforma en el panel admin incluye Zoomex; `$ref_urls` para el botón "⛔ UID no referido" incluye el link de Zoomex. El botón "📋 KYC" sigue condicionado solo a `platform === 'bingx'`, por lo que no aplica a Zoomex (correcto, sin KYC)
+- `reg/setup.php`: ENUM `platform` extendido a `'zoomex'` en el `CREATE TABLE` (instalación nueva) y agregado un `ALTER TABLE MODIFY COLUMN` (instalación existente)
+- ⚠️ **Pendiente tras el deploy:** visitar `reg.anonimustradelive.com/setup.php` una vez para que corra el ALTER y la DB acepte `platform='zoomex'` — si no, los registros con Zoomex fallarán al insertarse
+
 ### 2026-07-15 — Nuevo partner Zoomex en bio
 - `bio/index.html`: nueva tarjeta "Abrir cuenta en Zoomex" (`https://partner.zoomex.com/aff/ZX904826`), colocada justo debajo de Pepperstone en la sección Apóyanos
 - `images/Zoomex_logo_black-and-green.png`: logo tipo wordmark (1160×342, fondo sólido #05080A, acento teal #0BD9BD) — a diferencia de los demás logos del bio (cuadrados con transparencia), este necesitó tratamiento especial
