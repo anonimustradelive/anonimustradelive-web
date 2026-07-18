@@ -323,6 +323,12 @@ Ejecutado y verificado end-to-end el 2026-07-18: subdominio `reg.` eliminado, `p
 
 ## Historial de cambios recientes
 
+### 2026-07-18 (7) — Eliminar cualquier factura/comprobante (con triple confirmación)
+- **`panel/facturas/index.php`**: la acción `delete` ya no está restringida a `status='draft'` (antes solo se podían borrar borradores) — ahora se puede eliminar cualquier factura o comprobante, en cualquier estado, incluyendo pagadas/comprobantes
+- Botón **"🗑️ Eliminar"** unificado (antes solo existía dentro del bloque de Borradores) — ahora aparece para todas las filas del listado, con `onsubmit` encadenando **3 `confirm()` de JS** (cortan si el admin cancela cualquiera): 1) confirmación general con el número de factura, 2) advertencia de que es irreversible, 3) confirmación final repitiendo el número de factura
+- El mensaje flash tras eliminar distingue "Factura" vs "Comprobante" según `doc_type`
+- Verificado visualmente con un mock: el botón aparece en filas Pagada, Enviada y Borrador por igual
+
 ### 2026-07-18 (6) — Fix: dos tasas distintas confundían en el comprobante impreso
 - **Problema reportado:** en un comprobante con precio negociado a mano (RD$32,200 por un Premium de $550), la línea mostraba correctamente "Tasa usada: 1 USD = 58.5455 DOP" (32200/550, matemática correcta), pero el pie de la factura además mostraba "Tasa aplicada: 1 USD = 58.6210 DOP" — la tasa general que se usó como sugerencia automática antes del ajuste manual. Dos números distintos en el mismo documento generaban confusión, aunque ninguno estaba mal calculado
 - **`panel/facturas/ver.php`**: se agrega `$any_line_override` (true si algún ítem tiene `effective_rate` guardado). La nota general "Tasa aplicada" del pie ahora solo se muestra cuando **ningún** ítem tiene tasa propia — si hay una línea con precio negociado, esa nota por línea es la única que aparece, evitando mostrar un número que ya no corresponde a nada cobrado realmente en esa factura

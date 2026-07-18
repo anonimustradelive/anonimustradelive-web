@@ -27,10 +27,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($act === 'cancel') {
             $pdo->prepare("UPDATE invoices SET status='cancelled', updated_at=NOW() WHERE id=?")->execute([$id]);
             $flash = "Factura {$inv['invoice_number']} anulada.";
-        } elseif ($act === 'delete' && $inv['status'] === 'draft') {
+        } elseif ($act === 'delete') {
+            $doc_word = ($inv['doc_type'] ?? 'invoice') === 'receipt' ? 'Comprobante' : 'Factura';
             $pdo->prepare("DELETE FROM invoice_items WHERE invoice_id=?")->execute([$id]);
             $pdo->prepare("DELETE FROM invoices WHERE id=?")->execute([$id]);
-            $flash = "Borrador {$inv['invoice_number']} eliminado.";
+            $flash = "$doc_word {$inv['invoice_number']} eliminada permanentemente.";
         }
     }
 }
@@ -105,11 +106,6 @@ include __DIR__ . '/../includes/nav.php';
             <input type="hidden" name="action" value="mark_sent">
             <button type="submit" class="btn-sent">Marcar enviada</button>
           </form>
-          <form method="POST" onsubmit="return confirm('¿Eliminar este borrador?')">
-            <input type="hidden" name="id" value="<?= $inv['id'] ?>">
-            <input type="hidden" name="action" value="delete">
-            <button type="submit" class="btn-reject">Eliminar</button>
-          </form>
           <?php elseif (in_array($inv['status'], ['sent', 'overdue'])): ?>
           <form method="POST" onsubmit="return confirm('¿Marcar como pagada?')">
             <input type="hidden" name="id" value="<?= $inv['id'] ?>">
@@ -129,6 +125,11 @@ include __DIR__ . '/../includes/nav.php';
             <button type="submit" class="btn-reject">Anular</button>
           </form>
           <?php endif; ?>
+          <form method="POST" onsubmit="return confirm('¿Eliminar <?= htmlspecialchars($inv['invoice_number']) ?> permanentemente? Esta acción no se puede deshacer.') && confirm('¿Estás completamente seguro? El registro se borrará para siempre, incluyendo sus ítems.') && confirm('Última confirmación: se va a ELIMINAR <?= htmlspecialchars($inv['invoice_number']) ?> de forma definitiva. ¿Continuar?')">
+            <input type="hidden" name="id" value="<?= $inv['id'] ?>">
+            <input type="hidden" name="action" value="delete">
+            <button type="submit" class="btn-reject">🗑️ Eliminar</button>
+          </form>
         </div>
       </td>
     </tr>
