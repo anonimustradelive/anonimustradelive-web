@@ -323,6 +323,12 @@ Ejecutado y verificado end-to-end el 2026-07-18: subdominio `reg.` eliminado, `p
 
 ## Historial de cambios recientes
 
+### 2026-07-18 (8) — Botón "Contacto" en la barra superior (sitio principal)
+- **Motivo:** el correo solo aparecía como una tarjeta más dentro de la sección Comunidad, poco intuitivo para quien busca contacto por negocios/colaboraciones
+- **`index.html`**: nuevo estilo `.nav-cta-outline` (borde, fondo transparente, hover en morado) para diferenciarlo visualmente de "🤍 donar" (rojo) y "únete" (morado sólido). Botón **"📧 contacto"** (`mailto:anonimustradelive@outlook.com?subject=Contacto%20desde%20la%20web`) agregado al `.nav-actions` de escritorio (antes de donar/únete) y al `.nav-mobile-actions` del menú móvil (fila completa arriba, con donar/únete debajo). Se probó primero con el emoji ✉️ pero no renderizaba bien (glifo faltante) — se cambió a 📧, más compatible
+- Se **quitó** la tarjeta "Email" del `.social-grid` en `#comunidad` (quedan Telegram, YouTube, Instagram, X, TikTok) — el correo de contacto para negocios ahora vive únicamente en el botón de la barra superior. El mailto del footer del sitio no se tocó (es la firma de contacto general, no la sección Comunidad)
+- Verificado visualmente en navegador: desktop (1440px), mobile (375px, menú hamburguesa) y sección Comunidad sin la tarjeta de email
+
 ### 2026-07-18 (7) — Eliminar cualquier factura/comprobante (con triple confirmación)
 - **`panel/facturas/index.php`**: la acción `delete` ya no está restringida a `status='draft'` (antes solo se podían borrar borradores) — ahora se puede eliminar cualquier factura o comprobante, en cualquier estado, incluyendo pagadas/comprobantes
 - Botón **"🗑️ Eliminar"** unificado (antes solo existía dentro del bloque de Borradores) — ahora aparece para todas las filas del listado, con `onsubmit` encadenando **3 `confirm()` de JS** (cortan si el admin cancela cualquiera): 1) confirmación general con el número de factura, 2) advertencia de que es irreversible, 3) confirmación final repitiendo el número de factura

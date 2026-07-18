@@ -152,6 +152,14 @@
     text-decoration: none; transition: background 0.2s; white-space: nowrap;
   }
   .nav-cta-red:hover { background: var(--red-dark); }
+  .nav-cta-outline {
+    background: transparent; color: var(--white);
+    border: 1px solid var(--text-muted);
+    padding: 7px 20px; border-radius: 3px;
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    text-decoration: none; transition: border-color 0.2s, color 0.2s; white-space: nowrap;
+  }
+  .nav-cta-outline:hover { border-color: var(--purple-light); color: var(--purple-light); }
 
   /* ── HAMBURGER ── */
   .nav-hamburger {
@@ -183,7 +191,8 @@
     transition: color 0.2s;
   }
   .nav-mobile a.nav-mobile-link:hover { color: var(--purple-light); }
-  .nav-mobile-actions { display: flex; gap: 8px; margin-top: 1.25rem; }
+  .nav-mobile-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 1.25rem; }
+  .nav-mobile-actions .nav-cta-outline { flex-basis: 100%; text-align: center; }
   .nav-mobile-actions .nav-cta-red,
   .nav-mobile-actions .nav-cta { flex: 1; text-align: center; }
   .nav-mobile-toggle {
@@ -885,6 +894,7 @@
     <li><a href="/utilidades">🔒 herramientas vip</a></li>
   </ul>
   <div class="nav-actions">
+    <a class="nav-cta-outline" href="mailto:anonimustradelive@outlook.com?subject=Contacto%20desde%20la%20web">📧 contacto</a>
     <a class="nav-cta-red" href="#donaciones">🤍 donar</a>
     <a class="nav-cta" href="https://t.me/anonimustradelive_bot" target="_blank" rel="noopener">únete</a>
   </div>
@@ -917,6 +927,7 @@
   <a class="nav-mobile-link" href="#comunidad"  onclick="navClose()">comunidad</a>
   <a class="nav-mobile-link" href="/utilidades">🔒 herramientas vip</a>
   <div class="nav-mobile-actions">
+    <a class="nav-cta-outline" href="mailto:anonimustradelive@outlook.com?subject=Contacto%20desde%20la%20web" onclick="navClose()">📧 contacto</a>
     <a class="nav-cta-red" href="#donaciones" onclick="navClose()">🤍 donar</a>
     <a class="nav-cta" href="https://t.me/anonimustradelive_bot" target="_blank" rel="noopener" onclick="navClose()">únete</a>
   </div>
@@ -1392,10 +1403,6 @@
       <a class="social-card" href="https://www.tiktok.com/@anonimustradelive" target="_blank" rel="noopener">
         <img class="social-icon" src="images/tiktok-6338432_1280.webp" alt="TikTok">
         <span class="social-name">TikTok</span>
-      </a>
-      <a class="social-card" href="mailto:anonimustradelive@outlook.com">
-        <svg class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
-        <span class="social-name">Email</span>
       </a>
     </div>
   </div>
