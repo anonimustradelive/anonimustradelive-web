@@ -252,9 +252,9 @@ Script PHP que corre periódicamente (cron en cPanel).
 
 ---
 
-## ⚠️ Runbook de corte: reg.anonimustradelive.com → panel.anonimustradelive.com
+## ✅ Runbook de corte: reg.anonimustradelive.com → panel.anonimustradelive.com (COMPLETADO 2026-07-18)
 
-Pendiente de ejecutar (el código ya está migrado y listo, pero el corte del subdominio es una acción manual en cPanel). Seguir este orden exacto — **primero la infraestructura, luego el código encima** (no al revés: pre-crear la carpeta del subdominio vía deploy antes de que el subdominio exista puede confundir al asistente de cPanel si detecta contenido ya presente):
+Ejecutado y verificado end-to-end el 2026-07-18: subdominio `reg.` eliminado, `panel.` creado y en producción, webhook de Telegram re-registrado y confirmado (`getWebhookInfo` mostró la URL correcta, `pending_update_count:0`, sin `last_error_message`), bot probado con `/start`, panel probado (Facturación + Registros con los 74 registros existentes, chat y notas funcionando), scripts `setup.php` eliminados del servidor. Queda documentado el procedimiento por si se repite un corte similar en el futuro:
 
 1. **Eliminar el subdominio `reg.anonimustradelive.com`** en cPanel (Dominios → Subdominios) para liberar el slot. *(A partir de aquí el bot deja de responder — es el punto de no retorno, hay que completar los siguientes pasos con calma pero sin demorar demasiado.)*
 2. **Crear el subdominio `panel.anonimustradelive.com`**, con document root `/home/ntpsrnlfrg/panel.anonimustradelive.com`.
@@ -335,7 +335,7 @@ Pendiente de ejecutar (el código ya está migrado y listo, pero el corte del su
 - `.cpanel.yml`: quitado el bloque de deploy a `reg.anonimustradelive.com`; agregado deploy de `panel/registros/*.php`
 - **`reg/` eliminado por completo** del repositorio (los 6 archivos, incluyendo los ya retirados) — todo migrado o retirado intencionalmente
 - Respaldo completo de `reg/` + `panel/` (incluyendo `reg/config.php` con los secretos reales, que nunca estuvo en git) guardado fuera del repo en `anonimustradelive_backup_reg_panel_<timestamp>/` antes de borrar nada
-- ⚠️ **Pendiente crítico:** el webhook de Telegram sigue apuntando a la URL vieja hasta que se ejecute `setWebhook` con la nueva URL — ver sección "Runbook de corte" más abajo. Sin este paso el bot deja de recibir mensajes en cuanto se elimine el subdominio `reg.`
+- ✅ **Corte completado el 2026-07-18** — subdominio migrado, webhook re-registrado y verificado, todo probado en producción. Ver sección "Runbook de corte" más abajo para el detalle.
 
 ### 2026-07-15 (3) — Fix registros Zoomex corruptos (platform vacío)
 - Bug detectado: 2 registros (`El Mejorrrrr`, `Angel`) llegaron eligiendo Zoomex en el bot **antes** de que el usuario corriera `setup.php`. Como el ENUM `platform` todavía no incluía `'zoomex'`, MySQL en modo no estricto guardó `platform=''` en vez de dar error — por eso no aparecían con el tag "Zoomex" ni al filtrar por esa plataforma en el panel admin
