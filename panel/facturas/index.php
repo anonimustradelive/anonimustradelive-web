@@ -45,7 +45,10 @@ $counts = ['draft' => 0, 'sent' => 0, 'paid' => 0, 'overdue' => 0, 'cancelled' =
 foreach ($counts_raw as $r) { $counts[$r['status']] = (int)$r['n']; $counts['all'] += (int)$r['n']; }
 
 $status_labels  = ['draft' => 'Borrador', 'sent' => 'Enviada', 'paid' => 'Pagada', 'overdue' => 'Vencida', 'cancelled' => 'Anulada'];
-$service_labels = ['ads' => 'Ads', 'contenido' => 'Contenido', 'otro' => 'Otro'];
+
+$service_types_raw = $pdo->query("SELECT slug, name FROM service_types ORDER BY sort_order, id")->fetchAll(PDO::FETCH_ASSOC);
+$service_labels = [];
+foreach ($service_types_raw as $st) { $service_labels[$st['slug']] = $st['name']; }
 
 $active = 'facturas';
 $panel_title = 'Facturación';
@@ -76,7 +79,10 @@ include __DIR__ . '/../includes/nav.php';
   <tbody>
     <?php foreach ($invoices as $inv): ?>
     <tr>
-      <td><strong><?= htmlspecialchars($inv['invoice_number']) ?></strong></td>
+      <td>
+        <strong><?= htmlspecialchars($inv['invoice_number']) ?></strong>
+        <?php if (($inv['doc_type'] ?? 'invoice') === 'receipt'): ?><div class="muted-sub">✅ Comprobante</div><?php endif; ?>
+      </td>
       <td>
         <?= htmlspecialchars($inv['client_name']) ?>
         <?php if ($inv['client_email']): ?><div class="muted-sub"><?= htmlspecialchars($inv['client_email']) ?></div><?php endif; ?>

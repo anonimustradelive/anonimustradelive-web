@@ -14,6 +14,8 @@ $istmt->execute([$id]);
 $items = $istmt->fetchAll(PDO::FETCH_ASSOC);
 
 $status_labels = ['draft' => 'Borrador', 'sent' => 'Enviada', 'paid' => 'Pagada', 'overdue' => 'Vencida', 'cancelled' => 'Anulada'];
+$is_receipt = ($inv['doc_type'] ?? 'invoice') === 'receipt';
+$doc_label  = $is_receipt ? 'Comprobante' : 'Factura';
 function money($n) { return '$' . number_format((float)$n, 2); }
 function trimNum($n) { return rtrim(rtrim(number_format((float)$n, 2), '0'), '.'); }
 ?>
@@ -21,7 +23,7 @@ function trimNum($n) { return rtrim(rtrim(number_format((float)$n, 2), '0'), '.'
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Factura <?= htmlspecialchars($inv['invoice_number']) ?> — AnonimusTrade Live</title>
+<title><?= $doc_label ?> <?= htmlspecialchars($inv['invoice_number']) ?> — AnonimusTrade Live</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -52,6 +54,7 @@ function trimNum($n) { return rtrim(rtrim(number_format((float)$n, 2), '0'), '.'
   th { text-align:left; font-size:0.68rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; color:var(--muted); padding:8px 6px; border-bottom:2px solid var(--ink) }
   th.num, td.num { text-align:right }
   td { padding:10px 6px; font-size:0.86rem; border-bottom:1px solid var(--bdr) }
+  .line-note { font-size:0.72rem; color:var(--green); font-weight:600; margin-top:2px }
   .totals { margin-left:auto; width:280px }
   .totals div { display:flex; justify-content:space-between; padding:6px 0; font-size:0.86rem }
   .totals .discount { color:var(--green) }
@@ -80,6 +83,7 @@ function trimNum($n) { return rtrim(rtrim(number_format((float)$n, 2), '0'), '.'
       <div class="brand-sub">anonimustradelive@outlook.com</div>
     </div>
     <div class="inv-meta">
+      <div class="block-label" style="margin-bottom:2px"><?= $doc_label ?></div>
       <div class="num"><?= htmlspecialchars($inv['invoice_number']) ?></div>
       <span class="status status-<?= $inv['status'] ?>"><?= $status_labels[$inv['status']] ?></span>
     </div>
@@ -106,7 +110,10 @@ function trimNum($n) { return rtrim(rtrim(number_format((float)$n, 2), '0'), '.'
     <tbody>
       <?php foreach ($items as $it): ?>
       <tr>
-        <td><?= htmlspecialchars($it['description']) ?></td>
+        <td>
+          <?= htmlspecialchars($it['description']) ?>
+          <?php if (!empty($it['line_note'])): ?><div class="line-note"><?= htmlspecialchars($it['line_note']) ?></div><?php endif; ?>
+        </td>
         <td class="num"><?= trimNum($it['quantity']) ?></td>
         <td class="num"><?= money($it['unit_price']) ?></td>
         <td class="num"><?= money($it['line_total']) ?></td>

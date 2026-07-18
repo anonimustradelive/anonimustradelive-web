@@ -1090,16 +1090,19 @@ footer a:hover { color:var(--ink) }
 
 <script>
 /* ── PRECIOS (fuente de verdad — nunca mostrar precio por aparición individual) ── */
+/* Nota: claves entre comillas a propósito — este bloque debe ser JSON válido,
+   ya que panel/includes/ads_pricing.php lo extrae y lo parsea con json_decode()
+   para que el módulo de Facturación siempre refleje estos mismos precios. */
 const PRECIOS = {
-  contenido: {
-    ninguno: { base:0,    ads:0   },
-    deluxe:  { base:1900, ads:400 },
-    premium: { base:550,  ads:400 }
+  "contenido": {
+    "ninguno": { "base":0,    "ads":0   },
+    "deluxe":  { "base":1900, "ads":400 },
+    "premium": { "base":550,  "ads":400 }
   },
-  cintillos: {
-    pico:   { 0:0, 4:400,  8:760,  12:1080, 16:1360, 20:1600 },
-    inicio: { 0:0, 4:280,  8:532,  12:756,  16:952,  20:1120 },
-    cierre: { 0:0, 4:200,  8:380,  12:540,  16:680,  20:800  }
+  "cintillos": {
+    "pico":   { "0":0, "4":400,  "8":760,  "12":1080, "16":1360, "20":1600 },
+    "inicio": { "0":0, "4":280,  "8":532,  "12":756,  "16":952,  "20":1120 },
+    "cierre": { "0":0, "4":200,  "8":380,  "12":540,  "16":680,  "20":800  }
   }
 };
 
