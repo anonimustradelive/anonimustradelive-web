@@ -98,8 +98,8 @@ include __DIR__ . '/../includes/nav.php';
       <td>
         <div class="action-btns">
           <a href="/facturas/ver.php?id=<?= $inv['id'] ?>" class="btn-view" target="_blank">Ver / Imprimir</a>
-          <?php if ($inv['status'] === 'draft'): ?>
           <a href="/facturas/nueva.php?id=<?= $inv['id'] ?>" class="btn-edit">Editar</a>
+          <?php if ($inv['status'] === 'draft'): ?>
           <form method="POST" onsubmit="return confirm('¿Marcar como enviada?')">
             <input type="hidden" name="id" value="<?= $inv['id'] ?>">
             <input type="hidden" name="action" value="mark_sent">

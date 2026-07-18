@@ -72,6 +72,10 @@ try {
     $pdo->exec("ALTER TABLE invoice_items ADD COLUMN line_note VARCHAR(120) NULL AFTER frequency;");
 } catch (PDOException $e) {}
 
+try {
+    $pdo->exec("ALTER TABLE invoice_items ADD COLUMN effective_rate DECIMAL(10,4) NULL AFTER line_note;");
+} catch (PDOException $e) {}
+
 // ── Tipos de servicio (editables desde el panel, reemplazan el ENUM fijo) ──
 $pdo->exec("
 CREATE TABLE IF NOT EXISTS service_types (

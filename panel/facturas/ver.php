@@ -57,6 +57,7 @@ function trimNum($n) { return rtrim(rtrim(number_format((float)$n, 2), '0'), '.'
   th.num, td.num { text-align:right }
   td { padding:10px 6px; font-size:0.86rem; border-bottom:1px solid var(--bdr) }
   .line-note { font-size:0.72rem; color:var(--green); font-weight:600; margin-top:2px }
+  .line-rate-note { font-size:0.7rem; color:var(--muted); margin-top:2px }
   .totals { margin-left:auto; width:280px }
   .totals div { display:flex; justify-content:space-between; padding:6px 0; font-size:0.86rem }
   .totals .discount { color:var(--green) }
@@ -115,6 +116,7 @@ function trimNum($n) { return rtrim(rtrim(number_format((float)$n, 2), '0'), '.'
         <td>
           <?= htmlspecialchars($it['description']) ?>
           <?php if (!empty($it['line_note'])): ?><div class="line-note"><?= htmlspecialchars($it['line_note']) ?></div><?php endif; ?>
+          <?php if (!empty($it['effective_rate'])): ?><div class="line-rate-note">Tasa usada: 1 USD = <?= number_format($it['effective_rate'], 4) ?> DOP</div><?php endif; ?>
         </td>
         <td class="num"><?= trimNum($it['quantity']) ?></td>
         <td class="num"><?= money($it['unit_price'], $symbol) ?></td>
@@ -135,7 +137,7 @@ function trimNum($n) { return rtrim(rtrim(number_format((float)$n, 2), '0'), '.'
     <div class="final"><span>Total</span><strong><?= money($inv['total'], $symbol) ?> <?= $currency ?></strong></div>
   </div>
   <?php if ($currency === 'DOP' && $inv['exchange_rate']): ?>
-  <div class="block-sub" style="text-align:right;margin-top:-1rem;margin-bottom:1.5rem">Tasa aplicada: 1 USD = <?= number_format($inv['exchange_rate'], 4) ?> DOP</div>
+  <div class="block-sub" style="text-align:right;margin-bottom:1.5rem">Tasa aplicada: 1 USD = <?= number_format($inv['exchange_rate'], 4) ?> DOP</div>
   <?php endif; ?>
 
   <?php if ($inv['notes']): ?>

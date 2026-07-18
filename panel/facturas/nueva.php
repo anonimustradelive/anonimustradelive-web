@@ -93,7 +93,7 @@ $invoice = null;
 $items = [['description' => '', 'quantity' => 1, 'unit_price' => 0, 'catalog_item_id' => null, 'frequency' => null, 'line_note' => null]];
 
 if ($edit_id && $_SERVER['REQUEST_METHOD'] !== 'POST') {
-    $stmt = $pdo->prepare("SELECT * FROM invoices WHERE id = ? AND status = 'draft'");
+    $stmt = $pdo->prepare("SELECT * FROM invoices WHERE id = ?");
     $stmt->execute([$edit_id]);
     $invoice = $stmt->fetch(PDO::FETCH_ASSOC);
     if (!$invoice) {
@@ -138,12 +138,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
         $catId = (int)($cat_arr[$i] ?? 0);
         $freq  = isset($freq_arr[$i]) && $freq_arr[$i] !== '' ? (int)$freq_arr[$i] : null;
         $note  = null;
+        $effRate = null;
 
         if ($catId > 0 && isset($catalogById[$catId])) {
-            $calc = calcCatalogPrice($pricing, $catalogById[$catId]['logic_type'], $freq, $rateMul, $symbol);
+            $logicType = $catalogById[$catId]['logic_type'];
+            $calc = calcCatalogPrice($pricing, $logicType, $freq, $rateMul, $symbol);
             if ($calc['unit_price'] !== null) {
-                $p = $calc['unit_price']; // recalculado server-side — no confiar en lo que mandó el navegador
                 $note = $calc['line_note'];
+                if ($currency === 'DOP' && $p > 0) {
+                    // En pesos se respeta el precio que puso el admin (puede negociar uno distinto al
+                    // de la conversión automática). El precio base en USD del catálogo sigue protegido —
+                    // solo se usa para calcular la tasa efectiva de esta línea cuando el precio no coincide.
+                    $usdBase = calcCatalogPrice($pricing, $logicType, $freq, 1.0, '$')['unit_price'];
+                    if ($usdBase > 0 && round($p, 2) !== round($calc['unit_price'], 2)) {
+                        $effRate = round($p / $usdBase, 4);
+                    }
+                } else {
+                    $p = $calc['unit_price']; // USD (o DOP sin precio propuesto): protegido, recalculado server-side
+                }
             }
         } else {
             $catId = null;
@@ -155,6 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
         $clean_items[] = [
             'catalog_item_id' => $catId, 'description' => $d, 'quantity' => $q,
             'unit_price' => $p, 'line_total' => $line_total, 'frequency' => $freq, 'line_note' => $note,
+            'effective_rate' => $effRate,
         ];
     }
 
@@ -169,12 +182,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
         $taxed_base = $subtotal - $discount_amount;
         $tax_amount = $tax_enabled ? round($taxed_base * $tax_pct / 100, 2) : 0;
         $total = $taxed_base + $tax_amount;
-        $status = $doc_type === 'receipt' ? 'paid' : 'draft';
 
+        $existing_status = null;
         if ($edit_id) {
-            $chk = $pdo->prepare("SELECT id FROM invoices WHERE id = ? AND status = 'draft'");
+            $chk = $pdo->prepare("SELECT status FROM invoices WHERE id = ?");
             $chk->execute([$edit_id]);
-            if (!$chk->fetch()) { $edit_id = 0; }
+            $chkRow = $chk->fetch(PDO::FETCH_ASSOC);
+            if (!$chkRow) { $edit_id = 0; } else { $existing_status = $chkRow['status']; }
+        }
+
+        // Corregir un dato (typo) no debe reiniciar el estado de una factura ya enviada/pagada/vencida a Borrador.
+        if ($doc_type === 'receipt') {
+            $status = 'paid';
+        } elseif ($edit_id && $existing_status) {
+            $status = $existing_status;
+        } else {
+            $status = 'draft';
         }
 
         if ($edit_id) {
@@ -200,11 +223,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
         }
 
         $ins = $pdo->prepare("INSERT INTO invoice_items
-            (invoice_id, catalog_item_id, description, quantity, unit_price, frequency, line_note, line_total, sort_order)
-            VALUES (?,?,?,?,?,?,?,?,?)");
+            (invoice_id, catalog_item_id, description, quantity, unit_price, frequency, line_note, effective_rate, line_total, sort_order)
+            VALUES (?,?,?,?,?,?,?,?,?,?)");
         foreach ($clean_items as $idx => $it) {
             $ins->execute([$inv_id, $it['catalog_item_id'], $it['description'], $it['quantity'],
-                $it['unit_price'], $it['frequency'], $it['line_note'], $it['line_total'], $idx]);
+                $it['unit_price'], $it['frequency'], $it['line_note'], $it['effective_rate'], $it['line_total'], $idx]);
         }
 
         header("Location: /facturas/ver.php?id=$inv_id&created=1");
@@ -220,12 +243,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
     $items = $clean_items ?: $items;
 }
 
+$editing_receipt = $edit_id && (($invoice['doc_type'] ?? 'invoice') === 'receipt');
 $active = 'facturas';
-$panel_title = $edit_id ? 'Editar factura' : 'Nueva factura';
+$panel_title = $edit_id ? ($editing_receipt ? 'Editar comprobante' : 'Editar factura') : 'Nueva factura';
 include __DIR__ . '/../includes/nav.php';
 ?>
 <div class="page-head">
-  <h1><?= $edit_id ? '✏️ Editar factura' : '🧾 Nueva factura' ?></h1>
+  <h1><?= $edit_id ? ($editing_receipt ? '✏️ Editar comprobante' : '✏️ Editar factura') : '🧾 Nueva factura' ?></h1>
   <a href="/facturas/" class="btn-secondary">← Volver</a>
 </div>
 
@@ -353,6 +377,14 @@ function currentCurrency() {
 function currentRate() {
   return parseFloat(document.getElementById('exchange_rate').value) || 1;
 }
+function isCatalogPriced(logicType) {
+  return !!logicType && logicType !== 'generic';
+}
+// El precio base en dólares del catálogo (Deluxe, Premium, Spots) siempre está protegido.
+// En pesos, en cambio, se puede escribir un precio negociado a mano por línea.
+function updatePriceEditability(row) {
+  row.querySelector('.item-price').readOnly = isCatalogPriced(row.dataset.logicType) && currentCurrency() !== 'DOP';
+}
 function fmt(n) {
   const symbol = currentCurrency() === 'DOP' ? 'RD$' : '$';
   return symbol + n.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
@@ -437,6 +469,7 @@ function initRow(row, data) {
       }
     }
   }
+  updatePriceEditability(row);
 }
 
 function addItemRow(data) {
@@ -490,6 +523,7 @@ function onCatalogSelectChange(row) {
       noteEl.textContent = '';
     }
   }
+  updatePriceEditability(row);
   recalc();
   detectBundle();
 }
@@ -583,8 +617,8 @@ document.querySelectorAll('input[name="doc_type"]').forEach(r => r.onchange = up
 // ── Moneda: Dólares vs Pesos dominicanos ────────────────────────────────────
 function reapplyAllCatalogPrices() {
   document.querySelectorAll('.item-block').forEach(row => {
-    const lt = row.dataset.logicType;
-    if (lt && lt !== 'generic') applyLiveCalc(row);
+    if (isCatalogPriced(row.dataset.logicType)) applyLiveCalc(row);
+    updatePriceEditability(row);
   });
   recalc();
 }
