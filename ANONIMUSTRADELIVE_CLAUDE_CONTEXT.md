@@ -254,26 +254,25 @@ Script PHP que corre periódicamente (cron en cPanel).
 
 ## ⚠️ Runbook de corte: reg.anonimustradelive.com → panel.anonimustradelive.com
 
-Pendiente de ejecutar (el código ya está migrado y listo, pero el corte del subdominio es una acción manual en cPanel). Seguir este orden exacto para minimizar el tiempo que el bot de Telegram queda sordo:
+Pendiente de ejecutar (el código ya está migrado y listo, pero el corte del subdominio es una acción manual en cPanel). Seguir este orden exacto — **primero la infraestructura, luego el código encima** (no al revés: pre-crear la carpeta del subdominio vía deploy antes de que el subdominio exista puede confundir al asistente de cPanel si detecta contenido ya presente):
 
-1. **Push del código migrado** a GitHub (si no se ha hecho ya) y deploy vía cPanel Git Version Control — esto deja `panel/` listo en el repositorio, pero todavía no es accesible por HTTP porque el subdominio no existe.
-2. **Eliminar el subdominio `reg.anonimustradelive.com`** en cPanel (Dominios → Subdominios) para liberar el slot.
-3. **Crear el subdominio `panel.anonimustradelive.com`**, con document root `/home/ntpsrnlfrg/panel.anonimustradelive.com`.
+1. **Eliminar el subdominio `reg.anonimustradelive.com`** en cPanel (Dominios → Subdominios) para liberar el slot. *(A partir de aquí el bot deja de responder — es el punto de no retorno, hay que completar los siguientes pasos con calma pero sin demorar demasiado.)*
+2. **Crear el subdominio `panel.anonimustradelive.com`**, con document root `/home/ntpsrnlfrg/panel.anonimustradelive.com`.
+3. **Deploy** vía cPanel Git Version Control (pull del último commit) — ahora sí, la carpeta del subdominio ya existe (limpia, recién creada por cPanel), así que el deploy la llena sin ambigüedad.
 4. **Crear `panel/config.php` directamente en el servidor** (por FTP o el Administrador de Archivos de cPanel — nunca por git) con los mismos valores que tenía `reg/config.php` (BOT_TOKEN, DB_HOST/NAME/USER/PASS, ADMIN_TG_ID, COMMUNITY_CHAT_ID) más un `ADMIN_PASS` para el panel. Plantilla en `panel/config.example.php`.
-5. **Re-deploy** desde cPanel Git Version Control para que los archivos de `panel/` lleguen al nuevo document root (el deploy automático de `.cpanel.yml` solo corre en push nuevo; si el subdominio no existía al momento del push, puede hacer falta forzar un re-deploy manual).
-6. **Re-registrar el webhook de Telegram** — este es el paso que restaura el bot. Pegar esta URL en el navegador (reemplazando `<TU_BOT_TOKEN>` por el valor real):
+5. **Re-registrar el webhook de Telegram** — este es el paso que restaura el bot. Pegar esta URL en el navegador (reemplazando `<TU_BOT_TOKEN>` por el valor real):
    ```
    https://api.telegram.org/bot<TU_BOT_TOKEN>/setWebhook?url=https://panel.anonimustradelive.com/registros/webhook.php
    ```
    Debe responder `{"ok":true,"result":true,"description":"Webhook was set"}`.
-7. **Verificar** que el webhook quedó bien apuntado, visitando (sin token visible en el chat, correrlo tú mismo):
+6. **Verificar** que el webhook quedó bien apuntado, visitando (sin token visible en el chat, correrlo tú mismo):
    ```
    https://api.telegram.org/bot<TU_BOT_TOKEN>/getWebhookInfo
    ```
    Debe mostrar `"url":"https://panel.anonimustradelive.com/registros/webhook.php"` y `"pending_update_count":0` (o bajo).
-8. **Correr `panel/setup.php`** una vez (tablas de Facturación) y **`panel/registros/setup.php`** una vez (tablas de Registros — ya deberían existir de antes, pero confirma que el ENUM de `platform` sigue teniendo `zoomex`).
-9. **Probar el bot**: escribirle `/start` desde Telegram y confirmar que responde. Probar también el panel completo entrando a `panel.anonimustradelive.com` con el nuevo login.
-10. Una vez todo confirmado, `panel/setup.php` y `panel/registros/setup.php` se pueden eliminar del servidor (scripts de un solo uso).
+7. **Correr `panel/setup.php`** una vez (tablas de Facturación) y **`panel/registros/setup.php`** una vez (tablas de Registros — ya deberían existir de antes, pero confirma que el ENUM de `platform` sigue teniendo `zoomex`).
+8. **Probar el bot**: escribirle `/start` desde Telegram y confirmar que responde. Probar también el panel completo entrando a `panel.anonimustradelive.com` con el nuevo login.
+9. Una vez todo confirmado, `panel/setup.php` y `panel/registros/setup.php` se pueden eliminar del servidor (scripts de un solo uso).
 
 ---
 
