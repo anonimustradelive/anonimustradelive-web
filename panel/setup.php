@@ -53,6 +53,14 @@ try {
 } catch (PDOException $e) {}
 
 try {
+    $pdo->exec("ALTER TABLE invoices ADD COLUMN currency VARCHAR(3) NOT NULL DEFAULT 'USD' AFTER doc_type;");
+} catch (PDOException $e) {}
+
+try {
+    $pdo->exec("ALTER TABLE invoices ADD COLUMN exchange_rate DECIMAL(10,4) NULL AFTER currency;");
+} catch (PDOException $e) {}
+
+try {
     $pdo->exec("ALTER TABLE invoice_items ADD COLUMN catalog_item_id INT NULL AFTER invoice_id;");
 } catch (PDOException $e) {}
 

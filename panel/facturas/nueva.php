@@ -2,7 +2,15 @@
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/ads_pricing.php';
+require_once __DIR__ . '/../includes/exchange_rate.php';
 $pdo = getPDO();
+
+// ── AJAX: tasa de cambio USD → DOP en vivo ──────────────────────────────────
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'get_exchange_rate') {
+    header('Content-Type: application/json');
+    echo json_encode(fetchLiveExchangeRate());
+    exit;
+}
 
 // ── AJAX: agregar tipo de servicio nuevo ────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'add_service_type') {
@@ -40,30 +48,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'add_c
 
 // ── Recalcula server-side el precio de un ítem del catálogo con lógica especial.
 //    Devuelve unit_price=null cuando es 'generic' (se respeta lo que venga del formulario). ──
-function calcCatalogPrice(array $pricing, string $logicType, ?int $freq): array {
+function calcCatalogPrice(array $pricing, string $logicType, ?int $freq, float $rateMul = 1.0, string $symbol = '$'): array {
     $freq = $freq ?: 4;
     switch ($logicType) {
         case 'content_deluxe':
-            return ['unit_price' => (float)($pricing['contenido']['deluxe']['base'] ?? 0), 'line_note' => null];
+            return ['unit_price' => (float)($pricing['contenido']['deluxe']['base'] ?? 0) * $rateMul, 'line_note' => null];
         case 'content_premium':
-            return ['unit_price' => (float)($pricing['contenido']['premium']['base'] ?? 0), 'line_note' => null];
+            return ['unit_price' => (float)($pricing['contenido']['premium']['base'] ?? 0) * $rateMul, 'line_note' => null];
         case 'addon_publicidad_deluxe':
-            return ['unit_price' => (float)($pricing['contenido']['deluxe']['ads'] ?? 0), 'line_note' => null];
+            return ['unit_price' => (float)($pricing['contenido']['deluxe']['ads'] ?? 0) * $rateMul, 'line_note' => null];
         case 'addon_publicidad_premium':
-            return ['unit_price' => (float)($pricing['contenido']['premium']['ads'] ?? 0), 'line_note' => null];
+            return ['unit_price' => (float)($pricing['contenido']['premium']['ads'] ?? 0) * $rateMul, 'line_note' => null];
         case 'spot_inicio':
         case 'spot_pico':
         case 'spot_cierre':
             $spot  = substr($logicType, 5);
-            $price = (float)($pricing['cintillos'][$spot][(string)$freq] ?? 0);
-            $base4 = (float)($pricing['cintillos'][$spot]['4'] ?? 0);
+            $price = (float)($pricing['cintillos'][$spot][(string)$freq] ?? 0) * $rateMul;
+            $base4 = (float)($pricing['cintillos'][$spot]['4'] ?? 0) * $rateMul;
             $note  = null;
             if ($freq > 4 && $base4 > 0) {
                 $full   = $base4 * ($freq / 4);
                 $saving = $full - $price;
                 if ($saving > 0.01) {
                     $pct  = round($saving / $full * 100);
-                    $note = "−{$pct}% · ahorras $" . number_format($saving, 2);
+                    $note = "−{$pct}% · ahorras {$symbol}" . number_format($saving, 2);
                 }
             }
             return ['unit_price' => $price, 'line_note' => $note];
@@ -104,6 +112,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
     $client_email = trim($_POST['client_email'] ?? '');
     $service_type = trim($_POST['service_type'] ?? '') ?: 'otro';
     $doc_type     = ($_POST['doc_type'] ?? 'invoice') === 'receipt' ? 'receipt' : 'invoice';
+    $currency     = ($_POST['currency'] ?? 'USD') === 'DOP' ? 'DOP' : 'USD';
+    $exchange_rate = $currency === 'DOP' ? (float)($_POST['exchange_rate'] ?? 0) : null;
+    $rateMul      = $currency === 'DOP' ? $exchange_rate : 1.0;
+    $symbol       = $currency === 'DOP' ? 'RD$' : '$';
     $issue_date   = $_POST['issue_date'] ?? date('Y-m-d');
     $due_date     = $doc_type === 'receipt' ? null : (trim($_POST['due_date'] ?? '') ?: null);
     $discount_pct = max(0, min(100, (float)($_POST['discount_pct'] ?? 0)));
@@ -128,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
         $note  = null;
 
         if ($catId > 0 && isset($catalogById[$catId])) {
-            $calc = calcCatalogPrice($pricing, $catalogById[$catId]['logic_type'], $freq);
+            $calc = calcCatalogPrice($pricing, $catalogById[$catId]['logic_type'], $freq, $rateMul, $symbol);
             if ($calc['unit_price'] !== null) {
                 $p = $calc['unit_price']; // recalculado server-side — no confiar en lo que mandó el navegador
                 $note = $calc['line_note'];
@@ -150,6 +162,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
         $error = 'El nombre del cliente es obligatorio.';
     } elseif (empty($clean_items)) {
         $error = 'Agrega al menos un servicio con descripción y cantidad válida.';
+    } elseif ($currency === 'DOP' && $exchange_rate <= 0) {
+        $error = 'Ingresa una tasa de cambio válida para facturar en pesos.';
     } else {
         $discount_amount = round($subtotal * $discount_pct / 100, 2);
         $taxed_base = $subtotal - $discount_amount;
@@ -164,10 +178,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
         }
 
         if ($edit_id) {
-            $pdo->prepare("UPDATE invoices SET client_name=?, client_email=?, service_type=?, doc_type=?, issue_date=?, due_date=?,
+            $pdo->prepare("UPDATE invoices SET client_name=?, client_email=?, service_type=?, doc_type=?, currency=?, exchange_rate=?, issue_date=?, due_date=?,
                 status=?, subtotal=?, discount_pct=?, discount_amount=?, tax_enabled=?, tax_pct=?, tax_amount=?, total=?, notes=?, updated_at=NOW()
                 WHERE id=?")
-                ->execute([$client_name, $client_email ?: null, $service_type, $doc_type, $issue_date, $due_date,
+                ->execute([$client_name, $client_email ?: null, $service_type, $doc_type, $currency, $exchange_rate, $issue_date, $due_date,
                     $status, $subtotal, $discount_pct, $discount_amount, $tax_enabled, $tax_pct, $tax_amount, $total, $notes ?: null, $edit_id]);
             $inv_id = $edit_id;
             $pdo->prepare("DELETE FROM invoice_items WHERE invoice_id=?")->execute([$inv_id]);
@@ -177,10 +191,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
             $invoice_number = "INV-$year-" . str_pad((string)$seq, 4, '0', STR_PAD_LEFT);
 
             $pdo->prepare("INSERT INTO invoices
-                (invoice_number, client_name, client_email, service_type, doc_type, issue_date, due_date, status,
+                (invoice_number, client_name, client_email, service_type, doc_type, currency, exchange_rate, issue_date, due_date, status,
                  subtotal, discount_pct, discount_amount, tax_enabled, tax_pct, tax_amount, total, notes)
-                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")
-                ->execute([$invoice_number, $client_name, $client_email ?: null, $service_type, $doc_type, $issue_date, $due_date, $status,
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")
+                ->execute([$invoice_number, $client_name, $client_email ?: null, $service_type, $doc_type, $currency, $exchange_rate, $issue_date, $due_date, $status,
                     $subtotal, $discount_pct, $discount_amount, $tax_enabled, $tax_pct, $tax_amount, $total, $notes ?: null]);
             $inv_id = $pdo->lastInsertId();
         }
@@ -199,7 +213,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
 
     $invoice = [
         'client_name' => $client_name, 'client_email' => $client_email, 'service_type' => $service_type,
-        'doc_type' => $doc_type, 'issue_date' => $issue_date, 'due_date' => $due_date, 'discount_pct' => $discount_pct,
+        'doc_type' => $doc_type, 'currency' => $currency, 'exchange_rate' => $exchange_rate,
+        'issue_date' => $issue_date, 'due_date' => $due_date, 'discount_pct' => $discount_pct,
         'tax_enabled' => $tax_enabled, 'tax_pct' => $tax_pct, 'notes' => $notes,
     ];
     $items = $clean_items ?: $items;
@@ -231,6 +246,26 @@ include __DIR__ . '/../includes/nav.php';
       <input type="radio" name="doc_type" value="receipt" <?= ($invoice['doc_type'] ?? '') === 'receipt' ? 'checked' : '' ?>>
       <span>✅ Comprobante <em>(el cliente ya pagó — se guarda como Pagada)</em></span>
     </label>
+  </div>
+
+  <div class="doc-type-toggle">
+    <label class="doc-type-opt">
+      <input type="radio" name="currency" value="USD" <?= ($invoice['currency'] ?? 'USD') === 'USD' ? 'checked' : '' ?>>
+      <span>🇺🇸 Dólares <em>(USD)</em></span>
+    </label>
+    <label class="doc-type-opt">
+      <input type="radio" name="currency" value="DOP" <?= ($invoice['currency'] ?? '') === 'DOP' ? 'checked' : '' ?>>
+      <span>🇩🇴 Pesos dominicanos <em>(DOP — se convierte con la tasa del día)</em></span>
+    </label>
+  </div>
+
+  <div class="field" id="exchange-rate-field" style="display:none">
+    <label>Tasa de cambio (1 USD = ? DOP)</label>
+    <div class="field-with-add">
+      <input type="number" name="exchange_rate" id="exchange_rate" step="0.0001" min="0" value="<?= $invoice['exchange_rate'] ?? '' ?>">
+      <button type="button" class="btn-add-inline" onclick="refreshExchangeRate()">🔄 Actualizar</button>
+    </div>
+    <div class="muted-sub" id="exchange-rate-note"></div>
   </div>
 
   <div class="form-grid">
@@ -311,7 +346,17 @@ const EXISTING_ITEMS  = <?= json_encode(array_values($items), JSON_UNESCAPED_UNI
 function escHtml(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-function fmt(n) { return '$' + n.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
+function currentCurrency() {
+  const el = document.querySelector('input[name="currency"]:checked');
+  return el ? el.value : 'USD';
+}
+function currentRate() {
+  return parseFloat(document.getElementById('exchange_rate').value) || 1;
+}
+function fmt(n) {
+  const symbol = currentCurrency() === 'DOP' ? 'RD$' : '$';
+  return symbol + n.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+}
 
 function buildCatalogOptionsHTML() {
   let html = '<option value="manual">✏️ Escribir manualmente…</option>';
@@ -458,11 +503,12 @@ function applyLiveCalc(row) {
   const priceInput = row.querySelector('.item-price');
   const noteEl     = row.querySelector('.item-note');
   const contenido  = ADS_PRICING.contenido || {};
+  const rateMul    = currentCurrency() === 'DOP' ? currentRate() : 1;
 
-  if (logicType === 'content_deluxe')  { priceInput.value = (contenido.deluxe  && contenido.deluxe.base  || 0).toFixed(2); noteEl.textContent = ''; return; }
-  if (logicType === 'content_premium') { priceInput.value = (contenido.premium && contenido.premium.base || 0).toFixed(2); noteEl.textContent = ''; return; }
-  if (logicType === 'addon_publicidad_deluxe')  { priceInput.value = (contenido.deluxe  && contenido.deluxe.ads  || 0).toFixed(2); noteEl.textContent = ''; return; }
-  if (logicType === 'addon_publicidad_premium') { priceInput.value = (contenido.premium && contenido.premium.ads || 0).toFixed(2); noteEl.textContent = ''; return; }
+  if (logicType === 'content_deluxe')  { priceInput.value = ((contenido.deluxe  && contenido.deluxe.base  || 0) * rateMul).toFixed(2); noteEl.textContent = ''; return; }
+  if (logicType === 'content_premium') { priceInput.value = ((contenido.premium && contenido.premium.base || 0) * rateMul).toFixed(2); noteEl.textContent = ''; return; }
+  if (logicType === 'addon_publicidad_deluxe')  { priceInput.value = ((contenido.deluxe  && contenido.deluxe.ads  || 0) * rateMul).toFixed(2); noteEl.textContent = ''; return; }
+  if (logicType === 'addon_publicidad_premium') { priceInput.value = ((contenido.premium && contenido.premium.ads || 0) * rateMul).toFixed(2); noteEl.textContent = ''; return; }
   if (!logicType.startsWith('spot_')) return;
 
   const freq = parseInt(freqSelect.value, 10);
@@ -470,10 +516,10 @@ function applyLiveCalc(row) {
 
   const spot  = logicType.replace('spot_', '');
   const table = (ADS_PRICING.cintillos && ADS_PRICING.cintillos[spot]) || {};
-  const price = table[String(freq)] || 0;
+  const price = (table[String(freq)] || 0) * rateMul;
   priceInput.value = price.toFixed(2);
 
-  const base4 = table['4'] || 0;
+  const base4 = (table['4'] || 0) * rateMul;
   let note = '';
   if (freq > 4 && base4 > 0) {
     const full = base4 * (freq / 4);
@@ -533,6 +579,41 @@ function updateDocTypeUI() {
   document.getElementById('due-date-field').style.display = isReceipt ? 'none' : '';
 }
 document.querySelectorAll('input[name="doc_type"]').forEach(r => r.onchange = updateDocTypeUI);
+
+// ── Moneda: Dólares vs Pesos dominicanos ────────────────────────────────────
+function reapplyAllCatalogPrices() {
+  document.querySelectorAll('.item-block').forEach(row => {
+    const lt = row.dataset.logicType;
+    if (lt && lt !== 'generic') applyLiveCalc(row);
+  });
+  recalc();
+}
+async function refreshExchangeRate() {
+  const note = document.getElementById('exchange-rate-note');
+  note.textContent = 'Consultando tasa…';
+  const fd = new FormData();
+  fd.append('action', 'get_exchange_rate');
+  try {
+    const res = await fetch('nueva.php', { method: 'POST', body: fd });
+    const data = await res.json();
+    document.getElementById('exchange_rate').value = data.rate.toFixed(4);
+    note.textContent = data.source === 'live' ? '✓ Tasa actualizada en vivo' : '⚠️ No se pudo obtener la tasa en vivo, usando valor de respaldo — ajústala si conoces la tasa del día';
+  } catch {
+    note.textContent = '⚠️ No se pudo consultar la tasa. Ingrésala manualmente.';
+  }
+  reapplyAllCatalogPrices();
+}
+function onCurrencyChange() {
+  const isDOP = currentCurrency() === 'DOP';
+  document.getElementById('exchange-rate-field').style.display = isDOP ? '' : 'none';
+  if (isDOP && !document.getElementById('exchange_rate').value) {
+    refreshExchangeRate();
+  } else {
+    reapplyAllCatalogPrices();
+  }
+}
+document.querySelectorAll('input[name="currency"]').forEach(r => r.onchange = onCurrencyChange);
+document.getElementById('exchange_rate').addEventListener('input', reapplyAllCatalogPrices);
 
 // ── Agregar tipo de servicio nuevo ───────────────────────────────────────────
 function toggleNewServiceType() {
@@ -615,6 +696,7 @@ document.getElementById('discount_pct').addEventListener('input', () => { discou
 document.getElementById('tax_enabled').addEventListener('change', recalc);
 document.getElementById('tax_pct').addEventListener('input', recalc);
 updateDocTypeUI();
+document.getElementById('exchange-rate-field').style.display = currentCurrency() === 'DOP' ? '' : 'none';
 detectBundle();
 recalc();
 </script>

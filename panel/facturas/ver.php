@@ -16,7 +16,9 @@ $items = $istmt->fetchAll(PDO::FETCH_ASSOC);
 $status_labels = ['draft' => 'Borrador', 'sent' => 'Enviada', 'paid' => 'Pagada', 'overdue' => 'Vencida', 'cancelled' => 'Anulada'];
 $is_receipt = ($inv['doc_type'] ?? 'invoice') === 'receipt';
 $doc_label  = $is_receipt ? 'Comprobante' : 'Factura';
-function money($n) { return '$' . number_format((float)$n, 2); }
+$currency   = $inv['currency'] ?? 'USD';
+$symbol     = $currency === 'DOP' ? 'RD$' : '$';
+function money($n, $symbol = '$') { return $symbol . number_format((float)$n, 2); }
 function trimNum($n) { return rtrim(rtrim(number_format((float)$n, 2), '0'), '.'); }
 ?>
 <!DOCTYPE html>
@@ -115,23 +117,26 @@ function trimNum($n) { return rtrim(rtrim(number_format((float)$n, 2), '0'), '.'
           <?php if (!empty($it['line_note'])): ?><div class="line-note"><?= htmlspecialchars($it['line_note']) ?></div><?php endif; ?>
         </td>
         <td class="num"><?= trimNum($it['quantity']) ?></td>
-        <td class="num"><?= money($it['unit_price']) ?></td>
-        <td class="num"><?= money($it['line_total']) ?></td>
+        <td class="num"><?= money($it['unit_price'], $symbol) ?></td>
+        <td class="num"><?= money($it['line_total'], $symbol) ?></td>
       </tr>
       <?php endforeach; ?>
     </tbody>
   </table>
 
   <div class="totals">
-    <div><span>Subtotal</span><strong><?= money($inv['subtotal']) ?></strong></div>
+    <div><span>Subtotal</span><strong><?= money($inv['subtotal'], $symbol) ?></strong></div>
     <?php if ($inv['discount_amount'] > 0): ?>
-    <div class="discount"><span>Descuento (<?= trimNum($inv['discount_pct']) ?>%)</span><strong>−<?= money($inv['discount_amount']) ?></strong></div>
+    <div class="discount"><span>Descuento (<?= trimNum($inv['discount_pct']) ?>%)</span><strong>−<?= money($inv['discount_amount'], $symbol) ?></strong></div>
     <?php endif; ?>
     <?php if ($inv['tax_enabled']): ?>
-    <div><span>ITBIS (<?= trimNum($inv['tax_pct']) ?>%)</span><strong><?= money($inv['tax_amount']) ?></strong></div>
+    <div><span>ITBIS (<?= trimNum($inv['tax_pct']) ?>%)</span><strong><?= money($inv['tax_amount'], $symbol) ?></strong></div>
     <?php endif; ?>
-    <div class="final"><span>Total</span><strong><?= money($inv['total']) ?> USD</strong></div>
+    <div class="final"><span>Total</span><strong><?= money($inv['total'], $symbol) ?> <?= $currency ?></strong></div>
   </div>
+  <?php if ($currency === 'DOP' && $inv['exchange_rate']): ?>
+  <div class="block-sub" style="text-align:right;margin-top:-1rem;margin-bottom:1.5rem">Tasa aplicada: 1 USD = <?= number_format($inv['exchange_rate'], 4) ?> DOP</div>
+  <?php endif; ?>
 
   <?php if ($inv['notes']): ?>
   <div class="notes"><strong>Notas:</strong><br><?= nl2br(htmlspecialchars($inv['notes'])) ?></div>

@@ -90,7 +90,10 @@ include __DIR__ . '/../includes/nav.php';
       <td><?= $service_labels[$inv['service_type']] ?? $inv['service_type'] ?></td>
       <td><?= date('d/m/Y', strtotime($inv['issue_date'])) ?></td>
       <td><?= $inv['due_date'] ? date('d/m/Y', strtotime($inv['due_date'])) : '—' ?></td>
-      <td><strong>$<?= number_format($inv['total'], 2) ?></strong></td>
+      <td>
+        <strong><?= ($inv['currency'] ?? 'USD') === 'DOP' ? 'RD$' : '$' ?><?= number_format($inv['total'], 2) ?></strong>
+        <?php if (($inv['currency'] ?? 'USD') === 'DOP'): ?><div class="muted-sub">DOP</div><?php endif; ?>
+      </td>
       <td><span class="badge badge-<?= $inv['status'] ?>"><?= $status_labels[$inv['status']] ?></span></td>
       <td>
         <div class="action-btns">
