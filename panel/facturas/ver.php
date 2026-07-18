@@ -18,6 +18,8 @@ $is_receipt = ($inv['doc_type'] ?? 'invoice') === 'receipt';
 $doc_label  = $is_receipt ? 'Comprobante' : 'Factura';
 $currency   = $inv['currency'] ?? 'USD';
 $symbol     = $currency === 'DOP' ? 'RD$' : '$';
+$any_line_override = false;
+foreach ($items as $it) { if (!empty($it['effective_rate'])) { $any_line_override = true; break; } }
 function money($n, $symbol = '$') { return $symbol . number_format((float)$n, 2); }
 function trimNum($n) { return rtrim(rtrim(number_format((float)$n, 2), '0'), '.'); }
 ?>
@@ -136,7 +138,7 @@ function trimNum($n) { return rtrim(rtrim(number_format((float)$n, 2), '0'), '.'
     <?php endif; ?>
     <div class="final"><span>Total</span><strong><?= money($inv['total'], $symbol) ?> <?= $currency ?></strong></div>
   </div>
-  <?php if ($currency === 'DOP' && $inv['exchange_rate']): ?>
+  <?php if ($currency === 'DOP' && $inv['exchange_rate'] && !$any_line_override): ?>
   <div class="block-sub" style="text-align:right;margin-bottom:1.5rem">Tasa aplicada: 1 USD = <?= number_format($inv['exchange_rate'], 4) ?> DOP</div>
   <?php endif; ?>
 

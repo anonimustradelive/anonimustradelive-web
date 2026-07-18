@@ -323,6 +323,11 @@ Ejecutado y verificado end-to-end el 2026-07-18: subdominio `reg.` eliminado, `p
 
 ## Historial de cambios recientes
 
+### 2026-07-18 (6) — Fix: dos tasas distintas confundían en el comprobante impreso
+- **Problema reportado:** en un comprobante con precio negociado a mano (RD$32,200 por un Premium de $550), la línea mostraba correctamente "Tasa usada: 1 USD = 58.5455 DOP" (32200/550, matemática correcta), pero el pie de la factura además mostraba "Tasa aplicada: 1 USD = 58.6210 DOP" — la tasa general que se usó como sugerencia automática antes del ajuste manual. Dos números distintos en el mismo documento generaban confusión, aunque ninguno estaba mal calculado
+- **`panel/facturas/ver.php`**: se agrega `$any_line_override` (true si algún ítem tiene `effective_rate` guardado). La nota general "Tasa aplicada" del pie ahora solo se muestra cuando **ningún** ítem tiene tasa propia — si hay una línea con precio negociado, esa nota por línea es la única que aparece, evitando mostrar un número que ya no corresponde a nada cobrado realmente en esa factura
+- Verificado con mock: comprobante con un ítem con `effective_rate` → el pie ya no muestra "Tasa aplicada", solo queda la nota de la línea
+
 ### 2026-07-18 (5) — Precio negociado a mano en pesos (con tasa efectiva por línea)
 - **Motivo:** el usuario a veces acuerda con el cliente un precio en pesos que no coincide exactamente con la tasa × precio oficial (redondeos, negociación). El precio base en USD del catálogo (Deluxe, Premium, Spots) **siempre debe permanecer protegido** — nunca se toca, solo se actualiza si cambian los precios en `ads/index.html`
 - **`panel/setup.php`**: agrega columna `invoice_items.effective_rate DECIMAL(10,4) NULL`
