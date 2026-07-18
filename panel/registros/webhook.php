@@ -1,6 +1,6 @@
 <?php
-// Bot de registro AnonimusTrade Live
-require_once __DIR__ . '/config.php';
+// Bot de registro AnonimusTrade Live — migrado de reg/webhook.php a panel/registros/
+require_once __DIR__ . '/../config.php';
 
 $input  = file_get_contents('php://input');
 $update = json_decode($input, true);
@@ -429,7 +429,7 @@ function handleCallback(PDO $pdo, array $user, int $chat_id, string $cb, int $ms
                 "📋 " . ucfirst($profile) . ($asset ? " · " . ucfirst($asset) : '') . "\n" .
                 "🏦 " . ($plabels[$platform] ?? $platform) . ($is_migration ? " \\(migración\\)" : "") . "\n" .
                 "🔑 `" . htmlspecialchars($platform_id) . "`\n\n" .
-                "👉 https://reg\\.anonimustradelive\\.com";
+                "👉 https://panel\\.anonimustradelive\\.com/registros/";
             tgAPI('sendMessage', ['chat_id' => ADMIN_TG_ID, 'text' => $notif, 'parse_mode' => 'MarkdownV2']);
             break;
 
@@ -467,7 +467,7 @@ function handleCallback(PDO $pdo, array $user, int $chat_id, string $cb, int $ms
                         "👤 " . mdEscape($name) . "\n" .
                         "🆔 @" . mdEscape($user['username'] ?? 'sin username') . "\n" .
                         "🏦 BingX · ID \\#" . $reg['id'] . "\n\n" .
-                        "👉 https://reg\\.anonimustradelive\\.com",
+                        "👉 https://panel\\.anonimustradelive\\.com/registros/",
                     'parse_mode' => 'MarkdownV2',
                 ]);
             }
@@ -493,7 +493,7 @@ function handleCallback(PDO $pdo, array $user, int $chat_id, string $cb, int $ms
                         "🆔 @" . mdEscape($user['username'] ?? 'sin username') . "\n" .
                         "🏦 Pepperstone · ID \\#" . $reg['id'] . "\n\n" .
                         "Verifica si ya aparece bajo nuestro referido\\.\n\n" .
-                        "👉 https://reg\\.anonimustradelive\\.com",
+                        "👉 https://panel\\.anonimustradelive\\.com/registros/",
                     'parse_mode' => 'MarkdownV2',
                 ]);
             }
@@ -535,7 +535,7 @@ function handleSupportMessage(PDO $pdo, array $user, int $chat_id, array $messag
         'text'       => "💬 *Respuesta de soporte*\n\n" .
                         "👤 " . mdEscape($name) . " \\(" . mdEscape($username) . "\\)\n\n" .
                         mdEscape($text) . "\n\n" .
-                        "👉 https://reg\\.anonimustradelive\\.com",
+                        "👉 https://panel\\.anonimustradelive\\.com/registros/",
         'parse_mode' => 'MarkdownV2',
     ]);
 }

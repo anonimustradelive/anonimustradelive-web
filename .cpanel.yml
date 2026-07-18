@@ -28,10 +28,13 @@ deployment:
     - /bin/cp -r ads/ads_img /home/ntpsrnlfrg/anonimustradelive.com/ads/
     - /bin/mkdir -p /home/ntpsrnlfrg/anonimustradelive.com/libros
     - /bin/cp libros/index.html /home/ntpsrnlfrg/anonimustradelive.com/libros/
-    - /bin/mkdir -p /home/ntpsrnlfrg/reg.anonimustradelive.com
-    - /bin/cp reg/webhook.php /home/ntpsrnlfrg/reg.anonimustradelive.com/
-    - /bin/cp reg/index.php /home/ntpsrnlfrg/reg.anonimustradelive.com/
-    - /bin/cp reg/login.php /home/ntpsrnlfrg/reg.anonimustradelive.com/
-    - /bin/cp reg/logout.php /home/ntpsrnlfrg/reg.anonimustradelive.com/
-    - /bin/cp reg/setup.php /home/ntpsrnlfrg/reg.anonimustradelive.com/
-    - /bin/cp reg/fix_zoomex_platform.php /home/ntpsrnlfrg/reg.anonimustradelive.com/
+    - /bin/mkdir -p /home/ntpsrnlfrg/panel.anonimustradelive.com
+    - /bin/cp panel/index.php panel/login.php panel/logout.php panel/setup.php /home/ntpsrnlfrg/panel.anonimustradelive.com/
+    - /bin/mkdir -p /home/ntpsrnlfrg/panel.anonimustradelive.com/includes
+    - /bin/cp panel/includes/*.php /home/ntpsrnlfrg/panel.anonimustradelive.com/includes/
+    - /bin/mkdir -p /home/ntpsrnlfrg/panel.anonimustradelive.com/assets
+    - /bin/cp panel/assets/style.css /home/ntpsrnlfrg/panel.anonimustradelive.com/assets/
+    - /bin/mkdir -p /home/ntpsrnlfrg/panel.anonimustradelive.com/facturas
+    - /bin/cp panel/facturas/*.php /home/ntpsrnlfrg/panel.anonimustradelive.com/facturas/
+    - /bin/mkdir -p /home/ntpsrnlfrg/panel.anonimustradelive.com/registros
+    - /bin/cp panel/registros/*.php /home/ntpsrnlfrg/panel.anonimustradelive.com/registros/

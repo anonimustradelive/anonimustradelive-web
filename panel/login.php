@@ -1,13 +1,13 @@
 <?php
 session_start();
-if (isset($_SESSION['admin'])) { header('Location: index.php'); exit; }
+if (isset($_SESSION['panel_admin'])) { header('Location: /index.php'); exit; }
 require_once __DIR__ . '/config.php';
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (hash_equals(ADMIN_PASS, $_POST['password'] ?? '')) {
-        $_SESSION['admin'] = true;
-        header('Location: index.php');
+        $_SESSION['panel_admin'] = true;
+        header('Location: /index.php');
         exit;
     }
     $error = 'Contraseña incorrecta.';
@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin — AnonimusTrade Live</title>
+<title>Panel Admin — AnonimusTrade Live</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root { --red:#C0112B; --black:#080810; --black2:#0E0E18; --black3:#14141F; --white:#F0EFFF; --purple:#7C3AED; --purple-light:#A78BFA; --gray:#252535; --text-muted:#7070A0; }
@@ -38,12 +38,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
 <div class="card">
   <p class="logo">AnonimusTrade Live</p>
-  <h1>Panel de registro</h1>
+  <h1>Panel Administrativo</h1>
   <?php if ($error): ?><div class="error"><?= htmlspecialchars($error) ?></div><?php endif; ?>
   <form method="POST">
     <label>Contraseña</label>
-    <input type="password" name="password" autofocus autocomplete="current-password">
-    <button type="submit">Entrar →</button>
+    <input type="password" name="password" autofocus required>
+    <button type="submit">Entrar</button>
   </form>
 </div>
 </body>

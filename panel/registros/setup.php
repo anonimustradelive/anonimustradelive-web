@@ -1,6 +1,6 @@
 <?php
-// setup.php — Ejecutar UNA VEZ para crear las tablas. Eliminar del servidor después.
-require_once __DIR__ . '/config.php';
+// setup.php — Ejecutar UNA VEZ para crear las tablas. Migrado de reg/setup.php. Eliminar del servidor después.
+require_once __DIR__ . '/../config.php';
 
 $pdo = new PDO(
     "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4",

@@ -1,5 +1,5 @@
 config.php
-reg/config.php
+panel/config.php
 crypto_donors_cache.json
 crypto_seen_txs.json
 auth-tokens.json

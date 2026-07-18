@@ -1,13 +1,7 @@
 <?php
-session_start();
-if (!isset($_SESSION['admin'])) { header('Location: login.php'); exit; }
-require_once __DIR__ . '/config.php';
-
-$pdo = new PDO(
-    "mysql:host=".DB_HOST.";dbname=".DB_NAME.";charset=utf8mb4",
-    DB_USER, DB_PASS,
-    [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-);
+require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../includes/db.php';
+$pdo = getPDO();
 
 // ── CHAT AJAX ────────────────────────────────────────────────────────────────
 $chat_ajax = ['chat_open','chat_close','chat_send','chat_get','chat_unread_counts'];
@@ -307,14 +301,11 @@ function tgSendPlain(int $chat_id, string $text): void {
     ]]);
     @file_get_contents("https://api.telegram.org/bot".BOT_TOKEN."/sendMessage", false, $ctx);
 }
+
+$active = 'registros';
+$panel_title = 'Registros';
+include __DIR__ . '/../includes/nav.php';
 ?>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Registros — AnonimusTrade Live</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
     --red:#C0112B; --red-light:rgba(192,17,43,0.12);
@@ -324,21 +315,6 @@ function tgSendPlain(int $chat_id, string $text): void {
     --green:#22C55E; --green-light:rgba(34,197,94,0.12);
     --yellow:#F59E0B; --yellow-light:rgba(245,158,11,0.12);
   }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:'Montserrat',sans-serif; background:var(--black); color:var(--white); min-height:100vh; }
-
-  /* NAV */
-  nav { background:var(--black2); border-bottom:1px solid var(--gray); padding:0; height:60px; display:flex; align-items:center; justify-content:center; }
-  .nav-inner { width:100%; max-width:1600px; padding:0 clamp(1.5rem,3vw,4rem); display:flex; align-items:center; justify-content:space-between; }
-  .nav-brand { font-size:0.75rem; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; }
-  .nav-brand span { color:var(--red); }
-  .nav-right { display:flex; align-items:center; gap:1rem; }
-  .nav-badge { font-size:0.62rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; background:var(--yellow-light); color:var(--yellow); border:1px solid rgba(245,158,11,0.3); border-radius:20px; padding:3px 10px; }
-  .nav-logout { font-size:0.68rem; font-weight:600; color:var(--text-muted); text-decoration:none; letter-spacing:0.08em; text-transform:uppercase; transition:color 0.2s; }
-  .nav-logout:hover { color:var(--white); }
-
-  /* MAIN */
-  main { max-width:1600px; margin:0 auto; padding:2rem clamp(1.5rem,3vw,4rem); }
 
   /* FLASH */
   .flash { padding:0.85rem 1.25rem; border-radius:5px; font-size:0.78rem; font-weight:600; margin-bottom:1.5rem; }
@@ -361,7 +337,7 @@ function tgSendPlain(int $chat_id, string $text): void {
   .search-input::placeholder { color:var(--text-muted); }
   .search-input:focus { border-color:var(--purple); }
 
-  /* FILTERS */
+  /* FILTERS (namespaced con -reg para no chocar con panel/assets/style.css) */
   .filters-wrap { margin-bottom:1.5rem; }
   .filter-row { display:flex; align-items:center; gap:0.5rem; margin-bottom:0.6rem; flex-wrap:wrap; }
   .filter-label { font-size:0.62rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); min-width:72px; }
@@ -562,8 +538,6 @@ function tgSendPlain(int $chat_id, string $text): void {
   .toggle-close { background:rgba(239,68,68,0.1); border-color:rgba(239,68,68,0.4); color:#EF4444; }
   .toggle-close:hover { background:rgba(239,68,68,0.2); }
 </style>
-</head>
-<body>
 
 <!-- ── MODAL DE NOTAS ────────────────────────────────────────────────────── -->
 <div class="modal-overlay" id="note-modal" onclick="if(event.target===this)closeModal()">
@@ -618,184 +592,168 @@ function tgSendPlain(int $chat_id, string $text): void {
   </div>
 </div>
 
-<nav>
-  <div class="nav-inner">
-    <div class="nav-brand">AnonimusTrade <span>Live</span> · Registros</div>
-    <div class="nav-right">
-      <?php if ($counts['pending'] > 0): ?>
-      <span class="nav-badge"><?= $counts['pending'] ?> pendiente<?= $counts['pending'] > 1 ? 's' : '' ?></span>
-      <?php endif; ?>
-      <a class="nav-logout" href="logout.php">Cerrar sesión →</a>
-    </div>
+<?php if ($flash): ?>
+<div class="flash <?= $flash_type ?>"><?= htmlspecialchars($flash) ?></div>
+<?php endif; ?>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat pending"><div class="stat-label">Pendientes</div><div class="stat-value"><?= $counts['pending'] ?></div></div>
+  <div class="stat accepted"><div class="stat-label">Aceptados</div><div class="stat-value"><?= $counts['accepted'] ?></div></div>
+  <div class="stat rejected"><div class="stat-label">Rechazados</div><div class="stat-value"><?= $counts['rejected'] ?></div></div>
+  <div class="stat all"><div class="stat-label">Total</div><div class="stat-value"><?= $counts['all'] ?></div></div>
+</div>
+
+<!-- SEARCH -->
+<div class="search-wrap">
+  <input type="text" id="search" class="search-input" placeholder="🔍  Buscar por nombre, Telegram, email o ID de usuario...">
+</div>
+
+<!-- FILTERS -->
+<div class="filters-wrap">
+  <div class="filter-row">
+    <span class="filter-label">Estado:</span>
+    <?php foreach (['pending' => 'Pendientes', 'accepted' => 'Aceptados', 'rejected' => 'Rechazados', 'all' => 'Todos'] as $f => $l): ?>
+    <a class="filter-btn <?= $filter === $f ? 'active' : '' ?>" href="?filter=<?= $f ?>&platform=<?= $platform_filter ?>"><?= $l ?></a>
+    <?php endforeach; ?>
   </div>
-</nav>
-
-<main>
-
-  <?php if ($flash): ?>
-  <div class="flash <?= $flash_type ?>"><?= htmlspecialchars($flash) ?></div>
-  <?php endif; ?>
-
-  <!-- STATS -->
-  <div class="stats">
-    <div class="stat pending"><div class="stat-label">Pendientes</div><div class="stat-value"><?= $counts['pending'] ?></div></div>
-    <div class="stat accepted"><div class="stat-label">Aceptados</div><div class="stat-value"><?= $counts['accepted'] ?></div></div>
-    <div class="stat rejected"><div class="stat-label">Rechazados</div><div class="stat-value"><?= $counts['rejected'] ?></div></div>
-    <div class="stat all"><div class="stat-label">Total</div><div class="stat-value"><?= $counts['all'] ?></div></div>
+  <div class="filter-row">
+    <span class="filter-label">Plataforma:</span>
+    <?php foreach (['all' => 'Todas', 'pepperstone' => 'Pepperstone', 'bingx' => 'BingX', 'bitunix' => 'Bitunix', 'zoomex' => 'Zoomex'] as $pf => $pl): ?>
+    <a class="filter-btn <?= $platform_filter === $pf ? 'active' : '' ?>" href="?filter=<?= $filter ?>&platform=<?= $pf ?>"><?= $pl ?></a>
+    <?php endforeach; ?>
   </div>
+</div>
 
-  <!-- SEARCH -->
-  <div class="search-wrap">
-    <input type="text" id="search" class="search-input" placeholder="🔍  Buscar por nombre, Telegram, email o ID de usuario...">
-  </div>
-
-  <!-- FILTERS -->
-  <div class="filters-wrap">
-    <div class="filter-row">
-      <span class="filter-label">Estado:</span>
-      <?php foreach (['pending' => 'Pendientes', 'accepted' => 'Aceptados', 'rejected' => 'Rechazados', 'all' => 'Todos'] as $f => $l): ?>
-      <a class="filter-btn <?= $filter === $f ? 'active' : '' ?>" href="?filter=<?= $f ?>&platform=<?= $platform_filter ?>"><?= $l ?></a>
-      <?php endforeach; ?>
-    </div>
-    <div class="filter-row">
-      <span class="filter-label">Plataforma:</span>
-      <?php foreach (['all' => 'Todas', 'pepperstone' => 'Pepperstone', 'bingx' => 'BingX', 'bitunix' => 'Bitunix', 'zoomex' => 'Zoomex'] as $pf => $pl): ?>
-      <a class="filter-btn <?= $platform_filter === $pf ? 'active' : '' ?>" href="?filter=<?= $filter ?>&platform=<?= $pf ?>"><?= $pl ?></a>
-      <?php endforeach; ?>
-    </div>
-  </div>
-
-  <!-- TABLE -->
-  <div class="table-wrap">
-    <?php if (empty($regs)): ?>
-    <div class="empty">No hay registros <?= $filter === 'pending' ? 'pendientes' : '' ?> por el momento.</div>
-    <?php else: ?>
-    <table id="reg-table">
-      <thead>
-        <tr>
-          <th>#</th><th>Nombre</th><th>Telegram</th><th>Perfil</th>
-          <th>Plataforma</th><th>Email</th><th>ID Usuario</th>
-          <th>Estado</th><th>Fechas</th><th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php foreach ($regs as $r):
-          $is_stale     = $r['status'] === 'pending' && (time() - strtotime($r['updated_at'])) > 172800;
-          $kyc_sent     = ($r['kyc_status'] ?? '') === 'pending';
-          $migr_sent    = !empty($r['patience_sent']);
-          $note_count   = (int)($r['notes_count'] ?? 0);
-          $latest_note  = $r['latest_note'] ?? '';
-          $reg_name     = htmlspecialchars($r['telegram_name'] ?: '#' . $r['id']);
-          $unread_count  = (int)($r['unread_count'] ?? 0);
-          $chat_pending  = $r['support_active'] && ($r['last_msg_direction'] ?? '') === 'in';
-        ?>
-        <tr id="reg-<?= $r['id'] ?>" <?= $is_stale ? 'class="row-stale"' : '' ?>>
-          <td style="color:var(--text-muted)"><?= $r['id'] ?></td>
-          <td><strong><?= htmlspecialchars($r['telegram_name'] ?: '—') ?></strong></td>
-          <td><?= $r['telegram_username'] ? '@'.htmlspecialchars($r['telegram_username']) : '<span style="color:var(--text-muted)">—</span>' ?></td>
-          <td>
-            <span class="badge <?= $r['profile_type'] === 'trader' ? 'badge-trader' : 'badge-prin' ?>">
-              <?= $prlabels[$r['profile_type']] ?? $r['profile_type'] ?>
-              <?php if ($r['asset_type']): ?> · <?= ucfirst($r['asset_type']) ?><?php endif; ?>
-            </span>
-          </td>
-          <td>
-            <?= $plabels[$r['platform']] ?? $r['platform'] ?>
-            <?php if (!empty($r['is_migration'])): ?><span class="badge badge-migration">Migración</span><?php endif; ?>
-            <?php if (($r['kyc_status'] ?? '') === 'pending'):   ?><span class="badge badge-kyc-pending">Esperando KYC (<?= $r['kyc_attempts'] ?>/3)</span><?php endif; ?>
-            <?php if (($r['kyc_status'] ?? '') === 'completed'): ?><span class="badge badge-kyc-completed">KYC completado (<?= $r['kyc_attempts'] ?>/3)</span><?php endif; ?>
-            <?php if (($r['migration_status'] ?? '') === 'pending'):  ?><span class="badge badge-migr-pending">Esperando confirmación Pepperstone</span><?php endif; ?>
-            <?php if (($r['migration_status'] ?? '') === 'notified'): ?><span class="badge badge-migr-notified">Usuario confirmó — verificar referido</span><?php endif; ?>
-          </td>
-          <td style="font-size:0.74rem"><?= htmlspecialchars($r['email'] ?? '—') ?></td>
-          <td><span class="uid"><?= htmlspecialchars($r['platform_user_id']) ?></span></td>
-          <td><span class="badge badge-<?= $r['status'] ?>"><?= $r['status'] === 'pending' ? 'Pendiente' : ($r['status'] === 'accepted' ? 'Aceptado' : 'Rechazado') ?></span></td>
-          <td>
-            <div class="date-stack">
-              <span>📅 <?= date('d/m/y H:i', strtotime($r['created_at'])) ?></span>
-              <span class="date-act">🔄 <?= relTime($r['updated_at']) ?></span>
-              <?php if ($is_stale): ?><span class="date-stale">⚠️ Sin actividad 48h+</span><?php endif; ?>
-            </div>
-          </td>
-          <td>
-            <?php if ($r['status'] === 'pending'): ?>
-            <div class="action-btns">
-              <form method="POST" onsubmit="return confirm('¿Aceptar y enviar link de invitación?')">
-                <input type="hidden" name="id" value="<?= $r['id'] ?>">
-                <input type="hidden" name="action" value="accept">
-                <button type="submit" class="btn-accept">✅ Aceptar</button>
-              </form>
-              <form method="POST" onsubmit="return confirm('¿Rechazar este registro?')">
-                <input type="hidden" name="id" value="<?= $r['id'] ?>">
-                <input type="hidden" name="action" value="reject">
-                <button type="submit" class="btn-reject">❌ Rechazar</button>
-              </form>
-              <?php if ($r['platform'] !== 'pepperstone'): ?>
-              <form method="POST" onsubmit="return confirm('¿Rechazar por UID no referido? Se le enviará al usuario un mensaje con el enlace para crear una cuenta nueva.')">
-                <input type="hidden" name="id" value="<?= $r['id'] ?>">
-                <input type="hidden" name="action" value="reject_uid">
-                <button type="submit" class="btn-reject-uid">⛔ UID no referido</button>
-              </form>
-              <?php endif; ?>
-              <?php if ($r['platform'] === 'bingx'): ?>
-              <?php if ($kyc_sent): ?>
-              <button type="button" class="btn-kyc" disabled>📋 KYC enviado</button>
-              <?php else: ?>
-              <form method="POST" onsubmit="return confirm('¿Avisar al usuario que falta completar su KYC?')">
-                <input type="hidden" name="id" value="<?= $r['id'] ?>">
-                <input type="hidden" name="action" value="kyc">
-                <button type="submit" class="btn-kyc">📋 KYC</button>
-              </form>
-              <?php endif; ?>
-              <?php endif; ?>
-              <?php if ($r['platform'] === 'pepperstone' && $r['is_migration']): ?>
-              <?php if ($migr_sent): ?>
-              <button type="button" class="btn-migration" disabled>✓ Paciencia enviada</button>
-              <?php else: ?>
-              <form method="POST" onsubmit="return confirm('¿Enviar mensaje de seguimiento de migración al usuario?')">
-                <input type="hidden" name="id" value="<?= $r['id'] ?>">
-                <input type="hidden" name="action" value="migration">
-                <button type="submit" class="btn-migration">🔄 Migración</button>
-              </form>
-              <?php endif; ?>
-              <?php endif; ?>
-            </div>
-            <?php elseif ($r['status'] === 'accepted' && $r['invite_link']): ?>
-            <a href="<?= htmlspecialchars($r['invite_link']) ?>" target="_blank" style="font-size:0.68rem; color:var(--purple-light);">Ver link →</a>
-            <?php else: ?>
-            <span style="color:var(--text-muted); font-size:0.72rem;">—</span>
+<!-- TABLE -->
+<div class="table-wrap">
+  <?php if (empty($regs)): ?>
+  <div class="empty">No hay registros <?= $filter === 'pending' ? 'pendientes' : '' ?> por el momento.</div>
+  <?php else: ?>
+  <table id="reg-table">
+    <thead>
+      <tr>
+        <th>#</th><th>Nombre</th><th>Telegram</th><th>Perfil</th>
+        <th>Plataforma</th><th>Email</th><th>ID Usuario</th>
+        <th>Estado</th><th>Fechas</th><th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php foreach ($regs as $r):
+        $is_stale     = $r['status'] === 'pending' && (time() - strtotime($r['updated_at'])) > 172800;
+        $kyc_sent     = ($r['kyc_status'] ?? '') === 'pending';
+        $migr_sent    = !empty($r['patience_sent']);
+        $note_count   = (int)($r['notes_count'] ?? 0);
+        $latest_note  = $r['latest_note'] ?? '';
+        $reg_name     = htmlspecialchars($r['telegram_name'] ?: '#' . $r['id']);
+        $unread_count  = (int)($r['unread_count'] ?? 0);
+        $chat_pending  = $r['support_active'] && ($r['last_msg_direction'] ?? '') === 'in';
+      ?>
+      <tr id="reg-<?= $r['id'] ?>" <?= $is_stale ? 'class="row-stale"' : '' ?>>
+        <td style="color:var(--text-muted)"><?= $r['id'] ?></td>
+        <td><strong><?= htmlspecialchars($r['telegram_name'] ?: '—') ?></strong></td>
+        <td><?= $r['telegram_username'] ? '@'.htmlspecialchars($r['telegram_username']) : '<span style="color:var(--text-muted)">—</span>' ?></td>
+        <td>
+          <span class="badge <?= $r['profile_type'] === 'trader' ? 'badge-trader' : 'badge-prin' ?>">
+            <?= $prlabels[$r['profile_type']] ?? $r['profile_type'] ?>
+            <?php if ($r['asset_type']): ?> · <?= ucfirst($r['asset_type']) ?><?php endif; ?>
+          </span>
+        </td>
+        <td>
+          <?= $plabels[$r['platform']] ?? $r['platform'] ?>
+          <?php if (!empty($r['is_migration'])): ?><span class="badge badge-migration">Migración</span><?php endif; ?>
+          <?php if (($r['kyc_status'] ?? '') === 'pending'):   ?><span class="badge badge-kyc-pending">Esperando KYC (<?= $r['kyc_attempts'] ?>/3)</span><?php endif; ?>
+          <?php if (($r['kyc_status'] ?? '') === 'completed'): ?><span class="badge badge-kyc-completed">KYC completado (<?= $r['kyc_attempts'] ?>/3)</span><?php endif; ?>
+          <?php if (($r['migration_status'] ?? '') === 'pending'):  ?><span class="badge badge-migr-pending">Esperando confirmación Pepperstone</span><?php endif; ?>
+          <?php if (($r['migration_status'] ?? '') === 'notified'): ?><span class="badge badge-migr-notified">Usuario confirmó — verificar referido</span><?php endif; ?>
+        </td>
+        <td style="font-size:0.74rem"><?= htmlspecialchars($r['email'] ?? '—') ?></td>
+        <td><span class="uid"><?= htmlspecialchars($r['platform_user_id']) ?></span></td>
+        <td><span class="badge badge-<?= $r['status'] ?>"><?= $r['status'] === 'pending' ? 'Pendiente' : ($r['status'] === 'accepted' ? 'Aceptado' : 'Rechazado') ?></span></td>
+        <td>
+          <div class="date-stack">
+            <span>📅 <?= date('d/m/y H:i', strtotime($r['created_at'])) ?></span>
+            <span class="date-act">🔄 <?= relTime($r['updated_at']) ?></span>
+            <?php if ($is_stale): ?><span class="date-stale">⚠️ Sin actividad 48h+</span><?php endif; ?>
+          </div>
+        </td>
+        <td>
+          <?php if ($r['status'] === 'pending'): ?>
+          <div class="action-btns">
+            <form method="POST" onsubmit="return confirm('¿Aceptar y enviar link de invitación?')">
+              <input type="hidden" name="id" value="<?= $r['id'] ?>">
+              <input type="hidden" name="action" value="accept">
+              <button type="submit" class="btn-accept">✅ Aceptar</button>
+            </form>
+            <form method="POST" onsubmit="return confirm('¿Rechazar este registro?')">
+              <input type="hidden" name="id" value="<?= $r['id'] ?>">
+              <input type="hidden" name="action" value="reject">
+              <button type="submit" class="btn-reject">❌ Rechazar</button>
+            </form>
+            <?php if ($r['platform'] !== 'pepperstone'): ?>
+            <form method="POST" onsubmit="return confirm('¿Rechazar por UID no referido? Se le enviará al usuario un mensaje con el enlace para crear una cuenta nueva.')">
+              <input type="hidden" name="id" value="<?= $r['id'] ?>">
+              <input type="hidden" name="action" value="reject_uid">
+              <button type="submit" class="btn-reject-uid">⛔ UID no referido</button>
+            </form>
             <?php endif; ?>
+            <?php if ($r['platform'] === 'bingx'): ?>
+            <?php if ($kyc_sent): ?>
+            <button type="button" class="btn-kyc" disabled>📋 KYC enviado</button>
+            <?php else: ?>
+            <form method="POST" onsubmit="return confirm('¿Avisar al usuario que falta completar su KYC?')">
+              <input type="hidden" name="id" value="<?= $r['id'] ?>">
+              <input type="hidden" name="action" value="kyc">
+              <button type="submit" class="btn-kyc">📋 KYC</button>
+            </form>
+            <?php endif; ?>
+            <?php endif; ?>
+            <?php if ($r['platform'] === 'pepperstone' && $r['is_migration']): ?>
+            <?php if ($migr_sent): ?>
+            <button type="button" class="btn-migration" disabled>✓ Paciencia enviada</button>
+            <?php else: ?>
+            <form method="POST" onsubmit="return confirm('¿Enviar mensaje de seguimiento de migración al usuario?')">
+              <input type="hidden" name="id" value="<?= $r['id'] ?>">
+              <input type="hidden" name="action" value="migration">
+              <button type="submit" class="btn-migration">🔄 Migración</button>
+            </form>
+            <?php endif; ?>
+            <?php endif; ?>
+          </div>
+          <?php elseif ($r['status'] === 'accepted' && $r['invite_link']): ?>
+          <a href="<?= htmlspecialchars($r['invite_link']) ?>" target="_blank" style="font-size:0.68rem; color:var(--purple-light);">Ver link →</a>
+          <?php else: ?>
+          <span style="color:var(--text-muted); font-size:0.72rem;">—</span>
+          <?php endif; ?>
 
-            <!-- NOTAS -->
-            <div class="note-section">
-              <?php if ($latest_note): ?>
-              <div class="note-preview">📝 <?= htmlspecialchars(mb_substr($latest_note, 0, 55)) ?><?= mb_strlen($latest_note) > 55 ? '…' : '' ?></div>
-              <?php endif; ?>
-              <button type="button"
-                class="btn-note <?= $note_count > 0 ? 'has-notes' : '' ?>"
-                onclick="openModal(<?= $r['id'] ?>, '<?= addslashes($reg_name) ?>')">
-                <?= $note_count > 0 ? "📝 Ver notas ($note_count)" : '📝 Agregar nota' ?>
-              </button>
-              <button type="button"
-                class="btn-chat <?= $r['support_active'] ? ($chat_pending ? 'btn-chat-pending' : 'btn-chat-active') : '' ?>"
-                onclick="openChat(<?= $r['id'] ?>, '<?= addslashes($reg_name) ?>', <?= (int)$r['support_active'] ?>)"
-                data-reg-id="<?= $r['id'] ?>">
-                <?php if (!$r['support_active']): ?>💬 Chat
-                <?php elseif ($chat_pending): ?>🟠 Chat pendiente
-                <?php else: ?>🟢 Chat activo<?php endif; ?>
-                <?php if ($unread_count > 0): ?><span class="chat-badge-inline"><?= $unread_count ?></span><?php endif; ?>
-              </button>
-            </div>
-          </td>
-        </tr>
-        <?php endforeach; ?>
-      </tbody>
-    </table>
-    <div class="no-results" id="no-results">No se encontraron registros con esa búsqueda.</div>
-    <?php endif; ?>
-  </div>
-
-</main>
+          <!-- NOTAS -->
+          <div class="note-section">
+            <?php if ($latest_note): ?>
+            <div class="note-preview">📝 <?= htmlspecialchars(mb_substr($latest_note, 0, 55)) ?><?= mb_strlen($latest_note) > 55 ? '…' : '' ?></div>
+            <?php endif; ?>
+            <button type="button"
+              class="btn-note <?= $note_count > 0 ? 'has-notes' : '' ?>"
+              onclick="openModal(<?= $r['id'] ?>, '<?= addslashes($reg_name) ?>')">
+              <?= $note_count > 0 ? "📝 Ver notas ($note_count)" : '📝 Agregar nota' ?>
+            </button>
+            <button type="button"
+              class="btn-chat <?= $r['support_active'] ? ($chat_pending ? 'btn-chat-pending' : 'btn-chat-active') : '' ?>"
+              onclick="openChat(<?= $r['id'] ?>, '<?= addslashes($reg_name) ?>', <?= (int)$r['support_active'] ?>)"
+              data-reg-id="<?= $r['id'] ?>">
+              <?php if (!$r['support_active']): ?>💬 Chat
+              <?php elseif ($chat_pending): ?>🟠 Chat pendiente
+              <?php else: ?>🟢 Chat activo<?php endif; ?>
+              <?php if ($unread_count > 0): ?><span class="chat-badge-inline"><?= $unread_count ?></span><?php endif; ?>
+            </button>
+          </div>
+        </td>
+      </tr>
+      <?php endforeach; ?>
+    </tbody>
+  </table>
+  <div class="no-results" id="no-results">No se encontraron registros con esa búsqueda.</div>
+  <?php endif; ?>
+</div>
 
 <script>
 // ── DATOS DE NOTAS ──────────────────────────────────────────────────────────
@@ -1120,6 +1078,4 @@ function updateRowBtn(regId) {
     updateRowBtnState(regId, chatIsActive, chatIsActive ? null : null);
 }
 </script>
-
-</body>
-</html>
+<?php include __DIR__ . '/../includes/footer.php'; ?>

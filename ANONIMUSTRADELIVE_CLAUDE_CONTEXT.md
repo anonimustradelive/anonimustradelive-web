@@ -12,7 +12,7 @@ Este documento contiene todo lo necesario para continuar el desarrollo del sitio
 
 - **Sitio principal:** https://anonimustradelive.com
 - **Bio/Linktree:** https://anonimustradelive.com/bio/
-- **Bot de registro:** https://reg.anonimustradelive.com
+- **Panel administrativo:** https://panel.anonimustradelive.com (Facturación + Registros — reemplazó a reg.anonimustradelive.com, ver sección dedicada abajo)
 - **Servidor:** cPanel compartido
 - **Deploy:** Git via `.cpanel.yml` → push a GitHub → deploy manual desde cPanel Git Version Control
 - **Repositorio:** https://github.com/anonimustradelive/anonimustradelive-web.git (rama `main`)
@@ -59,13 +59,21 @@ anonimustradelive/
 │   ├── acceso.php             ← /acceso (link mágico herramientas premium)
 │   └── libros.php             ← /libros /librosp /toplibros /toplibrosp
 │
-├── reg/                       ← 🤖 Bot de registro a la comunidad
-│   ├── config.php             ← ⛔ GITIGNOREADO
-│   ├── webhook.php            ← bot de registro (máquina de estados)
-│   ├── index.php              ← panel admin de registros
-│   ├── login.php              ← login del panel admin
-│   ← logout.php
-│   └── setup.php              ← migraciones DB (ejecutar una vez, luego borrar)
+├── panel/                     ← 🖥️ Panel administrativo (panel.anonimustradelive.com)
+│   ├── config.php             ← ⛔ GITIGNOREADO (mismos valores que el viejo reg/config.php)
+│   ├── login.php / logout.php ← login único compartido por todos los módulos
+│   ├── index.php              ← redirige a /facturas/
+│   ├── setup.php              ← migraciones DB de facturación (ejecutar una vez)
+│   ├── includes/              ← auth.php, db.php, nav.php (tabs compartidos), footer.php
+│   ├── assets/style.css       ← tema compartido (dark/purple)
+│   ├── facturas/              ← 🧾 Generador de facturas para clientes de ads/contenido
+│   │   ├── index.php          ← listado + filtros + acciones (marcar pagada, anular…)
+│   │   ├── nueva.php          ← crear/editar factura (líneas dinámicas, ITBIS opcional)
+│   │   └── ver.php            ← factura imprimible (tema claro, Ctrl+P → PDF)
+│   └── registros/             ← 🤖 Bot de registro a la comunidad (migrado de reg/ el 2026-07-17)
+│       ├── webhook.php        ← bot de registro (máquina de estados)
+│       ├── index.php          ← admin de registros (chat, notas, KYC, migración)
+│       └── setup.php          ← migraciones DB (ejecutar una vez)
 │
 ├── bio/
 │   └── index.html             ← página tipo linktree
@@ -107,11 +115,12 @@ $SITE_URL      // https://anonimustradelive.com
 $KOFI_TOKEN    // token de verificación de Ko-fi
 $MORALIS_KEY   // API key de Moralis para detectar transacciones crypto
 
-// Bot de registro (reg/config.php — también gitignoreado)
+// Panel administrativo (panel/config.php — también gitignoreado, reemplaza a reg/config.php)
 BOT_TOKEN          // token del bot de registro
-DB_HOST/NAME/USER/PASS  // credenciales MySQL
+DB_HOST/NAME/USER/PASS  // credenciales MySQL (compartida por Facturación y Registros)
 ADMIN_TG_ID        // Telegram ID del admin (Richard)
 COMMUNITY_CHAT_ID  // ID del grupo para invitar usuarios
+ADMIN_PASS         // contraseña de acceso al panel (único login para todos los módulos)
 ```
 
 ---
@@ -133,7 +142,7 @@ COMMUNITY_CHAT_ID  // ID del grupo para invitar usuarios
 | `/toplibros` | `commands/libros.php` | Top 5 → publica en el grupo |
 | `/toplibrosp` | `commands/libros.php` | Top 5 → envía por DM privado |
 
-### 2. Bot de registro (`reg/webhook.php`)
+### 2. Bot de registro (`panel/registros/webhook.php`)
 
 Máquina de estados en MySQL (`sessions` table). Flujo:
 
@@ -154,7 +163,7 @@ Máquina de estados en MySQL (`sessions` table). Flujo:
 
 **Callbacks:**
 `tipo_aprender`, `tipo_trader`, `asset_crypto`, `asset_tradicional`,
-`platform_bingx`, `platform_bitunix`, `ya_tengo_pepperstone`,
+`platform_bingx`, `platform_bitunix`, `platform_zoomex`, `ya_tengo_pepperstone`,
 `migr_confirmado`, `reg_confirmar`, `reg_corregir`,
 `kyc_done`, `migr_notify`
 
@@ -162,6 +171,7 @@ Máquina de estados en MySQL (`sessions` table). Flujo:
 - Pepperstone (broker Forex, requisito de acceso a la comunidad)
 - BingX (exchange crypto, requiere KYC)
 - Bitunix (exchange crypto, sin KYC)
+- Zoomex (exchange crypto, sin KYC — agregado 2026-07-15)
 
 **Regla crítica de MarkdownV2:**
 Solo escapar estos caracteres: `_ * [ ] ( ) ~ \` > # + - = | { } . !`
@@ -179,7 +189,7 @@ Script PHP que corre periódicamente (cron en cPanel).
 
 ---
 
-## Base de datos MySQL (bot de registro)
+## Base de datos MySQL (compartida por panel/facturas y panel/registros)
 
 ### Tabla `registrations`
 | Campo | Tipo | Notas |
@@ -190,7 +200,7 @@ Script PHP que corre periódicamente (cron en cPanel).
 | telegram_username | VARCHAR(255) | |
 | profile_type | ENUM('principiante','trader') | |
 | asset_type | ENUM('crypto','tradicional') | NULL para principiantes |
-| platform | ENUM('pepperstone','bingx','bitunix') | |
+| platform | ENUM('pepperstone','bingx','bitunix','zoomex') | |
 | email | VARCHAR(255) | |
 | is_migration | TINYINT(1) | 1 = cuenta existente a migrar |
 | platform_user_id | VARCHAR(255) | ID numérico en la plataforma |
@@ -220,9 +230,9 @@ Script PHP que corre periódicamente (cron en cPanel).
 
 ---
 
-## Panel Admin (`reg/index.php`)
+## Panel Admin — módulo Registros (`panel/registros/index.php`)
 
-**URL:** https://reg.anonimustradelive.com/index.php
+**URL:** https://panel.anonimustradelive.com/registros/
 
 **Funcionalidades:**
 - Filtros por estado (pending/accepted/rejected) y plataforma
@@ -242,6 +252,31 @@ Script PHP que corre periódicamente (cron en cPanel).
 
 ---
 
+## ⚠️ Runbook de corte: reg.anonimustradelive.com → panel.anonimustradelive.com
+
+Pendiente de ejecutar (el código ya está migrado y listo, pero el corte del subdominio es una acción manual en cPanel). Seguir este orden exacto para minimizar el tiempo que el bot de Telegram queda sordo:
+
+1. **Push del código migrado** a GitHub (si no se ha hecho ya) y deploy vía cPanel Git Version Control — esto deja `panel/` listo en el repositorio, pero todavía no es accesible por HTTP porque el subdominio no existe.
+2. **Eliminar el subdominio `reg.anonimustradelive.com`** en cPanel (Dominios → Subdominios) para liberar el slot.
+3. **Crear el subdominio `panel.anonimustradelive.com`**, con document root `/home/ntpsrnlfrg/panel.anonimustradelive.com`.
+4. **Crear `panel/config.php` directamente en el servidor** (por FTP o el Administrador de Archivos de cPanel — nunca por git) con los mismos valores que tenía `reg/config.php` (BOT_TOKEN, DB_HOST/NAME/USER/PASS, ADMIN_TG_ID, COMMUNITY_CHAT_ID) más un `ADMIN_PASS` para el panel. Plantilla en `panel/config.example.php`.
+5. **Re-deploy** desde cPanel Git Version Control para que los archivos de `panel/` lleguen al nuevo document root (el deploy automático de `.cpanel.yml` solo corre en push nuevo; si el subdominio no existía al momento del push, puede hacer falta forzar un re-deploy manual).
+6. **Re-registrar el webhook de Telegram** — este es el paso que restaura el bot. Pegar esta URL en el navegador (reemplazando `<TU_BOT_TOKEN>` por el valor real):
+   ```
+   https://api.telegram.org/bot<TU_BOT_TOKEN>/setWebhook?url=https://panel.anonimustradelive.com/registros/webhook.php
+   ```
+   Debe responder `{"ok":true,"result":true,"description":"Webhook was set"}`.
+7. **Verificar** que el webhook quedó bien apuntado, visitando (sin token visible en el chat, correrlo tú mismo):
+   ```
+   https://api.telegram.org/bot<TU_BOT_TOKEN>/getWebhookInfo
+   ```
+   Debe mostrar `"url":"https://panel.anonimustradelive.com/registros/webhook.php"` y `"pending_update_count":0` (o bajo).
+8. **Correr `panel/setup.php`** una vez (tablas de Facturación) y **`panel/registros/setup.php`** una vez (tablas de Registros — ya deberían existir de antes, pero confirma que el ENUM de `platform` sigue teniendo `zoomex`).
+9. **Probar el bot**: escribirle `/start` desde Telegram y confirmar que responde. Probar también el panel completo entrando a `panel.anonimustradelive.com` con el nuevo login.
+10. Una vez todo confirmado, `panel/setup.php` y `panel/registros/setup.php` se pueden eliminar del servidor (scripts de un solo uso).
+
+---
+
 ## Bio page (`bio/index.html`)
 
 **Orden actual de links:**
@@ -249,7 +284,7 @@ Script PHP que corre periódicamente (cron en cPanel).
 2. Mentoría — Calendly 1:1
 3. Correo — anonimustradelive@outlook.com
 4. Cuentas de fondeo — FundingPips · The5ers
-5. Apóyanos — Pepperstone, BingX, Bitunix, Pana
+5. Apóyanos — Pepperstone, Zoomex, BingX, Bitunix, Pana
 6. Donar — crypto · Ko-fi
 7. Sesiones en vivo — YouTube · TikTok · Instagram
 8. Herramientas y recursos — tier lists, simulador, reloj sesiones
@@ -269,6 +304,7 @@ Script PHP que corre periódicamente (cron en cPanel).
 | Pepperstone | https://trk.pepperstonepartners.com/aff_c?offer_id=367&aff_id=45363 | Broker Forex (requisito comunidad) |
 | BingX | https://bingxdao.com/partner/AnonimusTrade/ | Exchange crypto con KYC |
 | Bitunix | https://www.bitunix.com/register?vipCode=KMrN | Exchange crypto sin KYC |
+| Zoomex | https://partner.zoomex.com/aff/ZX904826 | Exchange crypto sin KYC |
 | Pana | https://pana.go.link/am7IP | Fintech para retiros USDC |
 | FundingPips | https://app.fundingpips.com/register?referral_code=f225e2bb | Prop firm |
 | The5ers | https://www.the5ers.com/?afmc=xmw | Prop firm |
@@ -278,7 +314,7 @@ Script PHP que corre periódicamente (cron en cPanel).
 
 ## Reglas de desarrollo
 
-1. **NUNCA subir a GitHub:** `config.php`, `reg/config.php`, `auth-tokens.json`, `donors.json`, `crypto_seen_txs.json`
+1. **NUNCA subir a GitHub:** `config.php`, `panel/config.php`, `auth-tokens.json`, `donors.json`, `crypto_seen_txs.json`
 2. **Siempre hacer commit + push + deploy en cPanel** tras cada cambio
 3. **MarkdownV2 en Telegram:** usar siempre `mdEscape()` para contenido dinámico; nunca `htmlspecialchars()`
 4. **Estructura modular del bot:** nunca poner lógica de negocio en el router; usar `commands/`
@@ -287,6 +323,20 @@ Script PHP que corre periódicamente (cron en cPanel).
 ---
 
 ## Historial de cambios recientes
+
+### 2026-07-17 — Migración reg/ → panel/registros/ + nuevo panel administrativo unificado
+- **Motivo:** el plan de hosting no permite más subdominios. Para crear `panel.anonimustradelive.com` (herramientas administrativas, empezando por Facturación) hubo que **eliminar el subdominio `reg.anonimustradelive.com`** y liberar el slot, así que el bot de registro se **migró** (no se duplicó) hacia adentro de la nueva estructura de `panel/`
+- `panel/registros/webhook.php`: copia exacta de `reg/webhook.php`, solo cambia la ruta del `require` (`../config.php`) y las URLs de notificación al admin (ahora apuntan a `https://panel.anonimustradelive.com/registros/`)
+- `panel/registros/index.php`: migración quirúrgica de `reg/index.php` (1126 líneas) — se reemplazó el bloque de auth/DB propio por los includes compartidos de panel (`includes/auth.php`, `includes/db.php`) y el `<!DOCTYPE html>...<nav>` propio por el nav compartido (`includes/nav.php` + `includes/footer.php`). El `<style>` completo, ambos modales (notas y chat), toda la lógica PHP (AJAX de chat, notas, acciones KYC/migración/aceptar/rechazar) y ambos `<script>` quedaron **byte-idénticos** — verificado con diff ignorando solo la reindentación
+- `panel/registros/setup.php`: migrado igual (solo cambia la ruta del config)
+- `reg/login.php` y `reg/logout.php`: **retirados** — Registros ahora usa el login único de `panel/` (`$_SESSION['panel_admin']`)
+- `reg/fix_zoomex_platform.php`: **no migrado** — ya había cumplido su propósito (los 2 registros corruptos ya se repararon en la sesión anterior)
+- `panel/config.example.php`: agregadas las constantes `BOT_TOKEN`, `ADMIN_TG_ID`, `COMMUNITY_CHAT_ID` (antes solo en `reg/config.php`)
+- `panel/includes/nav.php`: el tab "Registros" ahora enlaza a `/registros/` (antes `/registros.php`, el viejo wrapper de iframe — **eliminado**, ya no hace falta envolver nada porque el código vive nativamente adentro)
+- `.cpanel.yml`: quitado el bloque de deploy a `reg.anonimustradelive.com`; agregado deploy de `panel/registros/*.php`
+- **`reg/` eliminado por completo** del repositorio (los 6 archivos, incluyendo los ya retirados) — todo migrado o retirado intencionalmente
+- Respaldo completo de `reg/` + `panel/` (incluyendo `reg/config.php` con los secretos reales, que nunca estuvo en git) guardado fuera del repo en `anonimustradelive_backup_reg_panel_<timestamp>/` antes de borrar nada
+- ⚠️ **Pendiente crítico:** el webhook de Telegram sigue apuntando a la URL vieja hasta que se ejecute `setWebhook` con la nueva URL — ver sección "Runbook de corte" más abajo. Sin este paso el bot deja de recibir mensajes en cuanto se elimine el subdominio `reg.`
 
 ### 2026-07-15 (3) — Fix registros Zoomex corruptos (platform vacío)
 - Bug detectado: 2 registros (`El Mejorrrrr`, `Angel`) llegaron eligiendo Zoomex en el bot **antes** de que el usuario corriera `setup.php`. Como el ENUM `platform` todavía no incluía `'zoomex'`, MySQL en modo no estricto guardó `platform=''` en vez de dar error — por eso no aparecían con el tag "Zoomex" ni al filtrar por esa plataforma en el panel admin
