@@ -96,8 +96,10 @@ anonimustradelive/
 │       ├── cintillo_pana.gif  ← cintillo animado cliente Pana (1920×216)
 │       ├── cintillo_pp.gif    ← cintillo animado cliente PepperStone (convertido de MP4, 960×108, CSS stretch)
 │       └── cintillo_prado.png ← cintillo estático cliente Prado (1920×216)
-└── Asistente/
-    └── contexto-anonimustradelive.md  ← contexto del show (no tocar)
+├── Asistente/
+│   └── contexto-anonimustradelive.md  ← contexto del show (no tocar)
+└── Live Rundown/               ← 🎛️ App interna de rundown de producción (React/TS/Vite, ver su propio README.md)
+    └── (proyecto Node separado, con su package.json — no pasa por .cpanel.yml ni el deploy del sitio)
 ```
 
 ---
@@ -322,6 +324,25 @@ Ejecutado y verificado end-to-end el 2026-07-18: subdominio `reg.` eliminado, `p
 ---
 
 ## Historial de cambios recientes
+
+### 2026-08-02 — Ruleta promocional Zoomex en la bio (campaña temporal)
+- **Motivo:** campaña de referidos de Zoomex con premios (bonos $5–$500, descuento de tarifa, vales de posición 10U–200U). El usuario pidió promoverla en `bio/index.html` mientras dure, con la condición explícita de poder revertir al estado anterior cuando termine
+- **`bio/index.html`**:
+  - Nuevo bloque `.zoomex-wheel-promo`: ruleta 100% CSS (sin imágenes ni librerías) con los 12 premios de la campaña, `conic-gradient` de 12 segmentos alternados en tonos teal/negro (marca Zoomex), rotación continua infinita (`@keyframes wheelSpin`, 18s/vuelta) que acelera a 0.7s al presionar (`:active`), borde con glow pulsante (`@keyframes wheelPromoGlow`), puntero fijo arriba y logo de Zoomex en el centro. Es un `<a target="_blank">` completo — toda la tarjeta es clickeable y lleva a `https://www.zoomex.com/es-MX/welcome/AnonimusTradeEvent`
+  - El botón "Abrir cuenta en Zoomex" se movió a la **primera posición** de la sección "Apóyanos" (antes de Pepperstone) mientras dure la campaña
+  - **Reversión al terminar la campaña:** hay comentarios HTML en el archivo (junto a la ruleta y junto al botón de Zoomex en Apóyanos) documentando el orden default y los pasos exactos para revertir. También guardado en memoria (`project_anonimustrade_zoomex_campaign.md`) para que quede aunque se pierda el contexto de la sesión
+- Verificado en navegador (mobile 375px): la ruleta gira (confirmado vía `getComputedStyle`), los 12 labels están en el orden correcto, el link y `target="_blank"` apuntan bien, y Zoomex aparece antes que Pepperstone en el listado
+- **Mismo día, dos ajustes de ubicación pedidos por el usuario:**
+  1. La ruleta se movió de la sección Apóyanos a **justo debajo del botón "Únete a la comunidad"** (sección Comunidad, mucho más arriba en la página) para darle más visibilidad
+  2. El botón **"Abrir cuenta en Zoomex" se movió junto a la ruleta** (justo debajo), para acercar el flujo de "ver la ruleta → abrir cuenta". La sección Apóyanos quedó en su orden 100% default sin Zoomex: Pepperstone, BingX, Bitunix, Pana
+- Memoria (`project_anonimustrade_zoomex_campaign.md`) y comentarios HTML en el archivo actualizados con la ubicación final y los pasos exactos para revertir todo (ruleta + botón) cuando termine la campaña
+
+### 2026-07-29 — Nueva carpeta `Live Rundown/`: app de rundown de producción (React/TS/Vite)
+- **Motivo:** reemplazar el prototipo de un solo archivo HTML (rundown de producción del show en vivo — planificador semanal + cronómetro en vivo con drift + integración OBS) por una app profesional con persistencia robusta, motor de cronómetro testeado y funcionalidad nueva (historial de shows, modo ensayo, aviso de patrocinador obligatorio)
+- Proyecto Node **completamente independiente** dentro de `Live Rundown/` (propio `package.json`, `node_modules`, etc.) — no toca `.cpanel.yml` ni el pipeline de deploy del sitio principal, es una herramienta interna que corre local (`npm run dev`) en la laptop de producción, no algo que se publique en el dominio
+- Stack: React 19 + TypeScript + Vite 8, Tailwind v4, Zustand, dnd-kit (drag-and-drop del planificador), Dexie/IndexedDB (reemplaza el `localStorage` del prototipo), Vitest (40 tests — motor del cronómetro + auth de OBS)
+- Ver `Live Rundown/README.md` para instalación, desarrollo y cómo conectar OBS
+- `.claude/launch.json` (raíz): agregada config `rundown-dev` (puerto 5173) junto a `ads-preview`
 
 ### 2026-07-18 (8) — Botón "Contacto" en la barra superior (sitio principal)
 - **Motivo:** el correo solo aparecía como una tarjeta más dentro de la sección Comunidad, poco intuitivo para quien busca contacto por negocios/colaboraciones

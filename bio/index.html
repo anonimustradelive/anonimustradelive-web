@@ -383,6 +383,140 @@
   }
 
   .bio-disclaimer strong { color: var(--white); font-weight: 700; }
+
+  /* ── RULETA PROMO ZOOMEX (CAMPAÑA TEMPORAL) ── */
+  .zoomex-wheel-promo {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    padding: 1.4rem 1rem 1.2rem;
+    border-radius: 14px;
+    background: radial-gradient(circle at 50% 0%, rgba(11,217,189,0.14), var(--zoomex-bg) 72%);
+    border: 1px solid rgba(11,217,189,0.4);
+    position: relative;
+    animation: wheelPromoGlow 2.4s ease-in-out infinite;
+  }
+  @keyframes wheelPromoGlow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(11,217,189,0.5), 0 0 16px 1px rgba(11,217,189,0.22); }
+    50%      { box-shadow: 0 0 0 5px rgba(11,217,189,0), 0 0 28px 6px rgba(11,217,189,0.5); }
+  }
+
+  .zoomex-wheel-eyebrow {
+    font-size: 0.62rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .zoomex-wheel-eyebrow::before,
+  .zoomex-wheel-eyebrow::after {
+    content: '';
+    width: 18px; height: 1px;
+    background: rgba(11,217,189,0.5);
+  }
+
+  .zoomex-wheel-stage {
+    position: relative;
+    width: 208px;
+    height: 208px;
+    margin-bottom: 1rem;
+  }
+
+  .zoomex-wheel-pointer {
+    position: absolute;
+    top: -7px; left: 50%;
+    transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-top: 15px solid var(--teal);
+    filter: drop-shadow(0 0 6px rgba(11,217,189,0.8));
+    z-index: 3;
+  }
+
+  .zoomex-wheel {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    position: relative;
+    border: 4px solid #071013;
+    outline: 2px solid rgba(11,217,189,0.55);
+    background: conic-gradient(
+      from 0deg,
+      #0F3D37 0deg 30deg,   #081014 30deg 60deg,
+      #0F3D37 60deg 90deg,  #081014 90deg 120deg,
+      #0F3D37 120deg 150deg,#081014 150deg 180deg,
+      #0F3D37 180deg 210deg,#081014 210deg 240deg,
+      #0F3D37 240deg 270deg,#081014 270deg 300deg,
+      #0F3D37 300deg 330deg,#081014 330deg 360deg
+    );
+    animation: wheelSpin 18s linear infinite;
+  }
+  .zoomex-wheel-promo:active .zoomex-wheel { animation-duration: 0.7s; }
+
+  @keyframes wheelSpin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+  .zoomex-wheel-seg {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 0; height: 0;
+  }
+  .zoomex-wheel-seg span {
+    position: absolute;
+    left: 0; top: -91px;
+    transform: translateX(-50%);
+    display: inline-block;
+    font-size: 0.56rem;
+    font-weight: 800;
+    color: var(--white);
+    white-space: nowrap;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  }
+
+  .zoomex-wheel-hub {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: var(--black3);
+    border: 2px solid var(--teal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    box-shadow: 0 0 16px rgba(11,217,189,0.55);
+  }
+  .zoomex-wheel-hub img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+  }
+
+  .zoomex-wheel-cta {
+    font-size: 0.86rem;
+    font-weight: 800;
+    color: var(--white);
+    text-align: center;
+    line-height: 1.4;
+  }
+  .zoomex-wheel-cta span { color: var(--teal); }
+
+  .zoomex-wheel-sub {
+    font-size: 0.63rem;
+    color: var(--text-muted);
+    margin-top: 0.3rem;
+    text-align: center;
+  }
 </style>
 </head>
 <body>
@@ -448,6 +582,51 @@
       <span class="bio-link-arrow">›</span>
     </a>
 
+    <!-- ══════════════════════════════════════════════════════════════════════
+         CAMPAÑA TEMPORAL ZOOMEX — agregada 2026-08-02, reubicada aquí (debajo de
+         "Únete a la comunidad") a pedido del usuario el mismo día. El botón
+         "Abrir cuenta en Zoomex" también vive aquí ahora (justo debajo de la
+         ruleta), movido desde Apóyanos para acercar el flujo al usuario.
+         Cuando el usuario avise que la campaña terminó: ELIMINAR el bloque
+         .zoomex-wheel-promo Y el botón v-teal de Zoomex que está justo debajo,
+         y devolver ese botón a Apóyanos (después de Pepperstone, antes de
+         BingX — ver comentario en esa sección).
+    ═══════════════════════════════════════════════════════════════════════ -->
+    <a class="zoomex-wheel-promo" href="https://www.zoomex.com/es-MX/welcome/AnonimusTradeEvent" target="_blank" rel="noopener">
+      <p class="zoomex-wheel-eyebrow">🎁 Campaña Zoomex</p>
+      <div class="zoomex-wheel-stage">
+        <div class="zoomex-wheel-pointer"></div>
+        <div class="zoomex-wheel">
+          <div class="zoomex-wheel-seg" style="transform:rotate(15deg)"><span style="transform:translateX(-50%) rotate(-15deg)">$500</span></div>
+          <div class="zoomex-wheel-seg" style="transform:rotate(45deg)"><span style="transform:translateX(-50%) rotate(-45deg)">$100</span></div>
+          <div class="zoomex-wheel-seg" style="transform:rotate(75deg)"><span style="transform:translateX(-50%) rotate(-75deg)">$50</span></div>
+          <div class="zoomex-wheel-seg" style="transform:rotate(105deg)"><span style="transform:translateX(-50%) rotate(-105deg)">$20</span></div>
+          <div class="zoomex-wheel-seg" style="transform:rotate(135deg)"><span style="transform:translateX(-50%) rotate(-135deg)">-25%</span></div>
+          <div class="zoomex-wheel-seg" style="transform:rotate(165deg)"><span style="transform:translateX(-50%) rotate(-165deg)">10U</span></div>
+          <div class="zoomex-wheel-seg" style="transform:rotate(195deg)"><span style="transform:translateX(-50%) rotate(-195deg)">$10</span></div>
+          <div class="zoomex-wheel-seg" style="transform:rotate(225deg)"><span style="transform:translateX(-50%) rotate(-225deg)">20U</span></div>
+          <div class="zoomex-wheel-seg" style="transform:rotate(255deg)"><span style="transform:translateX(-50%) rotate(-255deg)">50U</span></div>
+          <div class="zoomex-wheel-seg" style="transform:rotate(285deg)"><span style="transform:translateX(-50%) rotate(-285deg)">200U</span></div>
+          <div class="zoomex-wheel-seg" style="transform:rotate(315deg)"><span style="transform:translateX(-50%) rotate(-315deg)">100U</span></div>
+          <div class="zoomex-wheel-seg" style="transform:rotate(345deg)"><span style="transform:translateX(-50%) rotate(-345deg)">$5</span></div>
+          <div class="zoomex-wheel-hub">
+            <img src="https://anonimustradelive.com/images/Zoomex_logo_black-and-green.png" alt="Zoomex">
+          </div>
+        </div>
+      </div>
+      <p class="zoomex-wheel-cta">Gira y reclama tu <span>bono Zoomex</span></p>
+      <p class="zoomex-wheel-sub">Bonos hasta $500 · Toca para ver la promoción completa</p>
+    </a>
+
+    <a class="bio-link v-teal" href="https://partner.zoomex.com/aff/ZX904826" target="_blank" rel="noopener">
+      <img class="bio-link-icon bio-link-icon--wide" src="https://anonimustradelive.com/images/Zoomex_logo_black-and-green.png" alt="Zoomex">
+      <div class="bio-link-body">
+        <div class="bio-link-title">Abrir cuenta en Zoomex</div>
+        <div class="bio-link-desc">Exchange de crypto · Enlace de referido</div>
+      </div>
+      <span class="bio-link-arrow">›</span>
+    </a>
+
     <!-- 2. MENTORÍA -->
     <p class="bio-section-label">Mentoría</p>
 
@@ -498,20 +677,16 @@
       <strong>¿Cómo mantener el contenido gratuito?</strong> Si abres una cuenta con alguno de nuestros enlaces de referido, recibimos una pequeña comisión sin costo adicional para ti. Es una forma sencilla de apoyarnos. Gracias de verdad. 🙌
     </div>
 
+    <!-- CAMPAÑA TEMPORAL ZOOMEX — el botón de Zoomex se movió junto a la ruleta
+         (debajo de "Únete a la comunidad"). Orden DEFAULT de esta sección (sin
+         campaña): Pepperstone, Zoomex, BingX, Bitunix, Pana. Cuando termine la
+         campaña, devolver el botón de Zoomex aquí (después de Pepperstone, antes
+         de BingX) y quitar la ruleta de arriba. -->
     <a class="bio-link v-purple" href="https://trk.pepperstonepartners.com/aff_c?offer_id=367&aff_id=45363" target="_blank" rel="noopener">
       <img class="bio-link-icon" src="https://anonimustradelive.com/images/Pepperstone%20logo%201.png" alt="Pepperstone">
       <div class="bio-link-body">
         <div class="bio-link-title">Abrir cuenta en Pepperstone</div>
         <div class="bio-link-desc">Requisito de acceso a la comunidad · Broker Forex regulado</div>
-      </div>
-      <span class="bio-link-arrow">›</span>
-    </a>
-
-    <a class="bio-link v-teal" href="https://partner.zoomex.com/aff/ZX904826" target="_blank" rel="noopener">
-      <img class="bio-link-icon bio-link-icon--wide" src="https://anonimustradelive.com/images/Zoomex_logo_black-and-green.png" alt="Zoomex">
-      <div class="bio-link-body">
-        <div class="bio-link-title">Abrir cuenta en Zoomex</div>
-        <div class="bio-link-desc">Exchange de crypto · Enlace de referido</div>
       </div>
       <span class="bio-link-arrow">›</span>
     </a>
