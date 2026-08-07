@@ -325,6 +325,49 @@ Ejecutado y verificado end-to-end el 2026-07-18: subdominio `reg.` eliminado, `p
 
 ## Historial de cambios recientes
 
+### 2026-08-02 (6) — Módulo "Concurso" en el panel admin (ver/exportar participaciones)
+- **Motivo:** `concurso/submissions.json` está bloqueado por `.htaccess` (a propósito, son nombres de participantes). El usuario necesita poder ver las participaciones y descargar todo organizado para pasárselo a una IA que arme el ranking. Primer intento fue una página de admin standalone dentro de `concurso/` con su propio login — el usuario pidió mejor reutilizar el panel admin ya existente (`panel.anonimustradelive.com`), así que se revirtió ese enfoque y se migró todo ahí
+- **`panel/includes/concurso_data.php`** (nuevo): lee `concurso/submissions.json` y sirve de base para resolver la carpeta del concurso — mismo patrón de "docroots hermanos bajo el mismo home de cPanel" que ya usa `ads_pricing.php` (candidatos: constante `CONCURSO_DIR` opcional, mismo árbol local, o `../../anonimustradelive.com/concurso` en producción). `panel.anonimustradelive.com` y `anonimustradelive.com` son subdominios con docroots separados pero pueden leerse el filesystem entre sí porque son carpetas hermanas en el mismo hosting
+- **`panel/concurso/index.php`** (nuevo módulo, tab "🏆 Concurso" agregado a `panel/includes/nav.php` junto a Facturación/Registros): lista cada participación (nombre + apellido, fecha, nota, miniaturas de las capturas enlazando a `https://anonimustradelive.com/concurso/uploads/<archivo>` en tamaño completo). Usa el mismo `includes/auth.php` que el resto del panel — sin login duplicado
+- **`panel/concurso/export_csv.php`**: descarga un CSV (nombre, apellido, nota, fecha, cantidad de imágenes, nombres de archivo) — texto organizado para pegar o pasarle a una IA
+- **`panel/concurso/export_zip.php`**: arma un ZIP en el momento (vía `ZipArchive`) con una carpeta por participante (`01_Nombre_Apellido/`, con sus imágenes dentro) + un `resumen.tsv` en la raíz — así se puede subir el ZIP completo a una IA con todo el contexto de quién es cada imagen
+- **`panel/assets/style.css`**: nuevas clases `.concurso-entry`, `.concurso-entry-note`, `.concurso-thumbs`, `.concurso-thumb` (tarjetas con miniaturas 96×96, mismo lenguaje visual que el resto del panel)
+- **`.cpanel.yml`**: deploy de `panel/concurso/*.php` (el `.htaccess`/`uploads/` de `concurso/` en el docroot principal ya estaban cubiertos desde antes)
+- Verificado con un mock estático en navegador: tab activo, tarjetas con nombre/fecha/nota (incluyendo el caso de nota vacía → "Sin nota." en cursiva) y miniaturas con el layout correcto
+
+### 2026-08-02 (5) — Concurso: desglose de premios por lugar
+- La franja genérica "🏆 4 cuentas de fondeo en juego" se reemplazó por un bloque **"Premios en juego"** con el detalle por posición (medallas 🥇🥈🥉): 1er lugar $50,000 (Futuros), 2do lugar $10,000 (CFDs), 3er y 4to lugar $5,000 (CFDs) cada una — mismo estilo visual que el resto de la página (fondo morado translúcido, filas separadas por línea sutil)
+- Verificado visualmente en navegador (mobile 375px)
+
+### 2026-08-02 (4) — Concurso: Nombre/Apellido separados (bloquean el botón) + nota opcional
+- **Motivo:** con un solo campo "Nombre completo" es fácil que alguien solo ponga el nombre y se olvide del apellido — con nombres comunes, después es difícil identificar a la persona en vivo entre varios candidatos con el mismo nombre
+- **`concurso/index.php`**: campo único reemplazado por dos campos lado a lado (`first_name` / `last_name`), ambos obligatorios y con **mínimo 3 caracteres** (server-side vía `MIN_NAME_LEN`, y `minlength="3"` en el HTML) — evita que alguien ponga un punto o una letra suelta para saltarse la validación
+- **Botón "Enviar participación" empieza deshabilitado** (`disabled` en el HTML) y se habilita en vivo por JS (`updateSubmitState()`) solo cuando *ambos* campos tienen 3+ caracteres sin espacios en blanco — probado en navegador: con 2 caracteres o con un solo campo lleno el botón sigue bloqueado; al completar ambos se habilita inmediatamente
+- **Nota opcional**: nuevo `<textarea name="note" maxlength="500">` debajo de las capturas, con contador de caracteres en vivo ("X/500") y tope real server-side (`MAX_NOTE_LEN`) que rechaza el envío si se supera (por si alguien manipula el HTML)
+- `submissions.json` ahora guarda `first_name`, `last_name` y `note` por separado (antes era un solo `full_name`)
+- Verificado en navegador: los dos campos se ven lado a lado en mobile (375px), el botón queda gris/bloqueado por defecto, se desbloquea correctamente al llenar Nombre + Apellido con 3+ caracteres cada uno, y el contador de la nota actualiza en vivo
+
+### 2026-08-02 (3) — Ajustes al formulario del concurso: sin correo, próximos pasos, multi-imagen
+- **Mensaje de éxito:** se quitó el link de `mailto:` (para no abrir la puerta a que la gente empiece a escribir por temas ajenos al concurso). En su lugar, un nuevo bloque **"Para poder ganar"** (mismo estilo que las reglas) recordando: seguir en TikTok y/o Instagram, suscribirse al canal de YouTube, y estar presente en el chat en vivo el día del anuncio — si resulta ganador, se lo invita a una videollamada privada donde debe mostrar su dashboard y refrescar la página en vivo para verificar que los datos no están falseados
+- **Multi-imagen:** el dashboard no cabe en una sola captura, así que el input pasó de un solo archivo a `screenshots[]` con `multiple`, tope de **4 imágenes** (5 MB cada una, mismo límite de antes mantenido por archivo). Validación **todo o nada**: si alguna imagen falla (tipo, tamaño o cantidad), no se guarda ninguna y se muestra el error — evita registros a medias con solo algunas capturas guardadas
+- `submissions.json` ahora guarda cada envío como `{full_name, files: [{filename, size}, ...], submitted_at}` en vez de un solo `filename`
+- JS del selector de archivo actualizado para validar cada imagen del lote y mostrar cuántas/cuáles se eligieron
+- Verificado de nuevo con mocks estáticos en navegador: formulario con hint "Hasta 4 imágenes", estado con 3 archivos seleccionados, y el mensaje de éxito sin correo con el bloque de próximos pasos
+
+### 2026-08-02 (2) — Nuevo `/concurso/`: formulario de participación del concurso de trading
+- **Qué es:** concurso interno con 4 cuentas de fondeo en juego, rankeadas manualmente por el equipo a partir de capturas de dashboard que suben los participantes. Esta página **solo captura los datos** (nombre + imagen) — no calcula el ranking
+- **`concurso/index.php`** (nuevo, sin base de datos, mismo patrón de archivo plano que `donors.json`):
+  - Formulario: nombre completo + subida de imagen (drag-friendly, con preview del nombre de archivo elegido)
+  - Reglas mostradas en la página: solo cuenta trading entre **lunes 20 de julio y viernes 7 de agosto**; cuentas iniciadas antes del 20 de julio quedan descalificadas; cuentas que se queman durante el proceso quedan descalificadas automáticamente
+  - Validación de imagen en dos capas: cliente (JS, feedback inmediato) y servidor (autoritativa — nunca confía en el tipo/tamaño que reporta el navegador): máximo 5 MB, y el tipo real se verifica con `getimagesize()` sobre el archivo ya subido (no por extensión ni `Content-Type` del navegador) — solo JPG, PNG o WebP pasan
+  - Cada envío se guarda como `{full_name, filename, size, submitted_at}` en `concurso/submissions.json` (append), y la imagen se renombra a `YYYYMMDD_HHMMSS_<random>.<ext>` en `concurso/uploads/` — nunca se usa el nombre de archivo original del usuario
+  - Patrón POST-redirect-GET (`Location: /concurso/?ok=1`) para evitar reenvíos duplicados al refrescar
+- **Seguridad de la carpeta de uploads:** `concurso/uploads/.htaccess` bloquea la ejecución de scripts (`.php`, `.phtml`, etc.) y desactiva el listado de directorio — defensa en profundidad además de la validación real de contenido de imagen. `concurso/.htaccess` bloquea el acceso directo a `submissions.json` (contiene nombres de participantes, no debe ser público) y también desactiva el listado
+- **`.gitignore`**: agregado `concurso/submissions.json` y `concurso/uploads/*` (con excepción de `.htaccess`) — son datos generados en runtime por los usuarios, no código fuente, mismo criterio que `crypto_seen_txs.json`/`auth-tokens.json`
+- **`.cpanel.yml`**: deploy de `concurso/index.php`, `concurso/.htaccess`, `concurso/uploads/.htaccess` (con `mkdir -p` de ambas carpetas)
+- Verificado con un mock estático en navegador (sin PHP local disponible, mismo flujo que en Facturación): diseño mobile (375px), estado inicial del formulario, estado "archivo elegido" y estado de éxito tras enviar — los tres se ven y funcionan correctamente
+- ⚠️ **Pendiente:** hacer commit + push, y confirmar en producción que `concurso/uploads/` queda con permisos de escritura para PHP (debería heredarlos del `mkdir -p` del deploy, pero conviene comprobar con un envío de prueba real)
+
 ### 2026-08-02 — Ruleta promocional Zoomex en la bio (campaña temporal)
 - **Motivo:** campaña de referidos de Zoomex con premios (bonos $5–$500, descuento de tarifa, vales de posición 10U–200U). El usuario pidió promoverla en `bio/index.html` mientras dure, con la condición explícita de poder revertir al estado anterior cuando termine
 - **`bio/index.html`**:

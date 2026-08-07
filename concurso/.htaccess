@@ -1,0 +1,5 @@
+Options -Indexes
+
+<Files "submissions.json">
+  Require all denied
+</Files>

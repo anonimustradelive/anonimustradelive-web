@@ -14,6 +14,7 @@
   <nav class="panel-nav-tabs">
     <a href="/facturas/" class="tab <?= ($active ?? '') === 'facturas' ? 'active' : '' ?>">🧾 Facturación</a>
     <a href="/registros/" class="tab <?= ($active ?? '') === 'registros' ? 'active' : '' ?>">📋 Registros</a>
+    <a href="/concurso/" class="tab <?= ($active ?? '') === 'concurso' ? 'active' : '' ?>">🏆 Concurso</a>
   </nav>
   <a href="/logout.php" class="panel-nav-logout">Cerrar sesión →</a>
 </header>
