@@ -325,6 +325,12 @@ Ejecutado y verificado end-to-end el 2026-07-18: subdominio `reg.` eliminado, `p
 
 ## Historial de cambios recientes
 
+### 2026-08-07 (4) — Popup del concurso en la bio (temporal, se autolimita por fecha)
+- **Motivo:** promocionar el concurso en `bio/index.html` sin agregar un botón más entre los que ya hay. Se pidió un popup al entrar a la página, con opción de descartarlo
+- **`bio/index.html`**: nuevo `.concurso-popup` (overlay fijo con fondo oscuro semitransparente, tarjeta centrada con animación de entrada) que aparece automáticamente 500ms después de cargar la página — "🏆 Concurso de Trading / ¿Estás participando?", con botón rojo **"Registrar mis datos"** (a `https://anonimustradelive.com/concurso/`, `target="_blank"` igual que el resto de los links de la bio) y **"Ahora no"** para descartarlo; también se cierra tocando el fondo o la ✕
+- **Autolímite por fecha, sin necesidad de acordarse de quitarlo a mano:** `Date.UTC(2026, 7, 9, 16, 0, 0)` = domingo 9 de agosto 2026, 12:00pm hora República Dominicana (UTC-4 fijo, sin horario de verano, por eso se pudo calcular directo en UTC sin conversión de zona horaria en tiempo de ejecución). Pasada esa fecha el script simplemente no vuelve a mostrar el popup — el HTML/CSS queda en el archivo pero inerte; si se quiere limpiar el código después de la fecha, avisar
+- Verificado en navegador (mobile 375px): el popup aparece con el diseño esperado, "Ahora no" lo cierra correctamente dejando ver la bio normal, y el cálculo de la fecha límite en JS confirmado exacto vía `toLocaleString` con timezone `America/Santo_Domingo` → "9/8/2026, 12:00:00 p.m."
+
 ### 2026-08-07 (3) — Eliminar participaciones del concurso (moderación/depuración)
 - **Motivo:** el usuario necesita poder borrar entradas — imágenes que no corresponden, usuarios que violaron las reglas (operaciones iniciadas antes del 20 de julio, cuentas quemadas) — para que el CSV/ZIP que se descarga después salga limpio, sin esos casos
 - **`panel/includes/concurso_data.php`**: nueva `deleteConcursoSubmission(int $index, string $expectedSubmittedAt): array`. Relee `submissions.json` fresco, verifica que la entrada en esa posición siga teniendo el mismo `submitted_at` que cuando se cargó la página (evita borrar la entrada equivocada si alguien más envió una participación justo en el medio), borra sus imágenes de `uploads/` con `unlink()`, y reescribe el JSON reindexado (`array_values` tras el `unset`, para que siga siendo un array JSON válido y no un objeto con huecos)
