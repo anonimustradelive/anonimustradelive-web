@@ -46,6 +46,7 @@
   /* ── NAV ── */
   nav {
     position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+    transition: none;
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 5vw;
     height: 64px;
@@ -137,6 +138,55 @@
     transition: background 0.15s, color 0.15s; white-space: nowrap;
   }
   .nav-dropdown-menu a:hover { background: rgba(124,58,237,0.12); color: var(--purple-light); }
+
+  /* ══ BARRA Y BOTÓN PUNTO ZERØ ══ */
+  .pz-bar {
+    /* absolute, no fixed: se va con el scroll en vez de comerse la pantalla.
+       El nav (fixed, top:0) se desliza hasta su sitio, lo mueve el script. */
+    position: absolute; top: 0; left: 0; right: 0; z-index: 1000;
+    display: flex; align-items: center; justify-content: center;
+    flex-wrap: wrap; gap: 6px 14px;
+    padding: 11px 20px; text-decoration: none;
+    background: linear-gradient(90deg, #0A0A0C 0%, #1a0d2e 50%, #0A0A0C 100%);
+    border-bottom: 1px solid rgba(226,59,82,0.3);
+  }
+  .pz-bar-tag {
+    font-size: 0.72rem; font-weight: 900; letter-spacing: 0.02em;
+    color: #fff; white-space: nowrap;
+  }
+  .pz-bar-txt { font-size: 0.78rem; color: #ADADB6 }
+  .pz-bar-txt b { color: #fff; font-weight: 700 }
+  .pz-bar-cd {
+    font-size: 0.72rem; font-weight: 800; color: #E23B52;
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+  .pz-bar-go {
+    font-size: 0.72rem; font-weight: 800; color: #fff;
+    background: #CE1436; padding: 5px 13px; border-radius: 3px;
+    white-space: nowrap; transition: background 0.2s;
+  }
+  .pz-bar:hover .pz-bar-go { background: #E8153A }
+  @media (max-width: 640px) {
+    .pz-bar { padding: 9px 12px; gap: 8px }
+    .pz-bar-txt { display: none }
+  }
+  /* en pantallas chicas la barra tiene que caber en UNA línea o come pantalla */
+  @media (max-width: 480px) {
+    .pz-long { display: none }
+    .pz-bar { gap: 7px; flex-wrap: nowrap }
+    .pz-bar-tag { font-size: 0.68rem }
+    .pz-bar-cd { font-size: 0.66rem }
+    .pz-bar-go { font-size: 0.68rem; padding: 5px 10px }
+  }
+  .nav-cta-pz {
+    background: linear-gradient(135deg, #6B3FA0 0%, #CE1436 100%); color: var(--white);
+    padding: 8px 20px; border-radius: 3px;
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    text-decoration: none; transition: filter 0.2s; white-space: nowrap;
+  }
+  .nav-cta-pz:hover { filter: brightness(1.2) }
+  .nav-mobile-actions .nav-cta-pz { flex-basis: 100%; text-align: center }
+
   .nav-cta {
     background: var(--purple); color: var(--white);
     padding: 8px 20px; border-radius: 3px;
@@ -861,6 +911,15 @@
 <body>
 
 <!-- NAV -->
+<!-- ══ BARRA PUNTO ZERØ ══ temporal: se oculta sola cuando cierren las inscripciones.
+     Para quitarla antes, borrar este bloque, su CSS (.pz-bar) y su script.       -->
+<a class="pz-bar" id="pz-bar" href="/puntozero/">
+  <span class="pz-bar-tag">Punto Zerø</span>
+  <span class="pz-bar-txt">Bootcamp de trading en vivo, 5 días. <b>Empieza el lunes 17.</b></span>
+  <span class="pz-bar-cd" id="pz-cd"></span>
+  <span class="pz-bar-go"><span class="pz-long">Ver el bootcamp </span>→</span>
+</a>
+
 <nav>
   <a class="nav-logo" href="#hero">
     <img src="images/logo.png" alt="AT Logo">
@@ -894,6 +953,7 @@
     <li><a href="/utilidades">🔒 herramientas vip</a></li>
   </ul>
   <div class="nav-actions">
+    <a class="nav-cta-pz" href="/puntozero/">Punto Zerø</a>
     <a class="nav-cta-outline" href="mailto:anonimustradelive@outlook.com?subject=Contacto%20desde%20la%20web">📧 contacto</a>
     <a class="nav-cta-red" href="#donaciones">🤍 donar</a>
     <a class="nav-cta" href="https://t.me/anonimustradelive_bot" target="_blank" rel="noopener">únete</a>
@@ -927,6 +987,7 @@
   <a class="nav-mobile-link" href="#comunidad"  onclick="navClose()">comunidad</a>
   <a class="nav-mobile-link" href="/utilidades">🔒 herramientas vip</a>
   <div class="nav-mobile-actions">
+    <a class="nav-cta-pz" href="/puntozero/" onclick="navClose()">Punto Zerø · bootcamp</a>
     <a class="nav-cta-outline" href="mailto:anonimustradelive@outlook.com?subject=Contacto%20desde%20la%20web" onclick="navClose()">📧 contacto</a>
     <a class="nav-cta-red" href="#donaciones" onclick="navClose()">🤍 donar</a>
     <a class="nav-cta" href="https://t.me/anonimustradelive_bot" target="_blank" rel="noopener" onclick="navClose()">únete</a>
@@ -2490,5 +2551,38 @@ async function donConnectWith(provider) {
 }
 </script>
 
+<script>
+/* ══ BARRA PUNTO ZERØ ══ cuenta atrás al inicio de la primera clase:
+   lunes 17 de agosto de 2026, 2:00 p. m. hora del este (GMT-4 en verano),
+   o sea 18:00 UTC. Pasada esa hora la barra se retira sola, así que no hace
+   falta acordarse de quitarla a mano. */
+(function () {
+  var bar = document.getElementById('pz-bar'), cd = document.getElementById('pz-cd');
+  if (!bar || !cd) return;
+  var FIN = Date.UTC(2026, 7, 17, 18, 0, 0);
+  function tic() {
+    var falta = FIN - Date.now();
+    if (falta <= 0) { bar.style.display = 'none'; clearInterval(t); return; }
+    var s = Math.floor(falta / 1000), d = Math.floor(s / 86400),
+        h = Math.floor(s / 3600) % 24, m = Math.floor(s / 60) % 60;
+    cd.textContent = 'Cierra en ' + (d > 0 ? d + 'd ' : '') + h + 'h ' + m + 'm';
+  }
+  tic();
+  var t = setInterval(tic, 30000);
+
+  /* El nav arranca justo debajo de la barra y se desliza hasta arriba a
+     medida que la barra sale de pantalla. Así la barra se lee al entrar
+     pero no ocupa espacio fijo durante todo el scroll. */
+  var nav = document.querySelector('nav');
+  function acomoda() {
+    if (bar.style.display === 'none') { nav.style.top = '0px'; return; }
+    var alto = bar.offsetHeight;
+    nav.style.top = Math.max(0, alto - window.scrollY) + 'px';
+  }
+  acomoda();
+  window.addEventListener('scroll', acomoda, { passive: true });
+  window.addEventListener('resize', acomoda, { passive: true });
+})();
+</script>
 </body>
 </html>
