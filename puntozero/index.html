@@ -177,9 +177,21 @@ nav .wrap { display:flex; align-items:center; justify-content:space-between; wid
 .hero-canvas { position:absolute; inset:0; width:100%; height:100%; display:block; pointer-events:none }
 .c-back  { z-index:1 }
 .c-front { z-index:3 }
+/* Cubre todo el escenario en vez del 46 % inferior, con las paradas
+   recalculadas para que el degradado inferior quede idéntico. Se hizo así
+   para poder sumarle la viñeta en móvil sin agregar otro elemento. */
 .hero-stage::after {
-  content:''; position:absolute; left:0; right:0; bottom:-1px; height:46%; z-index:3; pointer-events:none;
-  background:linear-gradient(to bottom, rgba(5,5,6,0) 0%, rgba(5,5,6,0.55) 42%, rgba(5,5,6,0.93) 80%, var(--bg) 100%);
+  content:''; position:absolute; inset:0 0 -1px; z-index:3; pointer-events:none;
+  background:linear-gradient(to bottom, rgba(5,5,6,0) 54%, rgba(5,5,6,0.55) 73%, rgba(5,5,6,0.93) 91%, var(--bg) 100%);
+}
+/* En móvil la viñeta la pinta el CSS: es estática, así que el compositor la
+   dibuja una vez, en lugar de un relleno a pantalla completa por cuadro. */
+@media (max-width:899px){
+  .hero-stage::after {
+    background:
+      radial-gradient(ellipse 62% 58% at 50% 46%, rgba(5,5,6,0) 0%, rgba(5,5,6,0.6) 100%),
+      linear-gradient(to bottom, rgba(5,5,6,0) 54%, rgba(5,5,6,0.55) 73%, rgba(5,5,6,0.93) 91%, var(--bg) 100%);
+  }
 }
 .hero-stage::before {
   content:''; position:absolute; left:0; right:0; top:0; height:20%; z-index:3; pointer-events:none;
@@ -1316,6 +1328,10 @@ body { padding-bottom:0 }
   var lastFade = 1, lastGz = 1;   /* estado del efecto de entrada, para no repintar en balde */
   var lastMx = 0, lastMy = 0;     /* idem para el paralaje del glifo */
   var liviano = false;            /* modo aligerado para móvil */
+  /* Degradados cacheados: solo dependen de R, así que construirlos en cada
+     cuadro era tirar seis objetos nuevos por cuadro a la basura. Se rehacen
+     en build(), que es cuando R cambia. */
+  var gDisco, gCalido, gAnillo, gCoreN;
 
   /* pasada de bloom: se copia la escena a un lienzo pequeño, se desenfoca y se
      vuelve a componer en modo aditivo. Es lo que hace que la luz se sienta real
@@ -1338,9 +1354,9 @@ body { padding-bottom:0 }
     /* en pantallas angostas se acorta el disco para que las alas no se salgan */
     var inner = R * 1.22, outer = R * (narrow ? 3.0 : 4.3);
 
-    var nDisk  = narrow ? 400 : 1050;
-    var nHalo  = narrow ? 105 : 260;
-    var nStars = narrow ? 60  : 170;
+    var nDisk  = liviano ? 180 : 1050;
+    var nHalo  = liviano ?  55 : 260;
+    var nStars = liviano ?  40 : 170;
 
     /* la .Ø se escala con el mismo patrón que el horizonte, no con vh:
        así guarda siempre la misma proporción contra la singularidad */
@@ -1376,7 +1392,7 @@ body { padding-bottom:0 }
     /* fragmentos de arco que sustituyen a la circunferencia sólida.
        Se reparten en tres radios apenas distintos: eso da el prisma. */
     ring.length = 0;
-    for (var m = 0; m < (narrow ? 24 : 58); m++) {
+    for (var m = 0; m < (liviano ? 14 : 58); m++) {
       var band = m % 3;
       ring.push({
         rr:  1.006 + band * 0.014 + rnd(-0.004, 0.004),
@@ -1391,6 +1407,30 @@ body { padding-bottom:0 }
       });
     }
 
+    /* ── degradados, una sola vez por resize ──
+       En móvil el resplandor del disco va más ancho y más opaco: hace de
+       bloom falso, y al estar cacheado no cuesta nada. */
+    var gr = liviano ? 5.2 : 4.4, ga = liviano ? 0.42 : 0.30;
+    gDisco = ctx.createRadialGradient(0, 0, R * 0.8, 0, 0, R * gr);
+    gDisco.addColorStop(0,   'rgba(160,198,250,' + ga + ')');
+    gDisco.addColorStop(0.4, 'rgba(130,150,235,' + (ga * 0.45).toFixed(3) + ')');
+    gDisco.addColorStop(1,   'rgba(120,140,230,0)');
+
+    gCalido = ctx.createRadialGradient(-R * 1.9, 0, 0, -R * 1.9, 0, R * 2.4);
+    gCalido.addColorStop(0, 'rgba(255,196,150,0.10)');
+    gCalido.addColorStop(1, 'rgba(255,196,150,0)');
+
+    gAnillo = ctx.createRadialGradient(0, 0, R * 0.9, 0, 0, R * 1.22);
+    gAnillo.addColorStop(0,    'rgba(170,205,255,0)');
+    gAnillo.addColorStop(0.55, 'rgba(185,215,255,0.30)');
+    gAnillo.addColorStop(0.72, 'rgba(200,228,255,0.10)');
+    gAnillo.addColorStop(1,    'rgba(200,228,255,0)');
+
+    gCoreN = ctx.createRadialGradient(0, 0, R * 0.85, 0, 0, R * 1.015);
+    gCoreN.addColorStop(0,    'rgba(0,0,0,1)');
+    gCoreN.addColorStop(0.93, 'rgba(0,0,0,1)');
+    gCoreN.addColorStop(1,    'rgba(0,0,0,0)');
+
     stars.length = 0;
     for (var k = 0; k < nStars; k++) {
       stars.push({ x: Math.random(), y: Math.random(), s: rnd(0.4, 1.3),
@@ -1404,8 +1444,8 @@ body { padding-bottom:0 }
     H = Math.max(1, Math.round(box.height));
     /* En móvil se recorta el DPR: a 2 se pintan cuatro veces los píxeles y es
        de lejos el mayor costo. En una escena difusa como esta, 1.5 no se nota. */
-    liviano = window.innerWidth < 760;
-    DPR = Math.min(window.devicePixelRatio || 1, liviano ? 1.5 : 2);
+    liviano = window.innerWidth < 900;
+    DPR = Math.min(window.devicePixelRatio || 1, liviano ? 1.25 : 2);
     cvB.width = cvF.width  = W * DPR;
     cvB.height = cvF.height = H * DPR;
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
@@ -1486,23 +1526,27 @@ body { padding-bottom:0 }
     ctx.globalCompositeOperation = 'source-over';
     for (var s = 0; s < stars.length; s++) {
       var st = stars[s];
-      var tw = 0.55 + 0.45 * Math.sin(t * st.tw + st.ph);
+      /* en móvil sin titileo: era un seno por estrella y por cuadro */
+      var tw = liviano ? 1 : (0.55 + 0.45 * Math.sin(t * st.tw + st.ph));
       ctx.fillStyle = 'rgba(214,228,246,' + (st.o * tw).toFixed(3) + ')';
       ctx.fillRect(st.x * W, st.y * H, st.s, st.s);
     }
 
-    /* nebulosa: dos manchas de color que derivan muy lento */
+    /* nebulosa: dos manchas que derivan muy lento. Se salta en móvil porque
+       son dos rellenos a pantalla completa por cuadro y allí casi no se nota. */
     ctx.globalCompositeOperation = 'lighter';
-    var n1x = W * (0.30 + Math.sin(t * 0.03) * 0.02);
-    var neb1 = ctx.createRadialGradient(n1x, H * 0.34, 0, n1x, H * 0.34, W * 0.42);
-    neb1.addColorStop(0, 'rgba(107,63,160,0.085)');
-    neb1.addColorStop(1, 'rgba(107,63,160,0)');
-    ctx.fillStyle = neb1; ctx.fillRect(0, 0, W, H);
-    var n2x = W * (0.72 + Math.cos(t * 0.024) * 0.02);
-    var neb2 = ctx.createRadialGradient(n2x, H * 0.62, 0, n2x, H * 0.62, W * 0.38);
-    neb2.addColorStop(0, 'rgba(64,150,190,0.07)');
-    neb2.addColorStop(1, 'rgba(64,150,190,0)');
-    ctx.fillStyle = neb2; ctx.fillRect(0, 0, W, H);
+    if (!liviano) {
+      var n1x = W * (0.30 + Math.sin(t * 0.03) * 0.02);
+      var neb1 = ctx.createRadialGradient(n1x, H * 0.34, 0, n1x, H * 0.34, W * 0.42);
+      neb1.addColorStop(0, 'rgba(107,63,160,0.085)');
+      neb1.addColorStop(1, 'rgba(107,63,160,0)');
+      ctx.fillStyle = neb1; ctx.fillRect(0, 0, W, H);
+      var n2x = W * (0.72 + Math.cos(t * 0.024) * 0.02);
+      var neb2 = ctx.createRadialGradient(n2x, H * 0.62, 0, n2x, H * 0.62, W * 0.38);
+      neb2.addColorStop(0, 'rgba(64,150,190,0.07)');
+      neb2.addColorStop(1, 'rgba(64,150,190,0)');
+      ctx.fillStyle = neb2; ctx.fillRect(0, 0, W, H);
+    }
 
     ctx.save();
     ctx.translate(W * 0.5 + px * 10, H * 0.5 + py * 8);
@@ -1512,16 +1556,10 @@ body { padding-bottom:0 }
        en el lado que se acerca (efecto Doppler a gran escala) */
     ctx.save();
     ctx.scale(1, Math.max(0.12, tilt) * 3.0);
-    var discGlow = ctx.createRadialGradient(0, 0, R * 0.8, 0, 0, R * 4.4);
-    discGlow.addColorStop(0,   'rgba(160,198,250,0.30)');
-    discGlow.addColorStop(0.4, 'rgba(130,150,235,0.13)');
-    discGlow.addColorStop(1,   'rgba(120,140,230,0)');
-    ctx.fillStyle = discGlow;
-    ctx.beginPath(); ctx.arc(0, 0, R * 4.4, 0, Math.PI * 2); ctx.fill();
-    var warm = ctx.createRadialGradient(-R * 1.9, 0, 0, -R * 1.9, 0, R * 2.4);
-    warm.addColorStop(0, 'rgba(255,196,150,0.10)');
-    warm.addColorStop(1, 'rgba(255,196,150,0)');
-    ctx.fillStyle = warm;
+    var rg = liviano ? R * 5.2 : R * 4.4;
+    ctx.fillStyle = gDisco;
+    ctx.beginPath(); ctx.arc(0, 0, rg, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = gCalido;
     ctx.beginPath(); ctx.arc(-R * 1.9, 0, R * 2.4, 0, Math.PI * 2); ctx.fill();
     ctx.restore();
 
@@ -1547,12 +1585,7 @@ body { padding-bottom:0 }
     }
 
     /* anillo de fotones: halo suave + trazo fino + arco cálido al lado brillante */
-    var ringGlow = ctx.createRadialGradient(0, 0, R * 0.9, 0, 0, R * 1.22);
-    ringGlow.addColorStop(0,    'rgba(170,205,255,0)');
-    ringGlow.addColorStop(0.55, 'rgba(185,215,255,0.30)');
-    ringGlow.addColorStop(0.72, 'rgba(200,228,255,0.10)');
-    ringGlow.addColorStop(1,    'rgba(200,228,255,0)');
-    ctx.fillStyle = ringGlow;
+    ctx.fillStyle = gAnillo;
     ctx.beginPath(); ctx.arc(0, 0, R * 1.22, 0, Math.PI * 2); ctx.fill();
 
     /* anillo de fotones disuelto en arcos irregulares: nada de circunferencia
@@ -1572,11 +1605,7 @@ body { padding-bottom:0 }
 
     /* horizonte de sucesos: negro absoluto con borde difuminado */
     ctx.globalCompositeOperation = 'source-over';
-    var core = ctx.createRadialGradient(0, 0, R * 0.85, 0, 0, R * 1.015);
-    core.addColorStop(0, 'rgba(0,0,0,1)');
-    core.addColorStop(0.93, 'rgba(0,0,0,1)');
-    core.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = core;
+    ctx.fillStyle = gCoreN;
     ctx.beginPath(); ctx.arc(0, 0, R * 1.015, 0, Math.PI * 2); ctx.fill();
 
     ctx.restore();
@@ -1593,18 +1622,22 @@ body { padding-bottom:0 }
     /* se sale del zoom: el bloom y la viñeta van en coordenadas de pantalla */
     ctx.restore(); ctxF.restore();
 
-    /* ── bloom y halación en los dos lienzos ── */
-    bloom(ctx, cvB, 0.42);
-    bloom(ctxF, cvF, 0.5);
+    /* ── bloom ── es lo más caro de todo: copia, desenfoque y recomposición
+       sobre cada lienzo. Fuera en móvil; lo compensa el resplandor cacheado. */
+    if (!liviano) { bloom(ctx, cvB, 0.42); bloom(ctxF, cvF, 0.5); }
 
     /* viñeta: oscurece los bordes para dar profundidad de cine */
     ctx.globalCompositeOperation = 'source-over';
-    var vig = ctx.createRadialGradient(W * 0.5, H * 0.46, Math.min(W, H) * 0.42,
-                                       W * 0.5, H * 0.46, Math.max(W, H) * 0.72);
-    vig.addColorStop(0, 'rgba(5,5,6,0)');
-    vig.addColorStop(1, 'rgba(5,5,6,0.6)');
-    ctx.fillStyle = vig;
-    ctx.fillRect(0, 0, W, H);
+    /* en móvil la pinta el CSS (.hero-stage::before): es estática, así que el
+       compositor la dibuja una vez en lugar de un relleno por cuadro */
+    if (!liviano) {
+      var vig = ctx.createRadialGradient(W * 0.5, H * 0.46, Math.min(W, H) * 0.42,
+                                         W * 0.5, H * 0.46, Math.max(W, H) * 0.72);
+      vig.addColorStop(0, 'rgba(5,5,6,0)');
+      vig.addColorStop(1, 'rgba(5,5,6,0.6)');
+      ctx.fillStyle = vig;
+      ctx.fillRect(0, 0, W, H);
+    }
   }
 
   /* copia reducida + desenfoque + composición aditiva.
@@ -1658,7 +1691,7 @@ body { padding-bottom:0 }
       /* ondas de densidad: brazos espirales que hacen el disco filamentoso
          en vez de una nube pareja (es lo que da sensación de volumen) */
       var arm = 0.55 + 0.45 * Math.sin(a * 2 - p.r * 0.035 + t * 0.5);
-      var al = Math.min(0.9, p.o * edge * near * fade * dopp * arm * 1.15);
+      var al = Math.min(0.95, p.o * edge * near * fade * dopp * arm * (liviano ? 1.45 : 1.15));
 
       c.strokeStyle = tone(p.h, 66 + edge * 22 + (dopp - 1) * 10, al);
       c.lineWidth = p.r < R * 2 ? 1.5 : 1.1;
