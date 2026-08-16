@@ -279,33 +279,59 @@ nav .wrap { display:flex; align-items:center; justify-content:space-between; wid
 .hero-sub { margin:1.6rem auto 0; max-width:52ch; font-size:clamp(1.02rem,2.6vw,1.19rem); color:var(--muted) }
 .hero-cta { margin-top:2.5rem; display:flex; flex-direction:column; align-items:center; gap:0.9rem }
 .hero-cta .btn { width:100%; max-width:340px }
-.hero-facts {
-  margin-top:2.6rem; padding-top:1.6rem; border-top:1px solid var(--line-soft);
-  display:flex; flex-wrap:wrap; justify-content:center; align-items:baseline;
-  gap:0.25rem 0.7rem;
-  font-size:0.83rem; color:var(--dim); font-weight:500;
+/* en escritorio los dos botones van lado a lado: apilados desperdiciaban el ancho */
+@media (min-width:760px){
+  .hero-cta { flex-direction:row; justify-content:center; gap:0.8rem }
+  .hero-cta .btn { width:auto; max-width:none }
 }
-.hero-facts b { color:var(--muted); font-weight:600 }
-/* el pago va debajo del bloque de tandas, no al lado de la fecha */
-.hero-pago {
-  margin-top:1.35rem;
-  font-size:0.83rem; color:var(--dim); font-weight:500;
-}
-.hero-pago b { color:var(--muted); font-weight:700 }
 
-/* Cuenta regresiva: sobria a propósito. La urgencia es real (cierra cuando
-   empieza la clase), así que no necesita colores de alarma ni parpadeos. */
-.cierre { margin-top:1.9rem; padding-top:1.6rem; border-top:1px solid var(--line-soft) }
-.cierre-lbl { font-size:0.72rem; font-weight:800; letter-spacing:0.11em; text-transform:uppercase; color:var(--crimson); margin-bottom:0.9rem }
-.cierre-reloj { display:flex; justify-content:center; gap:0.45rem }
+/* ── Banda de logística ─────────────────────────────────────────────────
+   Tres grupos rotulados. En escritorio van en fila separados por líneas;
+   en móvil se apilan y cada uno conserva su rótulo.                      */
+.banda {
+  margin-top:2.6rem; padding-top:1.9rem; border-top:1px solid var(--line-soft);
+  display:grid; gap:1.9rem; text-align:center;
+}
+@media (min-width:900px){
+  .banda { grid-template-columns:auto 1fr auto; gap:0; align-items:stretch }
+  .banda-col { padding:0 2.1rem; display:flex; flex-direction:column; justify-content:center }
+  .banda-col + .banda-col { border-left:1px solid var(--line) }
+}
+.banda-lbl {
+  font-size:0.66rem; font-weight:800; letter-spacing:0.13em; text-transform:uppercase;
+  color:var(--crimson); margin-bottom:0.9rem;
+}
+.banda-fecha { font-size:1.05rem; font-weight:800; color:var(--text); letter-spacing:-0.015em; line-height:1.35 }
+.banda-fecha i { font-style:normal; color:var(--dim); font-weight:500; padding:0 0.15rem }
+.banda-fecha span { display:block; font-size:0.8rem; font-weight:500; color:var(--dim); letter-spacing:0 }
+.banda-nota { margin-top:0.85rem; font-size:0.76rem; color:var(--dim) }
+
+.tandas-row { display:flex; align-items:center; justify-content:center; gap:0.7rem; flex-wrap:wrap }
+.tanda {
+  display:flex; flex-direction:column; gap:0.15rem; min-width:134px;
+  padding:0.62rem 0.9rem; border:1px solid var(--line);
+  border-radius:10px; background:var(--card);
+}
+.tanda b { font-size:0.58rem; font-weight:800; letter-spacing:0.13em; text-transform:uppercase; color:var(--dim) }
+.tanda em { font-style:normal; font-size:0.97rem; font-weight:800; letter-spacing:-0.015em; color:var(--text) }
+@media (max-width:480px){
+  .tandas-row { flex-direction:column; gap:0.5rem }
+  .tanda { width:100%; max-width:250px; align-items:center }
+}
+
+.cierre-reloj { display:flex; justify-content:center; gap:0.4rem }
 .cierre-reloj span {
   display:flex; flex-direction:column; align-items:center; gap:0.15rem;
-  min-width:64px; padding:0.6rem 0.4rem;
+  min-width:56px; padding:0.55rem 0.35rem;
   background:var(--card); border:1px solid var(--line); border-radius:9px;
 }
-.cierre-reloj b { font-size:1.4rem; font-weight:900; letter-spacing:-0.03em; color:var(--text); line-height:1; font-variant-numeric:tabular-nums }
-.cierre-reloj i { font-style:normal; font-size:0.6rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--dim) }
-.cierre-cerrado { font-size:0.95rem; color:var(--crimson); font-weight:700 }
+.cierre-reloj b { font-size:1.3rem; font-weight:900; letter-spacing:-0.03em; color:var(--text); line-height:1; font-variant-numeric:tabular-nums }
+.cierre-reloj i { font-style:normal; font-size:0.56rem; font-weight:700; letter-spacing:0.09em; text-transform:uppercase; color:var(--dim) }
+/* se reserva el espacio aunque aún no haya números, para que no salte el layout */
+.cierre { visibility:hidden }
+.cierre.listo { visibility:visible }
+.cierre-cerrado { font-size:0.92rem; color:var(--crimson); font-weight:700 }
+.hero-pago { margin-top:1.7rem; font-size:0.83rem; color:var(--dim); font-weight:500 }
 
 /* Tandas: cada una con su horario completo, para que nadie lea "de 2 a 6" */
 .tandas { margin-top:1.7rem }
@@ -592,6 +618,21 @@ nav .wrap { display:flex; align-items:center; justify-content:space-between; wid
 .price p { margin-top:1.9rem }
 .price .narrow { margin-left:auto; margin-right:auto }
 
+
+/* ── Precio en dos columnas (escritorio) ────────────────────────────────
+   El desglose a la izquierda y el precio a la derecha, para que el ojo
+   compare US$ 2,620 contra US$ 299.99 de un vistazo en vez de tener que
+   recordar el primero mientras baja al segundo.                        */
+.precio-reja { display:grid; gap:2.6rem }
+.stack-wrap { text-align:left; margin-bottom:0 }
+.precio-lado { text-align:center }
+.precio-extracto { margin-top:1.6rem; font-size:0.9rem }
+@media (min-width:960px){
+  .precio-reja { grid-template-columns:1.35fr 1fr; gap:3.5rem; align-items:center }
+  .precio-lado { text-align:left }
+  .precio-lado .price-save { margin-top:1.3rem }
+}
+
 /* ── REGALO ── */
 .gift { border:1px solid var(--purple-line); border-radius:var(--rad); padding:clamp(1.7rem,5vw,2.4rem); background:linear-gradient(165deg, rgba(107,63,160,0.20), rgba(10,10,12,0) 62%) }
 .gift .eyebrow { color:var(--purple-lt) }
@@ -674,6 +715,25 @@ details[open] summary::after { transform:rotate(-135deg) }
 details[open] summary { color:var(--crimson) }
 details p { padding:0 0 1.35rem; font-size:0.95rem; max-width:62ch }
 
+
+/* ── Escritorio: sacar de la columna de lectura lo que NO es prosa ──────
+   Los párrafos se quedan en 820 px porque ese es el óptimo de lectura
+   (65-75 caracteres por línea). Pero las tarjetas y las preguntas son
+   datos, no prosa: ahí la columna estrecha solo desperdicia pantalla.
+   `left:50% + translateX(-50%)` los centra contra el viewport sin
+   depender del ancho del padre.                                        */
+@media (min-width:900px){
+  .days, .faq {
+    position:relative; left:50%; transform:translateX(-50%);
+    width:min(1060px, calc(100vw - 4rem));
+  }
+  .days { grid-template-columns:1fr 1fr; gap:0.85rem }
+  /* el quinto día ocupa la fila entera: si no, queda un hueco raro */
+  .days .day:last-child { grid-column:1 / -1 }
+
+  .faq { display:grid; grid-template-columns:1fr 1fr; gap:0 3rem; align-items:start }
+}
+
 /* ── PIE ── */
 footer { background:var(--bg); border-top:1px solid var(--line-soft); padding:clamp(2.75rem,8vw,4rem) 0 3rem }
 .foot-top { display:flex; flex-wrap:wrap; gap:1.4rem; align-items:center; justify-content:space-between }
@@ -739,31 +799,37 @@ body { padding-bottom:0 }
       <a class="btn btn-primary" href="https://whop.com/the-light-club/puntozero/" target="_blank" rel="noopener">Reservar mi plaza · US$ 299.99</a>
       <a class="btn btn-ghost" href="https://anonimustradelive.com/email_marketing/punto-zero-extracto.pdf" target="_blank" rel="noopener">Descargar el extracto gratis</a>
     </div>
-    <div class="hero-facts">
-      <span>Del <b>lunes 17</b> al <b>viernes 21 de agosto</b></span>
+    <!-- Banda de logística: en escritorio son tres grupos rotulados lado a lado
+         en vez de seis líneas sueltas apiladas. La cuenta regresiva va junto a
+         las fechas, que es donde tiene sentido. En móvil se apila. -->
+    <div class="banda">
+      <div class="banda-col">
+        <p class="banda-lbl">Primera convocatoria</p>
+        <p class="banda-fecha"><b>Lun 17</b> <i>→</i> <b>Vie 21</b><span>de agosto</span></p>
+      </div>
+
+      <div class="banda-col">
+        <p class="banda-lbl">Elige tu tanda</p>
+        <div class="tandas-row">
+          <span class="tanda"><b>Tanda 1 · GMT-4</b><em>2:00 - 4:00 p. m.</em></span>
+          <span class="tanda"><b>Tanda 2 · GMT-4</b><em>6:00 - 8:00 p. m.</em></span>
+        </div>
+      </div>
+
+      <!-- Cuenta regresiva real: no es un contador fabricado, es la hora de
+           inicio de la primera clase. -->
+      <div class="banda-col cierre" id="cierre">
+        <p class="banda-lbl">El acceso cierra en</p>
+        <div class="cierre-reloj">
+          <span><b id="cd-d">--</b><i>días</i></span>
+          <span><b id="cd-h">--</b><i>horas</i></span>
+          <span><b id="cd-m">--</b><i>min</i></span>
+          <span><b id="cd-s">--</b><i>seg</i></span>
+        </div>
+      </div>
     </div>
 
-    <div class="tandas">
-      <p class="tandas-label">Dos tandas disponibles</p>
-      <div class="tandas-row">
-        <span class="tanda"><b>Tanda 1</b><em>2:00 a 4:00 p. m.</em></span>
-        <span class="tanda"><b>Tanda 2</b><em>6:00 a 8:00 p. m.</em></span>
-      </div>
-      <p class="tandas-tz">Hora del este. La misma clase en ambas. Eliges una y es la tuya los cinco días.</p>
-      <p class="hero-pago"><b>Pago único</b>, sin suscripción.</p>
-    </div>
-
-    <!-- Cuenta regresiva real: las inscripciones cierran cuando empieza la
-         primera clase. No es un contador fabricado, es la hora de inicio. -->
-    <div class="cierre" id="cierre" hidden>
-      <p class="cierre-lbl">Las inscripciones cierran cuando empieza la primera clase</p>
-      <div class="cierre-reloj">
-        <span><b id="cd-d">--</b><i>días</i></span>
-        <span><b id="cd-h">--</b><i>horas</i></span>
-        <span><b id="cd-m">--</b><i>min</i></span>
-        <span><b id="cd-s">--</b><i>seg</i></span>
-      </div>
-    </div>
+    <p class="hero-pago">Pago único, sin suscripción. La misma clase en las dos tandas: eliges una y es la tuya los cinco días.</p>
   </div>
 </header>
 
@@ -932,7 +998,7 @@ body { padding-bottom:0 }
 
       <div class="hero-item hero-item-wide">
         <span class="item-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.2 11.4h17.6v9.4H3.2z"/><path d="M2 7.4h20v4H2zM12 7.4v13.4"/><path d="M12 7.4S10.9 3 8.4 3a2.2 2.2 0 0 0 0 4.4zM12 7.4S13.1 3 15.6 3a2.2 2.2 0 0 1 0 4.4z"/></svg></span>
-        <h3>Un modelo de entrada de nuestro scalping <em>solo en esta edición</em></h3>
+        <h3>Breakout, un modelo de entrada de nuestro scalping <em>solo en esta edición</em></h3>
         <p>Es uno de los seis modelos de la estrategia que vamos a vender aparte a US$ 3,000. A los grupos siguientes ya no se les regala.</p>
       </div>
     </div>
@@ -1029,7 +1095,8 @@ body { padding-bottom:0 }
 
 <!-- ── PRECIO ── -->
 <section class="price">
-  <div class="wrap mid stack-wrap">
+  <div class="wrap precio-reja">
+  <div class="stack-wrap">
     <p class="eyebrow">El desglose</p>
     <h2>Lo que cuesta cada parte</h2>
 
@@ -1043,7 +1110,7 @@ body { padding-bottom:0 }
       </div>
       <div class="stack-row">
         <div class="stack-what">
-          <b>Un modelo de entrada de scalping</b>
+          <b>Breakout, un modelo de entrada de scalping</b>
           <span>Uno de los seis modelos de la estrategia que venderemos a US$ 3,000.</span>
         </div>
         <div class="stack-val">US$ 500</div>
@@ -1076,15 +1143,16 @@ body { padding-bottom:0 }
 
   </div>
 
-  <div class="wrap narrow">
+  <div class="precio-lado">
     <p class="price-lead">Te lo llevas todo por</p>
     <div class="price-n"><sup>US$</sup>299.99</div>
     <p class="price-tag">Pago único</p>
     <p class="price-save">Te ahorras <b>US$ 2,320</b></p>
-    <p>
+    <p class="precio-extracto">
       Antes de decidir, <strong>llévate el extracto gratis</strong>: son 7 páginas del manual
       real, para que veas cómo enseñamos sin pagar nada.
     </p>
+  </div>
   </div>
 </section>
 
@@ -1101,8 +1169,8 @@ body { padding-bottom:0 }
       </div>
 
       <p class="gift-what">
-        Te llevas <strong>un modelo de entrada de nuestra estrategia de scalping</strong>.
-        La estrategia completa tiene seis modelos y la vamos a vender aparte.
+        Te llevas <strong>Breakout</strong>, uno de los seis modelos de entrada de nuestra
+        estrategia de scalping. La estrategia completa la vamos a vender aparte.
       </p>
 
       <div class="gift-price">
@@ -1132,7 +1200,7 @@ body { padding-bottom:0 }
     <dl class="facts">
       <div class="fact"><dt>Comienza</dt><dd>Lunes 17 de agosto de 2026</dd></div>
       <div class="fact"><dt>Duración</dt><dd>5 días, de lunes a viernes, 2 horas por clase</dd></div>
-      <div class="fact"><dt>Eliges una tanda</dt><dd>Tanda 1: de 2:00 a 4:00 p. m.<br>Tanda 2: de 6:00 a 8:00 p. m.<br><span class="fact-tz">Hora del este (Nueva York)</span></dd></div>
+      <div class="fact"><dt>Eliges una tanda</dt><dd>Tanda 1: de 2:00 a 4:00 p. m.<br>Tanda 2: de 6:00 a 8:00 p. m.<br><span class="fact-tz">Hora del este de Nueva York (GMT-4)</span></dd></div>
       <div class="fact"><dt>Inversión</dt><dd>US$ 299.99, pago único</dd></div>
     </dl>
 
@@ -1687,7 +1755,7 @@ body { padding-bottom:0 }
     s.textContent = dos(seg % 60);
   }
 
-  caja.hidden = false;
+  caja.classList.add('listo');
   tic();
   var reloj = setInterval(tic, 1000);
 })();
