@@ -1315,6 +1315,7 @@ body { padding-bottom:0 }
   var t = 0, last = 0, raf = 0, onScreen = true;
   var lastFade = 1, lastGz = 1;   /* estado del efecto de entrada, para no repintar en balde */
   var lastMx = 0, lastMy = 0;     /* idem para el paralaje del glifo */
+  var liviano = false;            /* modo aligerado para móvil */
 
   /* pasada de bloom: se copia la escena a un lienzo pequeño, se desenfoca y se
      vuelve a componer en modo aditivo. Es lo que hace que la luz se sienta real
@@ -1337,9 +1338,9 @@ body { padding-bottom:0 }
     /* en pantallas angostas se acorta el disco para que las alas no se salgan */
     var inner = R * 1.22, outer = R * (narrow ? 3.0 : 4.3);
 
-    var nDisk  = narrow ? 560 : 1050;
-    var nHalo  = narrow ? 150 : 260;
-    var nStars = narrow ? 90  : 170;
+    var nDisk  = narrow ? 400 : 1050;
+    var nHalo  = narrow ? 105 : 260;
+    var nStars = narrow ? 60  : 170;
 
     /* la .Ø se escala con el mismo patrón que el horizonte, no con vh:
        así guarda siempre la misma proporción contra la singularidad */
@@ -1375,7 +1376,7 @@ body { padding-bottom:0 }
     /* fragmentos de arco que sustituyen a la circunferencia sólida.
        Se reparten en tres radios apenas distintos: eso da el prisma. */
     ring.length = 0;
-    for (var m = 0; m < (narrow ? 34 : 58); m++) {
+    for (var m = 0; m < (narrow ? 24 : 58); m++) {
       var band = m % 3;
       ring.push({
         rr:  1.006 + band * 0.014 + rnd(-0.004, 0.004),
@@ -1401,13 +1402,17 @@ body { padding-bottom:0 }
     var box = stage.getBoundingClientRect();
     W = Math.max(1, Math.round(box.width));
     H = Math.max(1, Math.round(box.height));
-    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    /* En móvil se recorta el DPR: a 2 se pintan cuatro veces los píxeles y es
+       de lejos el mayor costo. En una escena difusa como esta, 1.5 no se nota. */
+    liviano = window.innerWidth < 760;
+    DPR = Math.min(window.devicePixelRatio || 1, liviano ? 1.5 : 2);
     cvB.width = cvF.width  = W * DPR;
     cvB.height = cvF.height = H * DPR;
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     ctxF.setTransform(DPR, 0, 0, DPR, 0, 0);
-    bw = Math.max(1, Math.round(W / 3));
-    bh = Math.max(1, Math.round(H / 3));
+    var div = liviano ? 4 : 3;
+    bw = Math.max(1, Math.round(W / div));
+    bh = Math.max(1, Math.round(H / div));
     bcv.width = bw; bcv.height = bh;
     build();
     if (quiet) frame(0, true);
@@ -1607,11 +1612,18 @@ body { padding-bottom:0 }
   function bloom(c, src, amount) {
     if (!canBloom) return;
     bctx.clearRect(0, 0, bw, bh);
-    bctx.filter = 'blur(3px)';
-    bctx.drawImage(src, 0, 0, bw, bh);
-    bctx.filter = 'blur(10px)';
-    bctx.globalAlpha = 0.45;
-    bctx.drawImage(src, 0, 0, bw, bh);
+    /* en móvil una sola pasada: dos desenfoques por lienzo, en dos lienzos,
+       son cuatro operaciones de blur por cuadro y ahí se atraganta */
+    if (liviano) {
+      bctx.filter = 'blur(5px)';
+      bctx.drawImage(src, 0, 0, bw, bh);
+    } else {
+      bctx.filter = 'blur(3px)';
+      bctx.drawImage(src, 0, 0, bw, bh);
+      bctx.filter = 'blur(10px)';
+      bctx.globalAlpha = 0.45;
+      bctx.drawImage(src, 0, 0, bw, bh);
+    }
     bctx.filter = 'none';
     bctx.globalAlpha = 1;
     c.globalCompositeOperation = 'lighter';
@@ -1656,7 +1668,7 @@ body { padding-bottom:0 }
       c.stroke();
 
       /* halo ancho y tenue solo en la zona interior, donde vive el brillo */
-      if (p.r < R * 2.1) {
+      if (!liviano && p.r < R * 2.1) {
         c.lineWidth = 4;
         c.strokeStyle = tone(p.h, 72, al * 0.16);
         c.stroke();
