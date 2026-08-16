@@ -1410,7 +1410,10 @@ body { padding-bottom:0 }
     /* ── degradados, una sola vez por resize ──
        En móvil el resplandor del disco va más ancho y más opaco: hace de
        bloom falso, y al estar cacheado no cuesta nada. */
-    var gr = liviano ? 5.2 : 4.4, ga = liviano ? 0.42 : 0.30;
+    /* OJO: agrandar este halo en móvil fue un error. Un resplandor difuso no
+       imita al bloom: le echa un velo lechoso a la escena y BAJA el contraste.
+       En móvil va más chico y tenue, y el brillo se recupera en las partículas. */
+    var gr = liviano ? 4.6 : 4.4, ga = liviano ? 0.26 : 0.30;
     gDisco = ctx.createRadialGradient(0, 0, R * 0.8, 0, 0, R * gr);
     gDisco.addColorStop(0,   'rgba(160,198,250,' + ga + ')');
     gDisco.addColorStop(0.4, 'rgba(130,150,235,' + (ga * 0.45).toFixed(3) + ')');
@@ -1461,7 +1464,10 @@ body { padding-bottom:0 }
   /* tono iridiscente frío: cian -> azul -> violeta, con algún acento cálido */
   function tone(h, light, alpha) {
     var hue = h > 0.86 ? 18 + (h - 0.86) * 120 : 196 + h * 84;
-    return 'hsla(' + hue.toFixed(0) + ',78%,' + light.toFixed(0) + '%,' + alpha.toFixed(3) + ')';
+    /* más saturación en móvil: al no haber bloom el color se percibe lavado,
+       y subirla no cuesta nada porque es la misma llamada de siempre */
+    return 'hsla(' + hue.toFixed(0) + ',' + (liviano ? 94 : 78) + '%,'
+         + light.toFixed(0) + '%,' + alpha.toFixed(3) + ')';
   }
 
   function frame(now, once) {
@@ -1576,7 +1582,7 @@ body { padding-bottom:0 }
       var al = p.o * (0.10 + 0.90 * Math.pow(lift, 1.7)) * 0.9;
       var L = p.s * 9;
       var x = co * p.r, y = sn * p.r * haloTilt;
-      ctx.strokeStyle = tone(p.h, 88, al);
+      ctx.strokeStyle = tone(p.h, liviano ? 92 : 88, liviano ? Math.min(1, al * 1.3) : al);
       ctx.lineWidth = 1.2;
       ctx.beginPath();
       ctx.moveTo(x + sn * L * 0.5, y - co * L * 0.5 * haloTilt);
@@ -1596,7 +1602,7 @@ body { padding-bottom:0 }
       var ra = rp.a + t * 0.06 * rp.dir;
       var flick = 0.45 + 0.55 * Math.sin(t * rp.fk + rp.ph);
       var warm = Math.cos(ra) < -0.2 ? 1.5 : 1;      /* lado que se acerca */
-      ctx.strokeStyle = tone(rp.h, 86, rp.o * flick * 0.75 * warm);
+      ctx.strokeStyle = tone(rp.h, liviano ? 91 : 86, rp.o * flick * (liviano ? 1.0 : 0.75) * warm);
       ctx.lineWidth = rp.w;
       ctx.beginPath();
       ctx.arc(0, 0, R * rp.rr, ra, ra + rp.len);
@@ -1685,15 +1691,18 @@ body { padding-bottom:0 }
 
       /* Doppler: el lado que se acerca (izquierda) brilla y se calienta */
       var dopp = 1.06 - co * 0.52;
-      var edge = 0.35 + 0.65 * Math.abs(co);
+      var edge = liviano ? (0.16 + 0.84 * Math.abs(co)) : (0.35 + 0.65 * Math.abs(co));
       var near = side > 0 ? 1.45 : 0.72;   /* el disco delantero pisa la .Ø */
       var fade = 1 - (p.r / (R * 4.6)) * 0.6;
       /* ondas de densidad: brazos espirales que hacen el disco filamentoso
          en vez de una nube pareja (es lo que da sensación de volumen) */
-      var arm = 0.55 + 0.45 * Math.sin(a * 2 - p.r * 0.035 + t * 0.5);
-      var al = Math.min(0.95, p.o * edge * near * fade * dopp * arm * (liviano ? 1.45 : 1.15));
+      var arm = (liviano ? 0.40 : 0.55) + (liviano ? 0.60 : 0.45) * Math.sin(a * 2 - p.r * 0.035 + t * 0.5);
+      var al = p.o * edge * near * fade * dopp * arm;
+      /* exponente > 1 hunde lo tenue y deja brillar lo fuerte: eso es contraste,
+         no brillo plano. Subir la opacidad a secas es lo que lo dejaba lechoso. */
+      al = liviano ? Math.min(0.95, Math.pow(al, 1.18) * 2.6) : Math.min(0.9, al * 1.15);
 
-      c.strokeStyle = tone(p.h, 66 + edge * 22 + (dopp - 1) * 10, al);
+      c.strokeStyle = tone(p.h, (liviano ? 62 : 66) + edge * (liviano ? 34 : 22) + (dopp - 1) * 10, al);
       c.lineWidth = p.r < R * 2 ? 1.5 : 1.1;
       c.beginPath();
       c.moveTo(x - ux * 0.5, y - uy * 0.5);
