@@ -1,0 +1,1795 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Punto Zerø · Lo que el 90 % de los traders se salta</title>
+<meta name="description" content="Bootcamp intensivo de trading en vivo. Cinco días, de lunes a viernes. Empieza el 17 de agosto de 2026. Todos los cursos trabajan el mercado, pero pocos trabajan al trader.">
+<meta name="theme-color" content="#050506">
+<link rel="canonical" href="https://anonimustradelive.com/puntozero/">
+<link rel="icon" href="img/icono.png" type="image/png">
+<link rel="apple-touch-icon" href="img/icono.png">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://anonimustradelive.com/puntozero/">
+<meta property="og:title" content="Punto Zerø · Lo que el 90 % de los traders se salta">
+<meta property="og:description" content="Bootcamp intensivo de trading en vivo. Cinco días, del 17 al 21 de agosto. Todos los cursos trabajan el mercado, pero pocos trabajan al trader.">
+<meta property="og:image" content="https://anonimustradelive.com/puntozero/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="es_ES">
+<meta property="og:site_name" content="AnonimusTrade Live">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<!-- Bodoni Moda se usa solo para la O de la .Ø: se pide subconjuntada a ese único glifo -->
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500&text=O&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #050506;
+  --panel:     #0A0A0C;
+  --panel-alt: #0F0F13;
+  --card:      #151519;
+  --line:      rgba(244,244,246,0.10);
+  --line-soft: rgba(244,244,246,0.06);
+
+  --crimson:      #E23B52;
+  --crimson-deep: #CE1436;
+  --crimson-glow: rgba(226,59,82,0.14);
+  --crimson-line: rgba(226,59,82,0.28);
+
+  --text:  #F4F4F6;
+  --muted: #ADADB6;
+  --dim:   #74747E;
+
+  /* Verde = "dinero a tu favor". Es la vela alcista de la paleta oficial, y para
+     un trader el rojo es el color de perder. Se usa SOLO en los momentos de
+     valor (desglose, precio, ahorro): repartido por la página perdería sentido. */
+  /* Morado = "esto es único e irrepetible". El brief lo reservaba para gráficos,
+     pero se extendió al regalo por decisión del dueño: es el único elemento
+     exclusivo de la página y en carmesí se confundía con el resto. */
+  --purple:      #6B3FA0;
+  --purple-lt:   #A883E8;
+  --purple-glow: rgba(107,63,160,0.16);
+  --purple-line: rgba(168,131,232,0.32);
+
+  --green:      #1E9E6A;
+  --green-lt:   #2FD693;
+  --green-glow: rgba(30,158,106,0.12);
+  --green-line: rgba(47,214,147,0.28);
+
+  --sp:    clamp(3.75rem, 11vw, 6.5rem);
+  --rad:   14px;
+}
+
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box }
+/* NO poner scroll-behavior:smooth: cada scrollTo del suavizado propio dispararía
+   además la animación nativa del navegador y las dos se pelean (se siente laggy).
+   Los enlaces internos los anima el propio motor, más abajo en el script. */
+html { scroll-behavior:auto; -webkit-text-size-adjust:100% }
+body {
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  background:var(--bg); color:var(--text);
+  line-height:1.65; font-size:17px;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img { max-width:100%; display:block }
+a { color:inherit }
+
+.wrap { max-width:1060px; margin:0 auto; padding:0 clamp(1.25rem,5vw,2rem) }
+.narrow { max-width:660px }
+.mid    { max-width:820px }
+
+section { padding:var(--sp) 0 }
+
+h1,h2,h3 { line-height:1.12; letter-spacing:-0.025em; font-weight:800 }
+/* resalte dentro de un titular: sin cursiva, en el carmesí de marca */
+h1 em, h2 em, h3 em { font-style:normal; color:var(--crimson) }
+h1 { font-size:clamp(2.35rem,8.2vw,4.25rem); font-weight:900; letter-spacing:-0.035em }
+h2 { font-size:clamp(1.7rem,5vw,2.6rem) }
+h3 { font-size:clamp(1.1rem,3vw,1.32rem); font-weight:700; letter-spacing:-0.015em }
+p  { color:var(--muted) }
+p + p { margin-top:1.05rem }
+strong { color:var(--text); font-weight:700 }
+
+.wide-only { display:none }
+@media (min-width:700px){ .wide-only { display:inline } }
+section[id], h2 { scroll-margin-top:80px }
+
+.eyebrow {
+  font-size:0.68rem; font-weight:800; letter-spacing:0.17em;
+  text-transform:uppercase; color:var(--crimson);
+}
+.lead { font-size:clamp(1.05rem,2.6vw,1.22rem); color:var(--muted) }
+
+/* ── BOTONES ── */
+.btn {
+  display:inline-flex; align-items:center; justify-content:center; gap:0.5rem;
+  font-family:inherit; font-size:1rem; font-weight:700; letter-spacing:-0.01em;
+  padding:1.05rem 1.9rem; border-radius:10px; border:1px solid transparent;
+  text-decoration:none; cursor:pointer; text-align:center;
+  transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
+}
+.btn-primary {
+  background:linear-gradient(180deg,#E62345 0%,#C01031 100%); color:#fff;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.22), 0 6px 26px rgba(206,20,54,0.34);
+}
+.btn-primary:hover {
+  background:linear-gradient(180deg,#F23050 0%,#CE1436 100%);
+  transform:translateY(-2px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.26), 0 10px 34px rgba(206,20,54,0.48);
+}
+/* Botón de compra en verde: en cualquier plataforma de trading comprar es verde
+   y vender es rojo, así que un botón de compra carmesí llevaba el color de
+   cerrar posición. Solo en los dos decisivos (precio y regalo); la barra
+   superior y la del móvil siguen carmesí como recordatorio de marca. */
+.btn-buy {
+  background:linear-gradient(180deg,#25B87C 0%,#178055 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.22), 0 6px 26px rgba(30,158,106,0.34);
+}
+.btn-buy:hover {
+  background:linear-gradient(180deg,#2FD693 0%,#1E9E6A 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.26), 0 10px 34px rgba(30,158,106,0.48);
+}
+.btn-ghost {
+  background:transparent; color:var(--text); border-color:var(--line);
+}
+.btn-ghost:hover { border-color:rgba(244,244,246,0.30); background:rgba(244,244,246,0.04) }
+.btn-block { width:100% }
+.nb { white-space:nowrap }   /* evita que un paréntesis quede partido por el salto */
+.btn-sm { font-size:0.86rem; padding:0.62rem 1.15rem; border-radius:8px }
+
+/* ── NAV ── */
+nav {
+  position:sticky; top:0; z-index:60;
+  background:rgba(5,5,6,0.82); backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line-soft);
+  height:62px; display:flex; align-items:center;
+}
+nav .wrap { display:flex; align-items:center; justify-content:space-between; width:100% }
+.brand { display:flex; align-items:baseline; gap:0.6rem; text-decoration:none }
+.brand b { font-size:1.02rem; font-weight:800; letter-spacing:-0.02em }
+.brand span { font-size:0.7rem; color:var(--dim); font-weight:600; letter-spacing:0.02em }
+@media (max-width:520px){ .brand span { display:none } }
+
+/* ── HERO ── */
+/* OJO: nada de overflow:hidden en .hero — rompe el position:sticky del lienzo.
+   El recorte se hace en .hero-stage, que es quien lo necesita. */
+.hero { position:relative; padding:0 0 clamp(3.5rem,10vw,5.5rem); text-align:center }
+
+/* Singularidad animada */
+.hero-stage {
+  /* pegajoso: el agujero se queda en pantalla mientras te acercas, en vez de
+     irse hacia arriba. Se suelta solo cuando termina el hero. */
+  position:sticky; top:0; width:100%; overflow:hidden;
+  height:clamp(250px,42vh,500px);
+  --mx:0; --my:0;
+  /* --enter (opacidad) y --gz (zoom del glifo) los mueve el scroll desde el script */
+  --enter:1; --gz:1;
+  background:var(--bg);
+  opacity:var(--enter);
+}
+/* dos lienzos que emparedan la .Ø: el disco lejano detrás, el cercano delante.
+   Es lo que hace que el vórtice la envuelva en vez de pasarle por atrás. */
+.hero-canvas { position:absolute; inset:0; width:100%; height:100%; display:block; pointer-events:none }
+.c-back  { z-index:1 }
+.c-front { z-index:3 }
+.hero-stage::after {
+  content:''; position:absolute; left:0; right:0; bottom:-1px; height:46%; z-index:3; pointer-events:none;
+  background:linear-gradient(to bottom, rgba(5,5,6,0) 0%, rgba(5,5,6,0.55) 42%, rgba(5,5,6,0.93) 80%, var(--bg) 100%);
+}
+.hero-stage::before {
+  content:''; position:absolute; left:0; right:0; top:0; height:20%; z-index:3; pointer-events:none;
+  background:linear-gradient(to bottom, var(--bg) 0%, rgba(5,5,6,0) 100%);
+}
+
+/* La .Ø metálica, fría e iridiscente */
+.hero-glyph {
+  position:absolute; left:50%; top:50%; z-index:2;
+  /* Dos correcciones para que la O caiga justo sobre el horizonte:
+     en X, el punto corre el conjunto a la derecha;
+     en Y, la caja de texto incluye el hueco del descendente, así que centrar la
+     caja deja la letra alta. El +0.033em baja la tinta a su sitio (medido). */
+  transform:translate(calc(-50% - 0.088em + var(--mx) * 7px), calc(-51% + 0.033em + var(--my) * 6px)) scale(var(--gz));
+  display:flex; align-items:flex-end; gap:0.05em;
+  font-size:9rem; line-height:0.86;  /* el script lo ajusta a la escala real del horizonte */
+  pointer-events:none; user-select:none; will-change:transform;
+}
+.hero-glyph .g-o {
+  position:relative;
+  font-family:'Bodoni Moda',Didot,'Bodoni MT',Georgia,serif;
+  font-weight:500; letter-spacing:-0.02em;
+  /* tornasol: el degradado recorre azul, violeta, magenta y oro pálido, así el
+     brillo cambia de color al desplazarse en vez de ser un plateado plano */
+  background:linear-gradient(152deg,
+    #ffffff 0%,  #dff0ff 9%,   #8fb4e4 20%,  #b9a6e8 30%,
+    #f7e9ff 38%, #ffffff 46%,  #cfd6f5 55%,  #7d9cd0 65%,
+    #9fe0e4 74%, #ffeede 83%,  #d9c9f2 91%,  #ffffff 100%);
+  background-size:280% 280%;
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  /* bisel: luz arriba-izquierda, sombra abajo-derecha (le da el relieve),
+     más aberración cromática cian/magenta y halación cálida al exterior */
+  filter:
+    drop-shadow(-1.5px -1.5px 0 rgba(255,255,255,0.85))
+    drop-shadow(1.5px 2.5px 0 rgba(18,26,52,0.75))
+    drop-shadow(3px 4px 5px rgba(6,10,26,0.55))
+    drop-shadow(-2px 0 1px rgba(90,220,255,0.35))
+    drop-shadow(2px 0 1px rgba(255,110,200,0.28))
+    drop-shadow(0 0 22px rgba(160,215,255,0.42))
+    drop-shadow(0 0 46px rgba(255,196,150,0.20))
+    drop-shadow(0 0 80px rgba(122,96,214,0.34));
+  animation:sheen 11s ease-in-out infinite;
+}
+/* la barra de la Ø: Bodoni Moda no la trae, así que se dibuja aparte */
+.hero-glyph .g-slash {
+  position:absolute; left:50%; top:50%;
+  width:0.046em; height:1.02em; border-radius:0.03em;
+  transform:translate(-50%,-50%) rotate(29deg);
+  /* la barra también biselada: canto claro a un lado, oscuro al otro */
+  background:linear-gradient(90deg,
+    rgba(18,26,52,0.9) 0%, #ffffff 22%, #cfe2f6 45%,
+    #8fb0da 68%, #e9f2fb 86%, rgba(18,26,52,0.75) 100%);
+  animation:slashsheen 11s ease-in-out infinite;
+  filter:drop-shadow(1px 2px 3px rgba(6,10,26,0.6))
+         drop-shadow(0 0 14px rgba(168,209,255,0.5));
+}
+.hero-glyph .g-dot {
+  flex:none; width:0.125em; height:0.125em; border-radius:50%; margin-bottom:0.11em;
+  /* esfera con luz especular arriba-izquierda y rebote frío abajo */
+  background:
+    radial-gradient(circle at 68% 78%, rgba(120,190,255,0.55) 0%, rgba(120,190,255,0) 45%),
+    radial-gradient(circle at 31% 27%, #ffffff 0%, #eaf3ff 18%, #b9cde6 46%, #6b83a8 74%, #2c3a55 100%);
+  filter:drop-shadow(1px 2px 4px rgba(6,10,26,0.65)) drop-shadow(0 0 13px rgba(163,207,255,0.45));
+  animation:dotpulse 5s ease-in-out infinite;
+}
+@keyframes sheen { 0%,100% { background-position:0% 50% } 50% { background-position:100% 50% } }
+@keyframes slashsheen { 0%,100% { filter:drop-shadow(1px 2px 3px rgba(6,10,26,0.6)) drop-shadow(0 0 10px rgba(168,209,255,0.35)) }
+                        50%     { filter:drop-shadow(1px 2px 3px rgba(6,10,26,0.6)) drop-shadow(0 0 20px rgba(200,225,255,0.7)) } }
+@keyframes dotpulse {
+  0%,100% { filter:drop-shadow(0 0 10px rgba(163,207,255,0.35)) }
+  50%     { filter:drop-shadow(0 0 22px rgba(183,220,255,0.75)) }
+}
+
+/* aparición al hacer scroll (la clase la agrega el JS: sin JS no se oculta nada) */
+.rv { opacity:0; transform:translateY(16px);
+      transition:opacity .65s ease var(--rd,0s), transform .65s cubic-bezier(.16,1,.3,1) var(--rd,0s) }
+.rv.in { opacity:1; transform:none }
+
+/* Sin telón opaco: la legibilidad la resuelve la caída exponencial del brillo
+   del agujero (ver --enter en el script), no un degradado que lo tape. */
+.hero .wrap { position:relative; z-index:4; margin-top:clamp(-5rem,-4vw,-0.5rem) }
+.hero-badge {
+  display:inline-block; margin-bottom:1.9rem;
+  font-size:0.63rem; font-weight:800; letter-spacing:0.15em; text-transform:uppercase;
+  color:var(--crimson); background:var(--crimson-glow);
+  border:1px solid var(--crimson-line); border-radius:100px;
+  padding:0.5rem 1.05rem; line-height:1.6;
+}
+/* en móvil el salto se hace en el separador, no donde caiga: evita huérfanas */
+.badge-br { display:none }
+@media (max-width:620px){
+  .badge-br { display:block }
+  .badge-sep { display:none }
+  .hero-badge { padding:0.6rem 1.2rem }
+}
+.hero h1 { margin:0 auto; max-width:16ch }
+.hero-sub { margin:1.6rem auto 0; max-width:52ch; font-size:clamp(1.02rem,2.6vw,1.19rem); color:var(--muted) }
+.hero-cta { margin-top:2.5rem; display:flex; flex-direction:column; align-items:center; gap:0.9rem }
+.hero-cta .btn { width:100%; max-width:340px }
+.hero-facts {
+  margin-top:2.6rem; padding-top:1.6rem; border-top:1px solid var(--line-soft);
+  display:flex; flex-wrap:wrap; justify-content:center; align-items:baseline;
+  gap:0.25rem 0.7rem;
+  font-size:0.83rem; color:var(--dim); font-weight:500;
+}
+.hero-facts b { color:var(--muted); font-weight:600 }
+/* el pago va debajo del bloque de tandas, no al lado de la fecha */
+.hero-pago {
+  margin-top:1.35rem;
+  font-size:0.83rem; color:var(--dim); font-weight:500;
+}
+.hero-pago b { color:var(--muted); font-weight:700 }
+
+/* Cuenta regresiva: sobria a propósito. La urgencia es real (cierra cuando
+   empieza la clase), así que no necesita colores de alarma ni parpadeos. */
+.cierre { margin-top:1.9rem; padding-top:1.6rem; border-top:1px solid var(--line-soft) }
+.cierre-lbl { font-size:0.72rem; font-weight:800; letter-spacing:0.11em; text-transform:uppercase; color:var(--crimson); margin-bottom:0.9rem }
+.cierre-reloj { display:flex; justify-content:center; gap:0.45rem }
+.cierre-reloj span {
+  display:flex; flex-direction:column; align-items:center; gap:0.15rem;
+  min-width:64px; padding:0.6rem 0.4rem;
+  background:var(--card); border:1px solid var(--line); border-radius:9px;
+}
+.cierre-reloj b { font-size:1.4rem; font-weight:900; letter-spacing:-0.03em; color:var(--text); line-height:1; font-variant-numeric:tabular-nums }
+.cierre-reloj i { font-style:normal; font-size:0.6rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--dim) }
+.cierre-cerrado { font-size:0.95rem; color:var(--crimson); font-weight:700 }
+
+/* Tandas: cada una con su horario completo, para que nadie lea "de 2 a 6" */
+.tandas { margin-top:1.7rem }
+.tandas-label {
+  font-size:0.68rem; font-weight:800; letter-spacing:0.13em; text-transform:uppercase;
+  color:var(--crimson); margin-bottom:0.9rem;
+}
+.tandas-row { display:flex; align-items:center; justify-content:center; gap:0.7rem; flex-wrap:wrap }
+.tanda {
+  display:flex; flex-direction:column; gap:0.15rem; min-width:152px;
+  padding:0.72rem 1.15rem; border:1px solid var(--line);
+  border-radius:10px; background:var(--card);
+}
+.tanda b {
+  font-size:0.6rem; font-weight:800; letter-spacing:0.13em;
+  text-transform:uppercase; color:var(--dim);
+}
+.tanda em {
+  font-style:normal; font-size:1rem; font-weight:800;
+  letter-spacing:-0.015em; color:var(--text);
+}
+.tandas-tz { margin-top:0.9rem; font-size:0.78rem; color:var(--dim) }
+/* en móvil no caben lado a lado: se apilan y la "o" queda en medio */
+@media (max-width:480px){
+  .tandas-row { flex-direction:column; gap:0.5rem }
+  .tanda { width:100%; max-width:250px; align-items:center }
+}
+
+/* ── RECONOCIMIENTO ── */
+.recon { background:var(--panel); border-top:1px solid var(--line-soft); border-bottom:1px solid var(--line-soft) }
+.recon-q { border-left:2px solid var(--crimson); padding-left:1.35rem; margin-bottom:1.45rem }
+.recon-q p { font-size:clamp(1.12rem,3.2vw,1.42rem); color:var(--text); font-weight:600; line-height:1.42; letter-spacing:-0.015em }
+
+/* ── DATO ── */
+.stat {
+  margin:2.2rem 0; padding:1.65rem 1.75rem;
+  background:var(--card); border:1px solid var(--line); border-radius:var(--rad);
+}
+.stat-n { font-size:clamp(2.4rem,7vw,3.1rem); font-weight:900; color:var(--crimson); letter-spacing:-0.04em; line-height:1 }
+.stat p { margin-top:0.65rem; font-size:0.95rem }
+
+/* ── TESIS ── */
+.tesis { text-align:center; background:var(--panel-alt); border-top:1px solid var(--line-soft); border-bottom:1px solid var(--line-soft) }
+.tesis blockquote {
+  font-size:clamp(1.5rem,5.4vw,2.5rem); font-weight:800; letter-spacing:-0.03em;
+  line-height:1.28; color:var(--text); max-width:20ch; margin:0 auto;
+}
+.tesis blockquote em { font-style:normal; color:var(--crimson) }
+/* comillas dobles, en el color de marca */
+.tesis blockquote::before { content:'“'; color:var(--crimson); opacity:0.5; margin-right:0.02em }
+.tesis blockquote::after  { content:'”'; color:var(--crimson); opacity:0.5; margin-left:0.02em }
+.tesis-after { margin-top:1.7rem; font-size:1rem; color:var(--dim); font-weight:600; letter-spacing:0.02em }
+
+/* ── RUTA DE LOS 5 DÍAS ── línea de tiempo con iconos vectoriales ── */
+.ruta { margin-top:2.4rem }
+.ruta-lead { color:var(--text); font-weight:700; font-size:1.02rem; letter-spacing:-0.015em }
+.ruta-pasos {
+  list-style:none; position:relative; margin-top:1.7rem;
+  display:grid; grid-template-columns:repeat(5,1fr); gap:0.4rem;
+}
+/* el hilo que une los pasos, por detrás de los círculos */
+.ruta-pasos::before {
+  content:''; position:absolute; left:10%; right:10%; top:22px; height:1px;
+  background:linear-gradient(to right, var(--line) 0%, var(--line) 55%, var(--crimson-line) 100%);
+}
+.ruta-pasos li {
+  position:relative; display:flex; flex-direction:column; align-items:center;
+  gap:0.6rem; text-align:center;
+}
+.ruta-ico {
+  width:44px; height:44px; border-radius:50%; flex:none;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--card); border:1px solid var(--line); color:var(--muted);
+}
+.ruta-ico svg {
+  width:21px; height:21px; fill:none; stroke:currentColor;
+  stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round;
+}
+.ruta-pasos b {
+  font-size:clamp(0.62rem,2.1vw,0.76rem); font-weight:700;
+  color:var(--muted); line-height:1.3;
+}
+/* el bróker cierra la ruta: se marca en carmesí porque es el remate del argumento */
+.ruta-fin .ruta-ico { background:var(--crimson-glow); border-color:var(--crimson-line); color:var(--crimson) }
+.ruta-fin b { color:var(--crimson) }
+.ruta-nota { margin-top:1.6rem }
+
+/* ── TEMARIO ── */
+.days { display:grid; gap:0.85rem; margin-top:2.6rem }
+.day {
+  background:var(--card); border:1px solid var(--line); border-radius:var(--rad);
+  padding:1.5rem 1.6rem; display:grid; grid-template-columns:auto 1fr; gap:0 1.15rem;
+}
+.day-n {
+  grid-row:1/3; width:38px; height:38px; border-radius:9px;
+  background:rgba(244,244,246,0.05); border:1px solid var(--line);
+  color:var(--muted); font-weight:900; font-size:0.95rem;
+  display:flex; align-items:center; justify-content:center; letter-spacing:-0.02em;
+}
+.day h3 { align-self:center }
+.day p { grid-column:2; margin-top:0.6rem; font-size:0.94rem; line-height:1.6 }
+.day .mark { color:var(--crimson); font-weight:600 }
+/* el detalle de cada día va plegado: el temario completo pesaba 5 párrafos densos */
+.day-more { grid-column:2; margin-top:0.55rem; border:none }
+.day-more summary { padding:0.3rem 0; font-size:0.82rem; font-weight:700; color:var(--muted) }
+.day-more summary::after { top:0.72rem; width:7px; height:7px; border-width:1.5px }
+.day-more[open] summary { color:var(--crimson) }
+.day-more p { padding:0.3rem 0 0; font-size:0.9rem; line-height:1.6 }
+@media (max-width:480px){ .day-more { grid-column:1 } }
+@media (max-width:480px){
+  .day { grid-template-columns:1fr; gap:0.85rem }
+  .day-n { grid-row:auto }
+  .day p { grid-column:1 }
+}
+
+/* ── QUÉ TE LLEVAS ── */
+.hero-items { display:grid; gap:0.85rem; margin-top:2.6rem }
+@media (min-width:720px){ .hero-items { grid-template-columns:1fr 1fr } }
+/* Lo que el lector RECIBE va en verde. La tarjeta del regalo es la excepción:
+   ahí manda la escasez, así que se queda en carmesí (ver .hero-item-wide). */
+.hero-item {
+  background:linear-gradient(160deg, rgba(30,158,106,0.10), rgba(21,21,25,0.6) 58%);
+  border:1px solid var(--green-line); border-radius:var(--rad); padding:1.7rem 1.65rem;
+}
+.hero-item-wide {
+  background:linear-gradient(160deg, rgba(107,63,160,0.18), rgba(21,21,25,0.6) 58%);
+  border-color:var(--purple-line);
+}
+.hero-item-wide h3 em { color:var(--purple-lt) }
+/* icono a la izquierda del título; el texto queda tabulado a su derecha, así no
+   se pierde una línea entera solo para el icono */
+.hero-item { display:grid; grid-template-columns:auto 1fr; column-gap:0.85rem }
+.hero-item h3 { grid-column:2; grid-row:1; align-self:center; margin-bottom:0 }
+.hero-item p  { grid-column:2; grid-row:2; margin-top:0.6rem }
+.item-ico {
+  grid-column:1; grid-row:1; align-self:center;
+  display:flex; align-items:center; justify-content:center;
+  width:38px; height:38px; border-radius:10px;
+  background:var(--green-glow); border:1px solid var(--green-line); color:var(--green-lt);
+}
+.hero-item-wide .item-ico { background:var(--purple-glow); border-color:var(--purple-line); color:var(--purple-lt) }
+.item-ico svg {
+  width:19px; height:19px; flex:none; fill:none; stroke:currentColor;
+  stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round;
+}
+.hero-item p { font-size:0.94rem }
+.plain { list-style:none; margin-top:1.5rem; display:grid; gap:0.1rem }
+.plain li {
+  padding:0.85rem 0 0.85rem 1.75rem; position:relative;
+  border-bottom:1px solid var(--line-soft); color:var(--muted); font-size:0.97rem;
+}
+.plain li:last-child { border-bottom:none }
+/* viñetas de lo que se incluye: es valor recibido, va en verde */
+.plain li::before {
+  content:''; position:absolute; left:0; top:1.32rem;
+  width:6px; height:6px; border-radius:50%; background:var(--green);
+}
+
+/* ── PRUEBA ── */
+.proof { background:var(--panel); border-top:1px solid var(--line-soft); border-bottom:1px solid var(--line-soft) }
+.shot { margin-top:2.3rem; border:1px solid var(--line); border-radius:var(--rad); overflow:hidden; background:var(--card) }
+.shot-bar { display:flex; align-items:center; gap:0.42rem; padding:0.72rem 0.95rem; border-bottom:1px solid var(--line-soft) }
+/* flex:none es obligatorio: sin él los puntos se aplastan y salen ovalados */
+.shot-bar i { flex:none; width:9px; height:9px; border-radius:50%; background:rgba(244,244,246,0.16) }
+.shot-bar span { margin-left:0.5rem; min-width:0; font-size:0.7rem; color:var(--dim); font-weight:500; letter-spacing:0.02em }
+/* video incrustado: fachada liviana, el iframe real de YouTube se carga al tocar */
+.video-shell { position:relative; aspect-ratio:16/9; background:#000 }
+.video-shell iframe { position:absolute; inset:0; width:100%; height:100%; border:0 }
+.video-face {
+  position:absolute; inset:0; width:100%; height:100%; border:0; cursor:pointer; padding:0;
+  display:flex; align-items:center; justify-content:center;
+  /* miniatura real del video; si maxres no existe, cae a la hq */
+  background-image:url('https://i.ytimg.com/vi/2U9erePQUhY/maxresdefault.jpg'),
+                   url('https://i.ytimg.com/vi/2U9erePQUhY/hqdefault.jpg');
+  background-size:cover, cover; background-position:center, center;
+}
+.video-face::after {
+  content:''; position:absolute; inset:0;
+  background:rgba(5,5,6,0.30); transition:background .2s ease;
+}
+.video-face:hover::after { background:rgba(5,5,6,0.14) }
+.video-play {
+  position:relative; z-index:1; width:76px; height:76px; border-radius:50%;
+  background:var(--crimson-deep);
+  box-shadow:0 10px 34px rgba(206,20,54,0.5), inset 0 1px 0 rgba(255,255,255,0.22);
+  transition:transform .2s ease;
+}
+.video-face:hover .video-play { transform:scale(1.08) }
+.video-play::before {
+  content:''; position:absolute; left:55%; top:50%; transform:translate(-50%,-50%);
+  border-style:solid; border-width:14px 0 14px 23px;
+  border-color:transparent transparent transparent #fff;
+}
+.disclose {
+  margin-top:1.15rem; padding:1.2rem 1.35rem;
+  background:rgba(244,244,246,0.03); border:1px solid var(--line-soft);
+  border-left:2px solid var(--dim); border-radius:0 10px 10px 0;
+  font-size:0.88rem; color:var(--muted); line-height:1.62;
+}
+.disclose b { color:var(--text) }
+.proof-cta { margin-top:1.9rem; display:flex; flex-direction:column; gap:0.85rem; align-items:flex-start }
+.proof-cta .btn { width:100% }
+@media (min-width:600px){ .proof-cta .btn { width:auto } }
+.free-live {
+  margin-top:2.4rem; padding-top:1.9rem; border-top:1px solid var(--line-soft);
+  font-size:0.97rem;
+}
+.free-live b { color:var(--text) }
+
+/* ── SÍ / NO ── */
+.fit { display:grid; gap:0.85rem; margin-top:2.4rem }
+@media (min-width:720px){ .fit { grid-template-columns:1fr 1fr } }
+.fit-col { background:var(--card); border:1px solid var(--line); border-radius:var(--rad); padding:1.6rem 1.6rem 1.75rem }
+.fit-col h3 { font-size:1.02rem; margin-bottom:1.15rem; display:flex; align-items:center; gap:0.6rem }
+.fit-col ul { list-style:none; display:grid; gap:0.8rem }
+.fit-col li { position:relative; padding-left:1.7rem; font-size:0.94rem; color:var(--muted); line-height:1.55 }
+.fit-col li::before { position:absolute; left:0; top:-0.06rem; font-weight:800; font-size:0.95rem }
+.fit-yes li::before { content:'✓'; color:var(--green) }
+.fit-no  li::before { content:'✕'; color:var(--crimson) }
+.tag { font-size:0.6rem; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; padding:0.28rem 0.6rem; border-radius:5px }
+.tag-yes { background:rgba(30,158,106,0.14); color:var(--green); border:1px solid rgba(30,158,106,0.3) }
+.tag-no  { background:var(--crimson-glow); color:var(--crimson); border:1px solid var(--crimson-line) }
+
+/* ── LISTA NUMERADA ── */
+.steps { list-style:none; counter-reset:s; margin-top:2rem; display:grid; gap:1.15rem }
+.steps li { counter-increment:s; position:relative; padding-left:2.9rem; color:var(--muted); font-size:0.97rem; line-height:1.6 }
+.steps li::before {
+  content:counter(s); position:absolute; left:0; top:-0.1rem;
+  width:28px; height:28px; border-radius:7px;
+  background:rgba(244,244,246,0.06); border:1px solid var(--line);
+  color:var(--text); font-size:0.82rem; font-weight:800;
+  display:flex; align-items:center; justify-content:center;
+}
+
+/* ── PRECIO ── */
+/* superficie elevada + resplandor verde: sin esto el bloque del precio quedaba
+   casi del mismo negro que el fondo y el momento más importante no se notaba */
+.price {
+  position:relative; text-align:center;
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 78%, var(--green-glow) 0%, rgba(5,5,6,0) 70%),
+    var(--panel-alt);
+  border-top:1px solid var(--line-soft); border-bottom:1px solid var(--line-soft);
+}
+/* Stack de valor: cifras reales, sin teatro de tachados ni totales inflados */
+.stack-wrap { text-align:left; margin-bottom:clamp(3rem,8vw,4.5rem) }
+.stack { margin-top:2.2rem; border:1px solid var(--line); border-radius:var(--rad); overflow:hidden }
+.stack-row {
+  display:flex; justify-content:space-between; align-items:baseline; gap:0.9rem;
+  padding:1.05rem 1.3rem; border-bottom:1px solid var(--line-soft);
+}
+.stack-row:last-child { border-bottom:none }
+.stack-what { flex:1; min-width:0 }
+/* ">" obligatorio: sin él esta regla vuelve bloque también las negritas que van
+   dentro del <span> de la descripción, y parten la frase en tres líneas */
+.stack-what > b { display:block; font-size:0.97rem; font-weight:600; color:var(--text); letter-spacing:-0.01em; line-height:1.4 }
+.stack-what span { display:block; margin-top:0.3rem; font-size:0.82rem; color:var(--dim); line-height:1.5 }
+.stack-val { flex:none; font-size:0.97rem; font-weight:700; color:var(--muted); font-variant-numeric:tabular-nums }
+.stack-sum { background:rgba(244,244,246,0.035) }
+.stack-sum .stack-what b { color:var(--dim); font-weight:700 }
+/* el total por separado es el número que "duele": va apagado, no destacado */
+.stack-sum .stack-val { color:var(--muted); font-size:1.2rem; font-weight:800; letter-spacing:-0.02em }
+/* la fila de la comunidad es el mejor argumento del cuadro: pasa de pagar todos
+   los meses a no pagar nunca más. Va en verde para que se lea como ganancia. */
+.stack-win .stack-val { color:var(--green-lt) }
+.stack-win .stack-what span b { color:var(--green-lt); font-weight:700 }
+@media (max-width:460px){
+  .stack-row { flex-direction:column; gap:0.45rem }
+  .stack-val { align-self:flex-start }
+}
+
+.price-lead { font-size:0.72rem; font-weight:800; letter-spacing:0.14em; text-transform:uppercase; color:var(--dim); margin-bottom:1rem }
+.price-n { font-size:clamp(3rem,11vw,4.6rem); font-weight:900; letter-spacing:-0.045em; line-height:1 }
+.price-n sup { font-size:0.42em; font-weight:800; vertical-align:super; color:var(--muted); margin-right:0.12em }
+.price-tag { margin-top:0.8rem; font-size:0.95rem; color:var(--dim); font-weight:600; letter-spacing:0.03em; text-transform:uppercase }
+/* la resta que la página nunca hacía por el lector: es el dato que más pesa */
+.price-save {
+  display:inline-flex; align-items:baseline; gap:0.45rem; margin-top:1.5rem;
+  padding:0.7rem 1.4rem; border-radius:100px;
+  background:var(--green-glow); border:1px solid var(--green-line);
+  color:var(--muted); font-size:0.95rem; font-weight:600;
+}
+.price-save b { color:var(--green-lt); font-size:1.2rem; font-weight:900; letter-spacing:-0.02em }
+.price p { margin-top:1.9rem }
+.price .narrow { margin-left:auto; margin-right:auto }
+
+/* ── REGALO ── */
+.gift { border:1px solid var(--purple-line); border-radius:var(--rad); padding:clamp(1.7rem,5vw,2.4rem); background:linear-gradient(165deg, rgba(107,63,160,0.20), rgba(10,10,12,0) 62%) }
+.gift .eyebrow { color:var(--purple-lt) }
+.gift-top { display:flex; align-items:center; gap:1rem; margin-bottom:1.4rem }
+.gift-ico {
+  flex:none; width:52px; height:52px; border-radius:13px;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--purple-glow); border:1px solid var(--purple-line); color:var(--purple-lt);
+}
+.gift-ico svg { width:26px; height:26px; fill:none; stroke:currentColor; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round }
+.gift .eyebrow { display:block; margin-bottom:0.4rem }
+.gift h2 { font-size:clamp(1.35rem,4.2vw,2rem) }
+.gift-what { font-size:1.02rem }
+/* la cifra a la vista: conecta con el desglose de arriba, donde vale US$ 500 */
+/* Caja neutra, no verde: el verde de la página significa "a tu favor" y un
+   tachón significa "esto no aplica". Juntos se contradicen. Aquí el tachón es
+   gris (dato que se cae) y el verde queda solo en el mensaje. */
+.gift-price {
+  display:flex; align-items:center; gap:0.9rem; flex-wrap:wrap;
+  margin-top:1.5rem; padding:1.15rem 1.35rem;
+  background:rgba(244,244,246,0.04); border:1px solid var(--line); border-radius:11px;
+}
+.gift-price-val {
+  font-size:clamp(1.35rem,4vw,1.7rem); font-weight:800; letter-spacing:-0.03em;
+  color:var(--dim); line-height:1;
+  text-decoration:line-through; text-decoration-thickness:2px;
+  text-decoration-color:rgba(173,173,182,0.75);
+}
+/* la flecha solo tiene sentido si las dos partes van en la misma línea:
+   al apilarse en móvil apuntaría al vacío, así que se oculta */
+.gift-price-arrow { color:var(--dim); font-size:1.1rem; line-height:1 }
+@media (max-width:560px){
+  .gift-price-arrow { display:none }
+  .gift-price { flex-direction:column; align-items:flex-start; gap:0.5rem }
+}
+.gift-price-lbl {
+  font-size:clamp(1.05rem,3vw,1.3rem); font-weight:900; letter-spacing:-0.02em;
+  color:var(--green-lt);
+}
+.gift-why { margin-top:1.4rem; font-size:0.95rem }
+.gift-cta { margin-top:1.8rem; width:100% }
+
+/* la tarjeta del regalo y la foto del manual ocupan el ancho completo */
+@media (min-width:720px){ .hero-item-wide, .manual-shot { grid-column:1 / -1 } }
+/* Prueba de que el manual existe. Va suelta, sin marco: el PNG tiene fondo
+   transparente y el recuadro le quitaba el efecto de objeto flotando.
+   OJO con height:auto -> el <img> lleva atributos width/height para reservar
+   espacio y evitar saltos de layout, pero sin height:auto el navegador usa
+   ese alto fijo y estira la imagen. */
+.manual-shot { margin:0.6rem 0 0; text-align:center }
+.manual-shot img { width:100%; height:auto; max-width:560px; margin:0 auto }
+.manual-shot figcaption { margin-top:0.6rem; font-size:0.82rem; color:var(--dim) }
+
+/* ── CIERRE ── */
+.close { background:var(--panel); border-top:1px solid var(--line-soft) }
+.facts { margin:2.5rem 0; border:1px solid var(--line); border-radius:var(--rad); overflow:hidden }
+.fact { display:flex; flex-wrap:wrap; gap:0.3rem 1rem; padding:1.05rem 1.4rem; border-bottom:1px solid var(--line-soft) }
+.fact:last-child { border-bottom:none }
+.fact dt { font-size:0.72rem; font-weight:800; letter-spacing:0.13em; text-transform:uppercase; color:var(--dim); min-width:130px; padding-top:0.16rem }
+.fact dd { font-size:1.02rem; font-weight:700; color:var(--text); letter-spacing:-0.015em }
+.fact dd em { font-style:normal; color:var(--dim); font-weight:500; padding:0 0.35rem; font-size:0.92em }
+.fact-tz { font-size:0.76rem; font-weight:500; color:var(--dim); letter-spacing:0 }
+.close-mail { margin-top:1.7rem; font-size:0.93rem; color:var(--dim) }
+.close-mail a { color:var(--muted); text-decoration:underline; text-underline-offset:3px }
+
+/* ── FAQ ── */
+.faq { margin-top:2.4rem; border-top:1px solid var(--line-soft) }
+details { border-bottom:1px solid var(--line-soft) }
+summary {
+  cursor:pointer; list-style:none; padding:1.25rem 2.4rem 1.25rem 0; position:relative;
+  font-size:1rem; font-weight:600; color:var(--text); letter-spacing:-0.01em; line-height:1.45;
+}
+summary::-webkit-details-marker { display:none }
+summary::after {
+  content:''; position:absolute; right:0.4rem; top:1.55rem;
+  width:9px; height:9px; border-right:2px solid var(--dim); border-bottom:2px solid var(--dim);
+  transform:rotate(45deg); transition:transform .2s ease;
+}
+details[open] summary::after { transform:rotate(-135deg) }
+details[open] summary { color:var(--crimson) }
+details p { padding:0 0 1.35rem; font-size:0.95rem; max-width:62ch }
+
+/* ── PIE ── */
+footer { background:var(--bg); border-top:1px solid var(--line-soft); padding:clamp(2.75rem,8vw,4rem) 0 3rem }
+.foot-top { display:flex; flex-wrap:wrap; gap:1.4rem; align-items:center; justify-content:space-between }
+.foot-brand b { font-size:1rem; font-weight:800; letter-spacing:-0.02em }
+.foot-brand p { font-size:0.82rem; margin-top:0.35rem; color:var(--dim) }
+.foot-links { display:flex; flex-wrap:wrap; gap:1.35rem; font-size:0.86rem }
+.foot-links a { color:var(--muted); text-decoration:none }
+.foot-links a:hover { color:var(--text) }
+.legal { margin-top:2.6rem; padding-top:1.7rem; border-top:1px solid var(--line-soft); font-size:0.77rem; color:var(--dim); line-height:1.7; max-width:78ch }
+
+/* ── BARRA FIJA MÓVIL ── */
+.dock {
+  position:fixed; left:0; right:0; bottom:0; z-index:70;
+  background:rgba(5,5,6,0.94); backdrop-filter:blur(14px);
+  border-top:1px solid var(--line); padding:0.7rem clamp(1rem,5vw,1.5rem);
+  padding-bottom:calc(0.7rem + env(safe-area-inset-bottom));
+  display:flex; align-items:center; gap:0.9rem;
+  transform:translateY(110%); transition:transform .28s ease;
+}
+.dock.on { transform:translateY(0) }
+.dock-info { flex:1; min-width:0 }
+.dock-info b { display:block; font-size:0.88rem; font-weight:800; letter-spacing:-0.02em }
+.dock-info span { display:block; font-size:0.72rem; color:var(--dim); margin-top:0.08rem }
+.dock .btn { flex-shrink:0 }
+@media (min-width:860px){ .dock { display:none } }
+body { padding-bottom:0 }
+
+:focus-visible { outline:2px solid var(--crimson); outline-offset:3px; border-radius:4px }
+
+@media (prefers-reduced-motion:reduce){
+  html { scroll-behavior:auto }
+  *,*::before,*::after { animation-duration:.01ms !important; transition-duration:.01ms !important }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <b>Punto Zerø</b>
+      <span>AnonimusTrade Live</span>
+    </a>
+    <a class="btn btn-primary btn-sm" href="https://whop.com/the-light-club/puntozero/" target="_blank" rel="noopener">Reservar mi plaza</a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<header class="hero" id="top">
+  <div class="hero-stage" id="stage" aria-hidden="true">
+    <canvas class="hero-canvas c-back" id="singB"></canvas>
+    <div class="hero-glyph"><span class="g-dot"></span><span class="g-o">O<i class="g-slash"></i></span></div>
+    <canvas class="hero-canvas c-front" id="singF"></canvas>
+  </div>
+  <div class="wrap">
+    <p class="hero-badge">Bootcamp en vivo<span class="badge-sep"> · </span><br class="badge-br">Empieza el lunes 17 de agosto</p>
+    <h1>Lo que el 90&nbsp;% de los traders se salta</h1>
+    <p class="hero-sub">
+      Ya lo has probado todo. Viste videos, copiaste señales, seguiste a alguien en
+      Telegram. Y aun así perdiste, o ganaste un rato y después lo devolviste todo.
+    </p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="https://whop.com/the-light-club/puntozero/" target="_blank" rel="noopener">Reservar mi plaza · US$ 299.99</a>
+      <a class="btn btn-ghost" href="https://anonimustradelive.com/email_marketing/punto-zero-extracto.pdf" target="_blank" rel="noopener">Descargar el extracto gratis</a>
+    </div>
+    <div class="hero-facts">
+      <span>Del <b>lunes 17</b> al <b>viernes 21 de agosto</b></span>
+    </div>
+
+    <div class="tandas">
+      <p class="tandas-label">Dos tandas disponibles</p>
+      <div class="tandas-row">
+        <span class="tanda"><b>Tanda 1</b><em>2:00 a 4:00 p. m.</em></span>
+        <span class="tanda"><b>Tanda 2</b><em>6:00 a 8:00 p. m.</em></span>
+      </div>
+      <p class="tandas-tz">Hora del este. La misma clase en ambas. Eliges una y es la tuya los cinco días.</p>
+      <p class="hero-pago"><b>Pago único</b>, sin suscripción.</p>
+    </div>
+
+    <!-- Cuenta regresiva real: las inscripciones cierran cuando empieza la
+         primera clase. No es un contador fabricado, es la hora de inicio. -->
+    <div class="cierre" id="cierre" hidden>
+      <p class="cierre-lbl">Las inscripciones cierran cuando empieza la primera clase</p>
+      <div class="cierre-reloj">
+        <span><b id="cd-d">--</b><i>días</i></span>
+        <span><b id="cd-h">--</b><i>horas</i></span>
+        <span><b id="cd-m">--</b><i>min</i></span>
+        <span><b id="cd-s">--</b><i>seg</i></span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ── RECONOCIMIENTO ── -->
+<section class="recon">
+  <div class="wrap mid">
+    <h2>Ya sabes que no deberías hacerlo.<br>Y aun así lo haces.</h2>
+    <div style="margin-top:2.4rem">
+      <div class="recon-q"><p>¿Por qué mueves el stop loss cuando el precio va en tu contra?</p></div>
+      <div class="recon-q"><p>¿Por qué cortas las ganancias pero dejas correr las pérdidas?</p></div>
+      <div class="recon-q"><p>¿Por qué no tomas la ganancia donde dijiste que la ibas a tomar?</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── DIAGNÓSTICO ── -->
+<section>
+  <div class="wrap mid">
+    <!-- el espacio tras el <br> es necesario: en móvil el salto se oculta y sin él
+         las dos frases quedan pegadas ("esto.Es que") -->
+    <h2>No es que seas malo para esto.<br class="wide-only"> Es que empezaste por el lugar equivocado.</h2>
+    <p style="margin-top:1.9rem" class="lead">
+      Casi nadie pierde por no saber qué es un soporte. Pierde por no respetar el plan
+      que escribió quince minutos antes.
+    </p>
+
+    <div class="stat">
+      <div class="stat-n">80&nbsp;%</div>
+      <p>
+        Las estadísticas divulgadas por los brókers de CFDs regulados indican que
+        <strong>aproximadamente el 80&nbsp;% de sus clientes pierden dinero</strong>.
+      </p>
+    </div>
+
+    <p>
+      Este número no mide lo difícil que es el mercado. Mide lo difícil que es operar con
+      disciplina y consistencia cuando hay dinero en juego.
+    </p>
+    <p>
+      Eso no se arregla con otro indicador ni con más señales. Se arregla trabajando en ti,
+      en tus decisiones y en tus impulsos, para que dejes de sabotearte solo.
+    </p>
+  </div>
+</section>
+
+<!-- ── TESIS ── -->
+<section class="tesis">
+  <div class="wrap">
+    <blockquote>Todos los cursos trabajan el mercado, pero pocos trabajan <em>al trader</em>.</blockquote>
+    <p class="tesis-after">Eso es Punto Zerø.</p>
+  </div>
+</section>
+
+<!-- ── QUÉ ES ── -->
+<section>
+  <div class="wrap mid">
+    <p class="eyebrow">De qué se trata</p>
+    <h2 style="margin-top:1rem">Cinco días en vivo y un manual <em>tuyo para siempre</em></h2>
+    <p style="margin-top:1.8rem" class="lead">
+      Cinco clases en directo, de lunes a viernes, de dos horas cada una. Más un manual de
+      69 páginas que recibes el primer día.
+    </p>
+    <p>
+      Empezamos en cero absoluto: qué es una vela, quién está al otro lado del mercado.
+      Terminas con dos cosas que casi nadie tiene al empezar: <strong>un método propio y un plan
+      de trading claro</strong>.
+    </p>
+    <p>
+      No es un curso grabado. Son clases en directo, con Q&amp;A (preguntas y respuestas) al
+      final de cada una, para resolver tus dudas y no las de un alumno genérico. Nosotros
+      cometimos todos los errores que tú vas a cometer, y entre los dos sumamos más de quince
+      años operando: hicimos este programa para ahorrarte los cuatro o cinco años que
+      perdimos dando vueltas.
+    </p>
+    <div class="ruta">
+      <p class="ruta-lead">El orden de los cinco días es el método.</p>
+
+      <ol class="ruta-pasos">
+        <li>
+          <span class="ruta-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="11" r="7.2"/><path d="M9.2 13.2c0-1.9 1.2-3.2 2.8-3.2s2.8 1.1 2.8 2.4c0 1.1-.8 1.8-1.7 2.2"/><path d="M13.1 17.4h-.02"/></svg></span>
+          <b>Tu cabeza</b>
+        </li>
+        <li>
+          <span class="ruta-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h14l-3.4-3.4"/><path d="M20 15H6l3.4 3.4"/></svg></span>
+          <b>El mercado</b>
+        </li>
+        <li>
+          <span class="ruta-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.5v3M7 16.5v4M17 3.5v4M17 17.5v3"/><rect x="4.2" y="6.5" width="5.6" height="10" rx="1.1"/><rect x="14.2" y="7.5" width="5.6" height="10" rx="1.1"/></svg></span>
+          <b>La gráfica</b>
+        </li>
+        <li>
+          <span class="ruta-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7.6"/><circle cx="12" cy="12" r="3.2"/><path d="M12 1.6v2.6M12 19.8v2.6M1.6 12h2.6M19.8 12h2.6"/></svg></span>
+          <b>La práctica</b>
+        </li>
+        <li class="ruta-fin">
+          <span class="ruta-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.8 20.6h18.4"/><path d="M4.4 20.6V9.8L12 4.6l7.6 5.2v10.8"/><path d="M9.4 20.6v-5.4h5.2v5.4"/></svg></span>
+          <b>El bróker</b>
+        </li>
+      </ol>
+
+      <p class="ruta-nota">
+        El bróker va al final, cuando ya sabes lo suficiente para elegirlo tú.
+        <strong>La mayoría de los cursos empieza por ahí, porque ahí está su comisión.</strong>
+      </p>
+    </div>
+
+    <div class="days">
+      <article class="day">
+        <div class="day-n">1</div>
+        <h3>Mentalidad del trader</h3>
+        <p>Por qué la mayoría pierde y qué hacer al respecto.</p>
+        <details class="day-more"><summary>Ver detalle</summary><p>Ocho mitos que cuestan dinero. Cómo funciona por dentro la industria del contenido de trading, y de dónde sale de verdad el ingreso de quien te enseña.</p></details>
+      </article>
+      <article class="day">
+        <div class="day-n">2</div>
+        <h3>Introducción al mercado</h3>
+        <p>Quién participa además de ti y por qué cambia lo que ves.</p>
+        <details class="day-more"><summary>Ver detalle</summary><p>Contratos de futuros, micro y nano. Tipos de órdenes. Los tres costos que descuentan toda operación. Lotaje, apalancamiento y margen.</p></details>
+      </article>
+      <article class="day">
+        <div class="day-n">3</div>
+        <h3>Lectura de gráfica</h3>
+        <p>Velas, estructura y patrones. <span class="mark">Sin un solo indicador.</span></p>
+        <details class="day-more"><summary>Ver detalle</summary><p>Anatomía de la vela. Tendencia, rango, soporte y resistencia. Las figuras W y M, el hombro-cabeza-hombro y sus tres niveles de ejecución. Fractalidad. Proyección de objetivos y zonas de stops.</p></details>
+      </article>
+      <article class="day">
+        <div class="day-n">4</div>
+        <h3>Aplicación práctica</h3>
+        <p>Tres simulacros completos con entrada, stop y objetivo.</p>
+        <details class="day-more"><summary>Ver detalle</summary><p>Los cuatro elementos que debe tener toda operación. Gestión de riesgo y la unidad R. Cálculo del tamaño de posición. Y cuándo no operar, que en el primer año es lo que más dinero te ahorra.</p></details>
+      </article>
+      <article class="day">
+        <div class="day-n">5</div>
+        <h3>Brókers y ejecución</h3>
+        <p>Cómo elegir uno y verificar su licencia tú mismo.</p>
+        <details class="day-more"><summary>Ver detalle</summary><p>Qué hace tu bróker con tu orden y por qué importa. Cómo comparar costos de verdad. La trampa de los bonos. Tu plan de trading.</p></details>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ── QUÉ TE LLEVAS ── -->
+<section style="padding-top:0">
+  <div class="wrap mid">
+    <p class="eyebrow">Qué te llevas</p>
+    <h2 style="margin-top:1rem">Tres cosas que no se acaban con la semana</h2>
+
+    <div class="hero-items">
+      <div class="hero-item">
+        <span class="item-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 3.6h5.6a3.6 3.6 0 0 1 3.9 3.6v13.2a2.7 2.7 0 0 0-2.7-2.7H2.5z"/><path d="M21.5 3.6h-5.6a3.6 3.6 0 0 0-3.9 3.6v13.2a2.7 2.7 0 0 1 2.7-2.7h6.8z"/></svg></span>
+        <h3>Manual de 69 páginas, tuyo para siempre</h3>
+        <p>En PDF, con 39 ilustraciones propias, glosario y anexos. Formato imprimible, con espacio para anotaciones.</p>
+      </div>
+      <div class="hero-item">
+        <span class="item-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.2 3.1 2.9 9.9a.55.55 0 0 0 .04 1.04l4.6 1.45 1.72 5.2a.55.55 0 0 0 .97.18l2.4-2.9"/><path d="M7.54 12.39 21.2 3.1l-3.5 16.4a.55.55 0 0 1-.87.31l-7.6-5.66"/></svg></span>
+        <h3>Acceso de por vida a la comunidad privada</h3>
+        <p>Nuestra sala de trading, donde operamos en vivo. Eso no lo compartimos en redes sociales.</p>
+      </div>
+      <figure class="manual-shot">
+        <picture>
+          <source srcset="img/manual.webp" type="image/webp">
+          <img src="img/manual.png" alt="El manual de Punto Zerø, en sus ediciones oscura y clara" width="1100" height="783" loading="lazy">
+        </picture>
+        <figcaption>Las dos ediciones del manual. Eliges la que prefieras leer.</figcaption>
+      </figure>
+
+      <div class="hero-item hero-item-wide">
+        <span class="item-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.2 11.4h17.6v9.4H3.2z"/><path d="M2 7.4h20v4H2zM12 7.4v13.4"/><path d="M12 7.4S10.9 3 8.4 3a2.2 2.2 0 0 0 0 4.4zM12 7.4S13.1 3 15.6 3a2.2 2.2 0 0 1 0 4.4z"/></svg></span>
+        <h3>Un modelo de entrada de nuestro scalping <em>solo en esta edición</em></h3>
+        <p>Es uno de los seis modelos de la estrategia que vamos a vender aparte a US$ 3,000. A los grupos siguientes ya no se les regala.</p>
+      </div>
+    </div>
+
+    <ul class="plain">
+      <li>Cinco clases en vivo de dos horas, de lunes a viernes</li>
+      <li>Q&amp;A al final de cada clase</li>
+      <li>Chat de tu grupo durante toda la semana</li>
+      <li>Plantilla de operación y plantilla de plan de trading</li>
+      <li>Acceso al Club de Punto Zerø</li>
+    </ul>
+
+  </div>
+</section>
+
+<!-- ── PRUEBA ── -->
+<section class="proof">
+  <div class="wrap mid">
+    <p class="eyebrow">La prueba</p>
+    <h2 style="margin-top:1rem">No tienes que creernos</h2>
+    <p style="margin-top:1.7rem" class="lead">
+      Entre el 9 y el 14 de agosto cerramos la semana con <strong>70,59&nbsp;% de operaciones
+      ganadoras</strong>. Lo mostramos en vivo en YouTube, y el video sigue ahí.
+    </p>
+
+    <figure class="shot">
+      <div class="shot-bar"><i></i><i></i><i></i><span>En vivo · 14 de agosto · minuto 1:46:40</span></div>
+      <div class="video-shell">
+        <button class="video-face" id="proofvideo" type="button" aria-label="Reproducir el video en el minuto exacto de los resultados">
+          <span class="video-play"></span>
+        </button>
+      </div>
+    </figure>
+
+    <div class="disclose">
+      <b>Sobre la cuenta:</b> es una LucidFlex, de Lucid Trading. Aparece como <b>DEMO</b> porque las mesas de fondeo de
+      futuros operan en entorno simulado, aunque los retiros sean reales. Es el estándar de
+      la industria, no una cuenta de práctica.
+    </div>
+
+    <div class="proof-cta">
+      <a class="btn btn-ghost" href="https://www.youtube.com/live/2U9erePQUhY?t=6400" target="_blank" rel="noopener">Prefiero abrirlo en YouTube</a>
+    </div>
+
+    <p class="free-live">
+      ¿Prefieres vernos antes? <b>Operamos gratis y en vivo, de lunes a viernes, de 8:30 a. m.
+      a 12:00 p. m.</b> (hora de Nueva York). Ahí no te vendemos nada.
+    </p>
+  </div>
+</section>
+
+<!-- ── LO QUE NO HACE ── -->
+<section>
+  <div class="wrap mid">
+    <p class="eyebrow">Honestidad</p>
+    <h2 style="margin-top:1rem">Preferimos decírtelo antes de que pagues</h2>
+    <p style="margin-top:1.8rem" class="lead">
+      Cinco días alcanzan para entender el terreno y salir con un método propio.
+      <strong>No alcanzan para que ganes dinero todos los días desde la primera semana, y no
+      te lo vamos a prometer.</strong> El que te prometa eso está jugando con tu tiempo y tu dinero.
+    </p>
+    <p>
+      Tampoco vas a encontrar testimonios: <strong>no hay todavía</strong>, porque nadie ha
+      tomado este bootcamp. Lo único que podemos enseñarte es lo que ya está publicado, y
+      está más arriba, en el video.
+    </p>
+
+    <div class="fit">
+      <div class="fit-col fit-yes">
+        <h3><span class="tag tag-yes">Es para ti</span></h3>
+        <ul>
+          <li>Nunca has hecho trading y no quieres perder un año dando vueltas</li>
+          <li>Ya operas, pierdes, y nunca entendiste bien por qué</li>
+          <li>Quieres un método propio, no señales que copiar</li>
+          <li>Puedes dedicar cinco días seguidos</li>
+        </ul>
+      </div>
+      <div class="fit-col fit-no">
+        <h3><span class="tag tag-no">No es para ti</span></h3>
+        <ul>
+          <li>Buscas ingresos rápidos</li>
+          <li>Quieres que alguien te diga qué operar cada mañana</li>
+          <li>No puedes asistir en vivo</li>
+          <li>Esperas una rentabilidad garantizada</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── NO SE GRABAN ── -->
+
+
+<!-- ── PRECIO ── -->
+<section class="price">
+  <div class="wrap mid stack-wrap">
+    <p class="eyebrow">El desglose</p>
+    <h2>Lo que cuesta cada parte</h2>
+
+    <div class="stack">
+      <div class="stack-row">
+        <div class="stack-what">
+          <b>Cinco clases en vivo (10 horas)</b>
+          <span>Nuestra mentoría 1:1 cuesta US$ 100 la hora.</span>
+        </div>
+        <div class="stack-val">US$ 1,000</div>
+      </div>
+      <div class="stack-row">
+        <div class="stack-what">
+          <b>Un modelo de entrada de scalping</b>
+          <span>Uno de los seis modelos de la estrategia que venderemos a US$ 3,000.</span>
+        </div>
+        <div class="stack-val">US$ 500</div>
+      </div>
+      <div class="stack-row">
+        <div class="stack-what">
+          <b>Manual de 69 páginas, tuyo para siempre</b>
+          <span>39 ilustraciones propias, glosario y anexos.</span>
+        </div>
+        <div class="stack-val">US$ 150</div>
+      </div>
+      <div class="stack-row stack-win">
+        <div class="stack-what">
+          <b>Acceso de por vida a la comunidad privada</b>
+          <span>Por su cuenta cuesta US$ 80 al mes. <b>Aquí no vuelves a pagarla nunca.</b> Para esta suma contamos solo el primer año.</span>
+        </div>
+        <div class="stack-val">US$ 960</div>
+      </div>
+      <div class="stack-row">
+        <div class="stack-what">
+          <b>Plantillas de operación y plan de trading</b>
+        </div>
+        <div class="stack-val">US$ 10</div>
+      </div>
+      <div class="stack-row stack-sum">
+        <div class="stack-what"><b>Por separado</b></div>
+        <div class="stack-val">US$ 2,620</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="wrap narrow">
+    <p class="price-lead">Te lo llevas todo por</p>
+    <div class="price-n"><sup>US$</sup>299.99</div>
+    <p class="price-tag">Pago único</p>
+    <p class="price-save">Te ahorras <b>US$ 2,320</b></p>
+    <p>
+      Antes de decidir, <strong>llévate el extracto gratis</strong>: son 7 páginas del manual
+      real, para que veas cómo enseñamos sin pagar nada.
+    </p>
+  </div>
+</section>
+
+<!-- ── REGALO ── -->
+<section>
+  <div class="wrap mid">
+    <div class="gift">
+      <div class="gift-top">
+        <span class="gift-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.2 11.4h17.6v9.4H3.2z"/><path d="M2 7.4h20v4H2zM12 7.4v13.4"/><path d="M12 7.4S10.9 3 8.4 3a2.2 2.2 0 0 0 0 4.4zM12 7.4S13.1 3 15.6 3a2.2 2.2 0 0 1 0 4.4z"/></svg></span>
+        <div>
+          <span class="eyebrow">Solo en esta edición</span>
+          <h2>El regalo de la primera convocatoria</h2>
+        </div>
+      </div>
+
+      <p class="gift-what">
+        Te llevas <strong>un modelo de entrada de nuestra estrategia de scalping</strong>.
+        La estrategia completa tiene seis modelos y la vamos a vender aparte.
+      </p>
+
+      <div class="gift-price">
+        <span class="gift-price-val">US$ 500</span>
+        <span class="gift-price-arrow" aria-hidden="true">→</span>
+        <span class="gift-price-lbl">Gratis, solo en esta edición</span>
+      </div>
+
+      <p class="gift-why">
+        Las plazas de esta edición son ilimitadas. A los grupos siguientes ya no se les regala.
+      </p>
+
+      <a class="btn btn-primary btn-buy gift-cta" href="https://whop.com/the-light-club/puntozero/" target="_blank" rel="noopener">Reservar mi plaza</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── CIERRE ── -->
+<section class="close" id="reservar">
+  <div class="wrap mid">
+    <h2>Cinco días, un método, un plan claro</h2>
+    <p style="margin-top:1.8rem" class="lead">
+      Nadie va a hacer esto por ti. Pero tampoco tienes que hacerlo a ciegas, ni aprender
+      perdiendo tu propio dinero durante dos años.
+    </p>
+
+    <dl class="facts">
+      <div class="fact"><dt>Comienza</dt><dd>Lunes 17 de agosto de 2026</dd></div>
+      <div class="fact"><dt>Duración</dt><dd>5 días, de lunes a viernes, 2 horas por clase</dd></div>
+      <div class="fact"><dt>Eliges una tanda</dt><dd>Tanda 1: de 2:00 a 4:00 p. m.<br>Tanda 2: de 6:00 a 8:00 p. m.<br><span class="fact-tz">Hora del este (Nueva York)</span></dd></div>
+      <div class="fact"><dt>Inversión</dt><dd>US$ 299.99, pago único</dd></div>
+    </dl>
+
+    <a class="btn btn-primary btn-buy btn-block" href="https://whop.com/the-light-club/puntozero/" target="_blank" rel="noopener">Reservar mi plaza</a>
+
+    <p class="close-mail">
+      ¿Dudas antes de decidir? Escríbenos a
+      <a href="mailto:puntozero@anonimustradelive.com">puntozero@anonimustradelive.com</a>.
+      Preguntar no cuesta nada.
+    </p>
+
+    <!-- FAQ -->
+    <div class="faq">
+      <details>
+        <summary>¿Sirve si nunca he hecho trading?</summary>
+        <p>Sí. Empezamos en cero: qué es una vela, cómo se lee una gráfica, quién está al otro lado. No damos nada por sabido.</p>
+      </details>
+      <details>
+        <summary>¿Sirve si ya llevo tiempo operando?</summary>
+        <p>Ese es el perfil que más aprovecha el día 1 y el día 4. Si ya operas y pierdes sin saber bien por qué, casi siempre el hueco está en los fundamentos y en la gestión de riesgo, no en la estrategia.</p>
+      </details>
+      <details>
+        <summary>¿Dónde son las clases?</summary>
+        <p>En Whop, la misma plataforma donde reservas tu plaza. Al entrar tienes ahí el acceso a las clases y el chat de tu grupo. No necesitas instalar nada más.</p>
+      </details>
+      <details>
+        <summary>¿Puedo cambiarme de tanda durante la semana?</summary>
+        <p>No. Eliges una al reservar y esa es la tuya los cinco días. Cada tanda se prepara para quienes se anotaron en ella, así que si la gente se mueve sobre la marcha terminamos dando una clase a una sala vacía y repitiéndola después. Elige la que de verdad puedas cumplir.</p>
+      </details>
+      <details>
+        <summary>¿Y si no puedo asistir un día?</summary>
+        <p>Esa clase la pierdes, porque no hay grabaciones. El manual cubre el contenido, pero el Q&amp;A no se repone. Si ya sabes que vas a faltar dos días o más, mejor espera a la siguiente edición.</p>
+      </details>
+      <details>
+        <summary>¿Necesito dinero o un bróker para empezar?</summary>
+        <p>Ninguna de las dos cosas. Durante la semana no necesitas poner ni un peso en el mercado, y te vamos a recomendar que todavía no lo hagas. El bróker lo vemos el día 5, cuando ya sepas elegirlo tú.</p>
+      </details>
+      <details>
+        <summary>¿Por qué no hay grabaciones?</summary>
+        <p>Para que el Q&amp;A sea honesto. La gente no pregunta por sus pérdidas reales delante de una cámara que va a quedar guardada. El manual de 69 páginas cumple esa función.</p>
+      </details>
+      <details>
+        <summary>¿Por qué no hay testimonios?</summary>
+        <p>Porque es la primera edición y nadie lo ha tomado todavía. Preferimos decirlo a inventarlos.</p>
+      </details>
+      <details>
+        <summary>¿Hay devoluciones?</summary>
+        <p>No. Por eso ponemos en esta página todo lo que el bootcamp no hace, y por eso el extracto de 7 páginas es gratis: para que decidas sabiendo.</p>
+      </details>
+      <details>
+        <summary>¿Y si me pasa algo grave y no puedo asistir?</summary>
+        <p>Al terminar la semana el acceso se desactiva solo. Si tu caso fue de fuerza mayor, escríbenos a puntozero@anonimustradelive.com explicando qué pasó y adjuntando alguna prueba. Lo miramos caso por caso.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <b>Punto Zerø</b>
+        <p>Punto Zero es un programa de AnonimusTrade Live.</p>
+      </div>
+      <div class="foot-links">
+        <a href="mailto:puntozero@anonimustradelive.com">puntozero@anonimustradelive.com</a>
+      </div>
+    </div>
+    <p class="legal">
+      Material educativo. No constituye asesoría financiera ni recomendación de inversión,
+      y no garantiza ningún tipo de rentabilidad ni proyecta resultados futuros: el desempeño
+      depende de las habilidades, la experiencia y la gestión del riesgo de cada persona.
+      Operar con instrumentos apalancados conlleva un riesgo elevado de pérdida rápida del
+      capital y no es adecuado para todos los perfiles. Nunca operes con dinero que no puedas
+      permitirte perder.
+    </p>
+  </div>
+</footer>
+
+<!-- ── BARRA FIJA MÓVIL ── -->
+<div class="dock" id="dock">
+  <div class="dock-info">
+    <b>US$ 299.99</b>
+    <span>Empieza el lunes 17 de agosto</span>
+  </div>
+  <a class="btn btn-primary btn-sm" href="https://whop.com/the-light-club/puntozero/" target="_blank" rel="noopener">Reservar mi plaza</a>
+</div>
+
+<script>
+/* ── Singularidad del hero ──────────────────────────────────────────────
+   Disco de acrecimiento en canvas: partículas en órbita kepleriana sobre una
+   elipse muy plana (las alas), más un anillo casi circular que hace de arco
+   lente por encima del horizonte. Reacciona al puntero abriendo el disco y
+   girándolo apenas. Se detiene sola si el hero no está en pantalla.        */
+(function () {
+  var cvB   = document.getElementById('singB');
+  var cvF   = document.getElementById('singF');
+  var stage = document.getElementById('stage');
+  var glyph = stage && stage.querySelector('.hero-glyph');
+  var hero  = document.getElementById('top');
+  if (!cvB || !cvF || !stage || !glyph || !cvB.getContext) return;
+
+  var ctx  = cvB.getContext('2d', { alpha: true });   /* detrás de la .Ø */
+  var ctxF = cvF.getContext('2d', { alpha: true });   /* delante de la .Ø */
+  if (!ctx || !ctxF) return;
+
+  var quiet = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fine  = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  var W = 0, H = 0, DPR = 1, R = 0;
+  var disk = [], halo = [], stars = [], ring = [];
+  var t = 0, last = 0, raf = 0, onScreen = true;
+  var lastFade = 1, lastGz = 1;   /* estado del efecto de entrada, para no repintar en balde */
+  var lastMx = 0, lastMy = 0;     /* idem para el paralaje del glifo */
+
+  /* pasada de bloom: se copia la escena a un lienzo pequeño, se desenfoca y se
+     vuelve a componer en modo aditivo. Es lo que hace que la luz se sienta real
+     en vez de plana, y a un tercio de resolución sale casi gratis.            */
+  var bcv = document.createElement('canvas');
+  var bctx = bcv.getContext('2d');
+  var canBloom = false;
+  try { bctx.filter = 'blur(2px)'; canBloom = bctx.filter === 'blur(2px)'; bctx.filter = 'none'; } catch (e) {}
+  var bw = 0, bh = 0;
+
+  /* puntero: objetivo y valor suavizado */
+  var tx = 0, ty = 0, px = 0, py = 0;
+
+  function rnd(a, b) { return a + Math.random() * (b - a); }
+
+  function build() {
+    var narrow = W < 640;
+    var base  = Math.min(W, H * 1.55);
+    R = base * 0.152;
+    /* en pantallas angostas se acorta el disco para que las alas no se salgan */
+    var inner = R * 1.22, outer = R * (narrow ? 3.0 : 4.3);
+
+    var nDisk  = narrow ? 560 : 1050;
+    var nHalo  = narrow ? 150 : 260;
+    var nStars = narrow ? 90  : 170;
+
+    /* la .Ø se escala con el mismo patrón que el horizonte, no con vh:
+       así guarda siempre la misma proporción contra la singularidad */
+    glyph.style.fontSize = (base * 0.377).toFixed(1) + 'px';
+
+    disk.length = 0;
+    for (var i = 0; i < nDisk; i++) {
+      var r = inner + Math.pow(Math.random(), 1.9) * (outer - inner);
+      disk.push({
+        r: r,
+        a: Math.random() * Math.PI * 2,
+        w: 0.5 / Math.pow(r / R, 1.5),
+        h: Math.random(),
+        z: rnd(-1, 1),                 /* grosor vertical del disco */
+        s: rnd(0.6, 1.5),              /* factor de largo del trazo */
+        o: rnd(0.25, 1)
+      });
+    }
+
+    halo.length = 0;
+    for (var j = 0; j < nHalo; j++) {
+      var rr = R * rnd(1.04, 1.3);
+      halo.push({
+        r: rr,
+        a: Math.random() * Math.PI * 2,
+        w: 0.38 / Math.pow(rr / R, 1.5),
+        h: Math.random(),
+        s: rnd(0.5, 1.3),
+        o: rnd(0.3, 1)
+      });
+    }
+
+    /* fragmentos de arco que sustituyen a la circunferencia sólida.
+       Se reparten en tres radios apenas distintos: eso da el prisma. */
+    ring.length = 0;
+    for (var m = 0; m < (narrow ? 34 : 58); m++) {
+      var band = m % 3;
+      ring.push({
+        rr:  1.006 + band * 0.014 + rnd(-0.004, 0.004),
+        a:   Math.random() * Math.PI * 2,
+        len: rnd(0.12, 0.72),
+        w:   rnd(0.8, 2.0),
+        dir: Math.random() < 0.5 ? -1 : 1,
+        h:   band === 0 ? rnd(0.02, 0.2) : band === 1 ? rnd(0.35, 0.6) : rnd(0.87, 1),
+        o:   rnd(0.3, 1),
+        fk:  rnd(0.4, 1.9),
+        ph:  rnd(0, 6.28)
+      });
+    }
+
+    stars.length = 0;
+    for (var k = 0; k < nStars; k++) {
+      stars.push({ x: Math.random(), y: Math.random(), s: rnd(0.4, 1.3),
+                   o: rnd(0.1, 0.5), tw: rnd(0.3, 1.6), ph: rnd(0, 6.28) });
+    }
+  }
+
+  function resize() {
+    var box = stage.getBoundingClientRect();
+    W = Math.max(1, Math.round(box.width));
+    H = Math.max(1, Math.round(box.height));
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    cvB.width = cvF.width  = W * DPR;
+    cvB.height = cvF.height = H * DPR;
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    ctxF.setTransform(DPR, 0, 0, DPR, 0, 0);
+    bw = Math.max(1, Math.round(W / 3));
+    bh = Math.max(1, Math.round(H / 3));
+    bcv.width = bw; bcv.height = bh;
+    build();
+    if (quiet) frame(0, true);
+  }
+
+  /* tono iridiscente frío: cian -> azul -> violeta, con algún acento cálido */
+  function tone(h, light, alpha) {
+    var hue = h > 0.86 ? 18 + (h - 0.86) * 120 : 196 + h * 84;
+    return 'hsla(' + hue.toFixed(0) + ',78%,' + light.toFixed(0) + '%,' + alpha.toFixed(3) + ')';
+  }
+
+  function frame(now, once) {
+    if (!once) raf = requestAnimationFrame(frame);
+
+    var dt = last ? Math.min((now - last) / 1000, 0.05) : 0.016;
+    last = now;
+    if (!quiet) t += dt;
+
+    /* suavizado del puntero */
+    px += (tx - px) * 0.055;
+    py += (ty - py) * 0.055;
+
+    /* la .Ø sigue el valor ya suavizado, no el crudo: así vuelve al centro
+       con la misma inercia que el disco en vez de dar un salto */
+    var mx = +px.toFixed(3), my = +py.toFixed(3);
+    if (mx !== lastMx) { stage.style.setProperty('--mx', mx); lastMx = mx; }
+    if (my !== lastMy) { stage.style.setProperty('--my', my); lastMy = my; }
+
+    /* respiración autónoma: el disco vive aunque nadie mueva el mouse */
+    var tilt     = 0.16 + py * 0.07 + Math.sin(t * 0.22) * 0.01;
+    var haloTilt = 0.93 - py * 0.05;
+    var roll     = px * 0.07 + Math.sin(t * 0.05) * 0.015;
+
+    ctx.clearRect(0, 0, W, H);
+    ctxF.clearRect(0, 0, W, H);
+
+    /* ── entrada al agujero negro ──────────────────────────────────────
+       Al bajar, la escena se acerca y se desvanece: da la sensación de
+       atravesar la singularidad. Va montado sobre el scroll natural del
+       hero, sin fijarlo ni robar recorrido, para no retrasar el CTA.   */
+    var zoom = 1, zoomF = 1;
+    if (!quiet && hero) {
+      /* el avance se mide sobre el hero completo, no sobre el lienzo: al estar
+         pegajoso, su posición deja de cambiar en cuanto se fija */
+      /* El recorrido es el alto del propio lienzo: el efecto tiene que terminar
+         mientras el agujero todavía se ve, no repartido por todo el hero. */
+      var hb = hero.getBoundingClientRect();
+      var prog = Math.min(1, Math.max(0, -hb.top / H));
+
+      /* Zoom adelantado (raíz): se nota desde el primer tramo, que es el único
+         donde el agujero sigue a la vista. */
+      var ez = Math.pow(prog, 0.72);
+      zoom  = 1 + ez * 3.4;
+      zoomF = 1 + ez * 5.2;                      /* lo cercano corre más: da profundidad */
+
+      /* Caída exponencial del brillo: cuando el texto llega encima, el agujero
+         ya casi no se ve, así que no hace falta taparlo con ningún degradado. */
+      var fade = +Math.pow(1 - prog, 3.2).toFixed(3);
+      if (fade !== lastFade) { stage.style.setProperty('--enter', fade); lastFade = fade; }
+      var gz = +(1 + ez * 4.2).toFixed(3);
+      if (gz !== lastGz) { stage.style.setProperty('--gz', gz); lastGz = gz; }
+    }
+
+    ctx.save(); ctxF.save();
+    if (zoom > 1.001) {
+      ctx.translate(W * 0.5, H * 0.5);  ctx.scale(zoom, zoom);   ctx.translate(-W * 0.5, -H * 0.5);
+      ctxF.translate(W * 0.5, H * 0.5); ctxF.scale(zoomF, zoomF); ctxF.translate(-W * 0.5, -H * 0.5);
+    }
+
+    /* estrellas que titilan */
+    ctx.globalCompositeOperation = 'source-over';
+    for (var s = 0; s < stars.length; s++) {
+      var st = stars[s];
+      var tw = 0.55 + 0.45 * Math.sin(t * st.tw + st.ph);
+      ctx.fillStyle = 'rgba(214,228,246,' + (st.o * tw).toFixed(3) + ')';
+      ctx.fillRect(st.x * W, st.y * H, st.s, st.s);
+    }
+
+    /* nebulosa: dos manchas de color que derivan muy lento */
+    ctx.globalCompositeOperation = 'lighter';
+    var n1x = W * (0.30 + Math.sin(t * 0.03) * 0.02);
+    var neb1 = ctx.createRadialGradient(n1x, H * 0.34, 0, n1x, H * 0.34, W * 0.42);
+    neb1.addColorStop(0, 'rgba(107,63,160,0.085)');
+    neb1.addColorStop(1, 'rgba(107,63,160,0)');
+    ctx.fillStyle = neb1; ctx.fillRect(0, 0, W, H);
+    var n2x = W * (0.72 + Math.cos(t * 0.024) * 0.02);
+    var neb2 = ctx.createRadialGradient(n2x, H * 0.62, 0, n2x, H * 0.62, W * 0.38);
+    neb2.addColorStop(0, 'rgba(64,150,190,0.07)');
+    neb2.addColorStop(1, 'rgba(64,150,190,0)');
+    ctx.fillStyle = neb2; ctx.fillRect(0, 0, W, H);
+
+    ctx.save();
+    ctx.translate(W * 0.5 + px * 10, H * 0.5 + py * 8);
+    ctx.rotate(roll);
+
+    /* resplandor elíptico difuso detrás del disco, con acento cálido
+       en el lado que se acerca (efecto Doppler a gran escala) */
+    ctx.save();
+    ctx.scale(1, Math.max(0.12, tilt) * 3.0);
+    var discGlow = ctx.createRadialGradient(0, 0, R * 0.8, 0, 0, R * 4.4);
+    discGlow.addColorStop(0,   'rgba(160,198,250,0.30)');
+    discGlow.addColorStop(0.4, 'rgba(130,150,235,0.13)');
+    discGlow.addColorStop(1,   'rgba(120,140,230,0)');
+    ctx.fillStyle = discGlow;
+    ctx.beginPath(); ctx.arc(0, 0, R * 4.4, 0, Math.PI * 2); ctx.fill();
+    var warm = ctx.createRadialGradient(-R * 1.9, 0, 0, -R * 1.9, 0, R * 2.4);
+    warm.addColorStop(0, 'rgba(255,196,150,0.10)');
+    warm.addColorStop(1, 'rgba(255,196,150,0)');
+    ctx.fillStyle = warm;
+    ctx.beginPath(); ctx.arc(-R * 1.9, 0, R * 2.4, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+
+    /* mitad del disco que pasa por detrás del horizonte */
+    paintDisk(-1, tilt);
+
+    /* arco lente: trazos tangentes al anillo, cargados hacia arriba */
+    ctx.lineCap = 'round';
+    for (var i = 0; i < halo.length; i++) {
+      var p = halo[i];
+      var a = p.a + t * p.w;
+      var sn = Math.sin(a), co = Math.cos(a);
+      var lift = (1 - sn) * 0.5;                       /* 1 arriba, 0 abajo */
+      var al = p.o * (0.10 + 0.90 * Math.pow(lift, 1.7)) * 0.9;
+      var L = p.s * 9;
+      var x = co * p.r, y = sn * p.r * haloTilt;
+      ctx.strokeStyle = tone(p.h, 88, al);
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(x + sn * L * 0.5, y - co * L * 0.5 * haloTilt);
+      ctx.lineTo(x - sn * L * 0.5, y + co * L * 0.5 * haloTilt);
+      ctx.stroke();
+    }
+
+    /* anillo de fotones: halo suave + trazo fino + arco cálido al lado brillante */
+    var ringGlow = ctx.createRadialGradient(0, 0, R * 0.9, 0, 0, R * 1.22);
+    ringGlow.addColorStop(0,    'rgba(170,205,255,0)');
+    ringGlow.addColorStop(0.55, 'rgba(185,215,255,0.30)');
+    ringGlow.addColorStop(0.72, 'rgba(200,228,255,0.10)');
+    ringGlow.addColorStop(1,    'rgba(200,228,255,0)');
+    ctx.fillStyle = ringGlow;
+    ctx.beginPath(); ctx.arc(0, 0, R * 1.22, 0, Math.PI * 2); ctx.fill();
+
+    /* anillo de fotones disuelto en arcos irregulares: nada de circunferencia
+       sólida, que se lee como un borde de CSS. Cada arco es un fragmento de luz
+       con su propio tono, y el conjunto titila. */
+    for (var q = 0; q < ring.length; q++) {
+      var rp = ring[q];
+      var ra = rp.a + t * 0.06 * rp.dir;
+      var flick = 0.45 + 0.55 * Math.sin(t * rp.fk + rp.ph);
+      var warm = Math.cos(ra) < -0.2 ? 1.5 : 1;      /* lado que se acerca */
+      ctx.strokeStyle = tone(rp.h, 86, rp.o * flick * 0.75 * warm);
+      ctx.lineWidth = rp.w;
+      ctx.beginPath();
+      ctx.arc(0, 0, R * rp.rr, ra, ra + rp.len);
+      ctx.stroke();
+    }
+
+    /* horizonte de sucesos: negro absoluto con borde difuminado */
+    ctx.globalCompositeOperation = 'source-over';
+    var core = ctx.createRadialGradient(0, 0, R * 0.85, 0, 0, R * 1.015);
+    core.addColorStop(0, 'rgba(0,0,0,1)');
+    core.addColorStop(0.93, 'rgba(0,0,0,1)');
+    core.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = core;
+    ctx.beginPath(); ctx.arc(0, 0, R * 1.015, 0, Math.PI * 2); ctx.fill();
+
+    ctx.restore();
+
+    /* ── lienzo delantero: la mitad del disco que pasa POR DELANTE de la .Ø ──
+       esto es lo que envuelve el glifo y da la sensación tridimensional      */
+    ctxF.save();
+    ctxF.translate(W * 0.5 + px * 10, H * 0.5 + py * 8);
+    ctxF.rotate(roll);
+    ctxF.globalCompositeOperation = 'lighter';
+    paintDisk(1, tilt, ctxF);
+    ctxF.restore();
+
+    /* se sale del zoom: el bloom y la viñeta van en coordenadas de pantalla */
+    ctx.restore(); ctxF.restore();
+
+    /* ── bloom y halación en los dos lienzos ── */
+    bloom(ctx, cvB, 0.42);
+    bloom(ctxF, cvF, 0.5);
+
+    /* viñeta: oscurece los bordes para dar profundidad de cine */
+    ctx.globalCompositeOperation = 'source-over';
+    var vig = ctx.createRadialGradient(W * 0.5, H * 0.46, Math.min(W, H) * 0.42,
+                                       W * 0.5, H * 0.46, Math.max(W, H) * 0.72);
+    vig.addColorStop(0, 'rgba(5,5,6,0)');
+    vig.addColorStop(1, 'rgba(5,5,6,0.6)');
+    ctx.fillStyle = vig;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  /* copia reducida + desenfoque + composición aditiva.
+     Es lo que hace que la luz sangre sobre lo que la rodea (bloom/halación). */
+  function bloom(c, src, amount) {
+    if (!canBloom) return;
+    bctx.clearRect(0, 0, bw, bh);
+    bctx.filter = 'blur(3px)';
+    bctx.drawImage(src, 0, 0, bw, bh);
+    bctx.filter = 'blur(10px)';
+    bctx.globalAlpha = 0.45;
+    bctx.drawImage(src, 0, 0, bw, bh);
+    bctx.filter = 'none';
+    bctx.globalAlpha = 1;
+    c.globalCompositeOperation = 'lighter';
+    c.globalAlpha = amount;
+    c.drawImage(bcv, 0, 0, W, H);
+    c.globalAlpha = 1;
+    c.globalCompositeOperation = 'source-over';
+  }
+
+  function paintDisk(side, tilt, c) {
+    c = c || ctx;
+    c.lineCap = 'round';
+    for (var i = 0; i < disk.length; i++) {
+      var p = disk[i];
+      var a = p.a + t * p.w;
+      var sn = Math.sin(a);
+      if (side < 0 ? sn > 0 : sn <= 0) continue;
+
+      var co = Math.cos(a);
+      var x = co * p.r;
+      var y = sn * p.r * tilt + p.z * p.z * p.z * 16 * tilt;
+
+      /* trazo tangente a la órbita: más largo cuanto más rápido gira */
+      var L  = p.s * (3 + p.w * 34);
+      var ux = -sn * L, uy = co * L * tilt;
+
+      /* Doppler: el lado que se acerca (izquierda) brilla y se calienta */
+      var dopp = 1.06 - co * 0.52;
+      var edge = 0.35 + 0.65 * Math.abs(co);
+      var near = side > 0 ? 1.45 : 0.72;   /* el disco delantero pisa la .Ø */
+      var fade = 1 - (p.r / (R * 4.6)) * 0.6;
+      /* ondas de densidad: brazos espirales que hacen el disco filamentoso
+         en vez de una nube pareja (es lo que da sensación de volumen) */
+      var arm = 0.55 + 0.45 * Math.sin(a * 2 - p.r * 0.035 + t * 0.5);
+      var al = Math.min(0.9, p.o * edge * near * fade * dopp * arm * 1.15);
+
+      c.strokeStyle = tone(p.h, 66 + edge * 22 + (dopp - 1) * 10, al);
+      c.lineWidth = p.r < R * 2 ? 1.5 : 1.1;
+      c.beginPath();
+      c.moveTo(x - ux * 0.5, y - uy * 0.5);
+      c.lineTo(x + ux * 0.5, y + uy * 0.5);
+      c.stroke();
+
+      /* halo ancho y tenue solo en la zona interior, donde vive el brillo */
+      if (p.r < R * 2.1) {
+        c.lineWidth = 4;
+        c.strokeStyle = tone(p.h, 72, al * 0.16);
+        c.stroke();
+      }
+    }
+  }
+
+  /* ── entradas ── */
+  if (fine && !quiet) {
+    /* Solo se fija el objetivo. Las variables CSS que mueven la .Ø las escribe
+       el bucle a partir del valor ya suavizado, así el glifo y el lienzo van
+       exactamente al mismo ritmo. Antes se escribían aquí de golpe y al salir
+       el puntero la .Ø volvía de un tirón mientras el disco volvía suave. */
+    stage.addEventListener('pointermove', function (e) {
+      var b = stage.getBoundingClientRect();
+      tx = ((e.clientX - b.left) / b.width  - 0.5) * 2;
+      ty = ((e.clientY - b.top)  / b.height - 0.5) * 2;
+    }, { passive: true });
+
+    stage.addEventListener('pointerleave', function () {
+      tx = 0; ty = 0;
+    }, { passive: true });
+  }
+
+  function run(on) {
+    if (quiet) return;
+    if (on && !raf) { last = 0; raf = requestAnimationFrame(frame); }
+    if (!on && raf) { cancelAnimationFrame(raf); raf = 0; }
+  }
+
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (e) {
+      onScreen = e[0].isIntersecting;
+      run(onScreen && !document.hidden);
+    }).observe(stage);
+  }
+  document.addEventListener('visibilitychange', function () {
+    run(onScreen && !document.hidden);
+  });
+
+  var rt;
+  window.addEventListener('resize', function () {
+    clearTimeout(rt);
+    rt = setTimeout(resize, 160);
+  }, { passive: true });
+
+  resize();
+  run(true);
+})();
+
+(function () {
+  var dock = document.getElementById('dock');
+  var hero = document.getElementById('top');
+  var close = document.getElementById('reservar');
+  if (!dock || !hero || !('IntersectionObserver' in window)) return;
+
+  var pastHero = false, atClose = false;
+  function sync() { dock.classList.toggle('on', pastHero && !atClose); }
+
+  new IntersectionObserver(function (e) {
+    pastHero = !e[0].isIntersecting;
+    sync();
+  }, { rootMargin: '-40% 0px 0px 0px' }).observe(hero);
+
+  new IntersectionObserver(function (e) {
+    atClose = e[0].isIntersecting;
+    sync();
+  }).observe(close);
+})();
+
+/* ── Cuenta regresiva al inicio de la primera clase ─────────────────────
+   Lunes 17 de agosto de 2026, 2:00 p. m. hora del este (EDT = UTC-4),
+   que es la hora de arranque de la Tanda 1. Se calcula en UTC para que dé
+   el mismo instante desde cualquier país.                                */
+(function () {
+  var caja = document.getElementById('cierre');
+  if (!caja) return;
+  var FIN = Date.UTC(2026, 7, 17, 18, 0, 0);   // 14:00 EDT = 18:00 UTC
+  var d = document.getElementById('cd-d'), h = document.getElementById('cd-h'),
+      m = document.getElementById('cd-m'), s = document.getElementById('cd-s');
+
+  function dos(n) { return n < 10 ? '0' + n : '' + n; }
+
+  function tic() {
+    var falta = FIN - Date.now();
+    if (falta <= 0) {
+      caja.innerHTML = '<p class="cierre-cerrado">Las inscripciones de esta edición ya cerraron. ' +
+                       'Escríbenos para saber cuándo abre la siguiente.</p>';
+      clearInterval(reloj);
+      return;
+    }
+    var seg = Math.floor(falta / 1000);
+    d.textContent = Math.floor(seg / 86400);
+    h.textContent = dos(Math.floor(seg / 3600) % 24);
+    m.textContent = dos(Math.floor(seg / 60) % 60);
+    s.textContent = dos(seg % 60);
+  }
+
+  caja.hidden = false;
+  tic();
+  var reloj = setInterval(tic, 1000);
+})();
+
+/* Video de la prueba: el iframe de YouTube (~1 MB de JS) solo se carga al tocar */
+(function () {
+  var face = document.getElementById('proofvideo');
+  if (!face) return;
+  face.addEventListener('click', function () {
+    var f = document.createElement('iframe');
+    f.src = 'https://www.youtube-nocookie.com/embed/2U9erePQUhY?start=6400&autoplay=1&rel=0';
+    f.title = 'Resultados de la semana del 9 al 14 de agosto, mostrados en vivo';
+    f.allow = 'autoplay; encrypted-media; picture-in-picture';
+    f.allowFullscreen = true;
+    face.replaceWith(f);
+  }, { once: true });
+})();
+
+/* ── Suavizado de la rueda del mouse ────────────────────────────────────
+   Solo intercepta la rueda: el táctil, el teclado y el arrastre de la barra
+   siguen siendo nativos (su inercia propia ya es buena y tocarla molesta). */
+(function () {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+  var destino = window.scrollY, actual = window.scrollY, corriendo = false, previo = 0;
+
+  /* Ritmo de convergencia. Más alto = más seco y responde antes;
+     más bajo = más deslizante. 14 es el punto donde deja de sentirse blando. */
+  var RITMO = 14;
+
+  function tope() {
+    return Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+  }
+
+  function paso(ahora) {
+    var dt = previo ? Math.min((ahora - previo) / 1000, 0.05) : 0.016;
+    previo = ahora;
+
+    /* Decaimiento exponencial en función del tiempo, no un factor fijo por
+       cuadro: así se comporta igual a 60, 120 o 144 Hz. Un lerp fijo avanza
+       el mismo porcentaje por cuadro, o sea que a más Hz llega antes y a
+       menos Hz se arrastra: eso es lo que se sentía laggy. */
+    actual = destino + (actual - destino) * Math.exp(-RITMO * dt);
+
+    if (Math.abs(destino - actual) < 0.5) { actual = destino; corriendo = false; previo = 0; }
+    window.scrollTo(0, actual);
+    if (corriendo) requestAnimationFrame(paso);
+  }
+
+  window.addEventListener('wheel', function (e) {
+    if (e.ctrlKey || e.defaultPrevented) return;         /* zoom del navegador */
+    var d = e.deltaY;
+    if (e.deltaMode === 1) d *= 16;                      /* delta en líneas */
+    else if (e.deltaMode === 2) d *= window.innerHeight; /* delta en páginas */
+    e.preventDefault();
+    if (!corriendo) { actual = window.scrollY; destino = actual; }   /* resincroniza */
+    destino = Math.min(tope(), Math.max(0, destino + d));
+    if (!corriendo) { corriendo = true; previo = 0; requestAnimationFrame(paso); }
+  }, { passive: false });
+
+  /* si se movió por otra vía (barra, teclado), el destino se pone al día */
+  window.addEventListener('scroll', function () {
+    if (!corriendo) { destino = actual = window.scrollY; }
+  }, { passive: true });
+
+  /* enlaces internos: los anima este mismo motor, ya que se quitó el
+     scroll-behavior:smooth del CSS para que no compitiera */
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var id = a.getAttribute('href').slice(1);
+    var dest = id ? document.getElementById(id) : document.body;
+    if (!dest) return;
+    e.preventDefault();
+    if (!corriendo) actual = window.scrollY;
+    destino = Math.min(tope(), Math.max(0, window.scrollY + dest.getBoundingClientRect().top));
+    if (!corriendo) { corriendo = true; previo = 0; requestAnimationFrame(paso); }
+  });
+})();
+
+/* Aparición escalonada de los bloques al hacer scroll */
+(function () {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!('IntersectionObserver' in window)) return;
+  var els = document.querySelectorAll(
+    'section h2, .lead, .recon-q, .stat, .tesis blockquote, .tesis-after, ' +
+    '.day, .hero-item, .plain li, .shot, .disclose, .fit-col, .steps li, .gift, .facts, ' +
+    '.price-n, .price-tag'
+  );
+  var io = new IntersectionObserver(function (es) {
+    for (var i = 0; i < es.length; i++) {
+      if (es[i].isIntersecting) { es[i].target.classList.add('in'); io.unobserve(es[i].target); }
+    }
+  }, { threshold: 0.12, rootMargin: '0px 0px -4% 0px' });
+  for (var i = 0; i < els.length; i++) {
+    els[i].classList.add('rv');
+    els[i].style.setProperty('--rd', ((i % 5) * 70) + 'ms');
+    io.observe(els[i]);
+  }
+})();
+</script>
+
+</body>
+</html>

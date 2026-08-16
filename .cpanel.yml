@@ -28,6 +28,10 @@ deployment:
     - /bin/cp -r ads/ads_img /home/ntpsrnlfrg/anonimustradelive.com/ads/
     - /bin/mkdir -p /home/ntpsrnlfrg/anonimustradelive.com/libros
     - /bin/cp libros/index.html /home/ntpsrnlfrg/anonimustradelive.com/libros/
+    - /bin/mkdir -p /home/ntpsrnlfrg/anonimustradelive.com/puntozero
+    - /bin/cp puntozero/index.html /home/ntpsrnlfrg/anonimustradelive.com/puntozero/
+    - /bin/mkdir -p /home/ntpsrnlfrg/anonimustradelive.com/puntozero/img
+    - /bin/cp -r puntozero/img /home/ntpsrnlfrg/anonimustradelive.com/puntozero/
     - /bin/mkdir -p /home/ntpsrnlfrg/anonimustradelive.com/concurso
     - /bin/cp concurso/index.php /home/ntpsrnlfrg/anonimustradelive.com/concurso/
     - /bin/cp concurso/.htaccess /home/ntpsrnlfrg/anonimustradelive.com/concurso/

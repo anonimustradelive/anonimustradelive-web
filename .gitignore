@@ -7,3 +7,16 @@ auth-tokens.json
 concurso/submissions.json
 concurso/uploads/*
 !concurso/uploads/.htaccess
+
+# Backup local de la memoria de Claude (info sensible, nunca subir)
+backup/
+
+# Credenciales y llaves — NUNCA subir
+mykey
+mykey.pub
+*.pem
+*.ppk
+ssh-hosting.txt
+
+# Copias de seguridad locales de la landing (no se despliegan ni hacen falta en el repo)
+puntozero/RESTAURAR-*.html
