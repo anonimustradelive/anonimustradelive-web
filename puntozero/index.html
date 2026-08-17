@@ -1509,17 +1509,22 @@ body { padding-bottom:0 }
       var prog = Math.min(1, Math.max(0, -hb.top / H));
 
       /* Zoom adelantado (raíz): se nota desde el primer tramo, que es el único
-         donde el agujero sigue a la vista. */
+         donde el agujero sigue a la vista. En móvil va desactivado: escalar
+         multiplica el área a repintar justo mientras se hace scroll, que es
+         cuando más se notaba el tirón. */
       var ez = Math.pow(prog, 0.72);
-      zoom  = 1 + ez * 3.4;
-      zoomF = 1 + ez * 5.2;                      /* lo cercano corre más: da profundidad */
+      if (!liviano) {
+        zoom  = 1 + ez * 3.4;
+        zoomF = 1 + ez * 5.2;                    /* lo cercano corre más: da profundidad */
+        var gz = +(1 + ez * 4.2).toFixed(3);
+        if (gz !== lastGz) { stage.style.setProperty('--gz', gz); lastGz = gz; }
+      }
 
-      /* Caída exponencial del brillo: cuando el texto llega encima, el agujero
-         ya casi no se ve, así que no hace falta taparlo con ningún degradado. */
+      /* Caída exponencial del brillo: esto SÍ se conserva en móvil. No es un
+         adorno: es lo que deja legible el texto cuando le pasa por encima a la
+         singularidad, ya que no hay ningún degradado tapándola. */
       var fade = +Math.pow(1 - prog, 3.2).toFixed(3);
       if (fade !== lastFade) { stage.style.setProperty('--enter', fade); lastFade = fade; }
-      var gz = +(1 + ez * 4.2).toFixed(3);
-      if (gz !== lastGz) { stage.style.setProperty('--gz', gz); lastGz = gz; }
     }
 
     ctx.save(); ctxF.save();
