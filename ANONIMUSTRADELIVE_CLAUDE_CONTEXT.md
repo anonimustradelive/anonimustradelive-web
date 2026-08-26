@@ -329,6 +329,15 @@ Ejecutado y verificado end-to-end el 2026-07-18: subdominio `reg.` eliminado, `p
 
 ## Historial de cambios recientes
 
+### 2026-08-26 (2) — Bio reorganizada por secciones + CryptoPay
+- **Motivo:** la bio había crecido por acumulación y mezclaba intenciones distintas dentro de una misma sección. "Apóyanos" juntaba brókers, exchanges y herramientas de pago; el correo flotaba sin rótulo; y las sesiones en vivo, que son el contenido gratuito que convierte desconocidos en comunidad, estaban casi al final
+- **Orden nuevo, siguiendo el recorrido real del usuario** (aprende → únete → míranos → abre cuenta → consigue capital → cobra → herramientas → apóyanos → escríbenos): Comunidad · Sesiones en vivo · Abre tu cuenta para operar · Cuentas de fondeo · **Retira tus ganancias** · Herramientas y recursos · Apóyanos · Contacto
+- **Sección nueva "Retira tus ganancias"**: **CryptoPay** (`https://cryptopay.trade/sign-up?referred=Gn4DSG`, referido) para retiros grandes de cripto a banco, y **Pana** para el día a día por su tarjeta. Pana salió de "Apóyanos", donde estaba mezclada con los exchanges
+- **El logo de CryptoPay no servía tal cual:** es horizontal (974×175) y "CRYPTO" va en azul marino, invisible sobre el fondo negro de la bio. Se recortó el símbolo circular naranja a `images/cryptopay_icon.png` (136×136, con transparencia), que entra en el mismo hueco de 34 px que usan Telegram y YouTube. El nombre completo va en el título del enlace
+- **Se retiró la ruleta de Zoomex** (HTML, CSS y animaciones: 14 reglas y 2 keyframes). El botón de referido quedó en "Abre tu cuenta para operar", con los demás exchanges. La bio bajó de 30.290 a 26.861 bytes
+- **El aviso de referidos se movió**: estaba bajo "Apóyanos" junto a los brókers, ahora encabeza la sección donde empiezan los referidos, que es donde el lector lo necesita. "Apóyanos" quedó solo con donaciones, que es lo que realmente es
+- **Punto Zerø no se incluyó**: se propuso, pero la primera convocatoria ya había cerrado
+
 ### 2026-08-26 — Punto Zerø cerró: lista de espera + leads en el panel
 - **La primera convocatoria se llenó.** Se ocultó Punto Zerø de las entradas públicas y la landing pasó de vender a captar leads para la próxima
 - **`index.html` del sitio principal**: los dos botones `.nav-cta-pz` (escritorio y móvil) quedaron **comentados, no borrados**, con la nota de cómo reactivarlos. La barra `.pz-bar` **ya se ocultaba sola** desde el 17 de agosto: se deja en su sitio porque para la próxima convocatoria basta con cambiarle la fecha de `FIN`
