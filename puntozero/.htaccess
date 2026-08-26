@@ -1,0 +1,7 @@
+Options -Indexes
+
+# leads.json guarda correos de personas: nunca debe servirse por web.
+# Solo lo escribe lead.php y lo lee el panel admin por filesystem.
+<Files "leads.json">
+  Require all denied
+</Files>

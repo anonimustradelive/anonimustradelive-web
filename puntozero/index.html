@@ -746,6 +746,39 @@ details p { padding:0 0 1.35rem; font-size:0.95rem; max-width:62ch }
   .faq { display:grid; grid-template-columns:1fr 1fr; gap:0 3rem; align-items:start }
 }
 
+
+/* ── LISTA DE ESPERA ── reemplazó al bloque de compra cuando se llenó la
+   primera convocatoria. Usa el verde de "dinero a tu favor" porque anotarse
+   es gratis y beneficia al lector, no una venta. */
+.espera {
+  margin-top:2.4rem; padding:clamp(1.6rem,5vw,2.2rem);
+  border:1px solid var(--green-line); border-radius:var(--rad);
+  background:linear-gradient(165deg, rgba(30,158,106,0.12), rgba(21,21,25,0) 62%);
+  scroll-margin-top:80px;
+}
+.espera-tag {
+  display:inline-block; margin-bottom:0.9rem; padding:0.32rem 0.8rem; border-radius:100px;
+  background:var(--crimson-glow); border:1px solid var(--crimson-line); color:var(--crimson);
+  font-size:0.62rem; font-weight:800; letter-spacing:0.13em; text-transform:uppercase;
+}
+.espera-titulo { font-size:clamp(1.25rem,3.6vw,1.6rem); margin-bottom:0.9rem }
+.espera-txt { font-size:0.98rem }
+.espera-form { display:flex; flex-wrap:wrap; gap:0.7rem; margin-top:1.5rem }
+.espera-form input[type=email] {
+  flex:1 1 220px; min-width:0;
+  padding:0.95rem 1.1rem; border-radius:10px;
+  background:rgba(244,244,246,0.05); border:1px solid var(--line);
+  color:var(--text); font-family:inherit; font-size:1rem;
+}
+.espera-form input[type=email]::placeholder { color:var(--dim) }
+.espera-form input[type=email]:focus { outline:none; border-color:var(--green-line); background:rgba(30,158,106,0.08) }
+.espera-form button { flex:0 0 auto }
+/* la trampa para bots: fuera de pantalla, nunca enfocable a la vista */
+.espera-form input[name=website] { position:absolute; left:-9999px; width:1px; height:1px; opacity:0 }
+.espera-msg { margin-top:0.9rem; font-size:0.92rem; min-height:1.3em }
+.espera-msg.ok    { color:var(--green-lt); font-weight:600 }
+.espera-msg.error { color:var(--crimson); font-weight:600 }
+
 /* ── PIE ── */
 footer { background:var(--bg); border-top:1px solid var(--line-soft); padding:clamp(2.75rem,8vw,4rem) 0 3rem }
 .foot-top { display:flex; flex-wrap:wrap; gap:1.4rem; align-items:center; justify-content:space-between }
@@ -789,7 +822,7 @@ body { padding-bottom:0 }
       <b>Punto Zerø</b>
       <span>AnonimusTrade Live</span>
     </a>
-    <a class="btn btn-primary btn-sm" href="https://whop.com/the-light-club/puntozero/" target="_blank" rel="noopener">Reservar mi plaza</a>
+    <a class="btn btn-primary btn-sm" href="#avisame">Avísame</a>
   </div>
 </nav>
 
@@ -808,7 +841,7 @@ body { padding-bottom:0 }
       Telegram. Y aun así perdiste, o ganaste un rato y después lo devolviste todo.
     </p>
     <div class="hero-cta">
-      <a class="btn btn-primary" href="https://whop.com/the-light-club/puntozero/" target="_blank" rel="noopener">Reservar mi plaza · US$ 299.99</a>
+      <a class="btn btn-primary" href="#avisame">Avísame de la próxima convocatoria</a>
       <a class="btn btn-ghost" href="https://anonimustradelive.com/email_marketing/punto-zero-extracto.pdf" target="_blank" rel="noopener">Descargar el extracto gratis</a>
     </div>
     <!-- Banda de logística: en escritorio son tres grupos rotulados lado a lado
@@ -1156,13 +1189,13 @@ body { padding-bottom:0 }
   </div>
 
   <div class="precio-lado">
-    <p class="price-lead">Te lo llevas todo por</p>
+    <p class="price-lead">Costó</p>
     <div class="price-n"><sup>US$</sup>299.99</div>
     <p class="price-tag">Pago único</p>
-    <p class="price-save">Te ahorras <b>US$ 2,320</b></p>
+    <p class="price-save">Te ahorrabas <b>US$ 2,320</b></p>
     <p class="precio-extracto">
-      Antes de decidir, <strong>llévate el extracto gratis</strong>: son 7 páginas del manual
-      real, para que veas cómo enseñamos sin pagar nada.
+      La próxima convocatoria abrirá a este precio o cerca. Si quieres entrar,
+      <a href="#avisame">déjanos tu correo</a> y te avisamos antes que a nadie.
     </p>
   </div>
   </div>
@@ -1195,7 +1228,7 @@ body { padding-bottom:0 }
         Las plazas de esta edición son ilimitadas. A los grupos siguientes ya no se les regala.
       </p>
 
-      <a class="btn btn-primary btn-buy gift-cta" href="https://whop.com/the-light-club/puntozero/" target="_blank" rel="noopener">Reservar mi plaza</a>
+      <a class="btn btn-primary btn-buy gift-cta" href="#avisame">Avísame de la próxima</a>
     </div>
   </div>
 </section>
@@ -1216,10 +1249,31 @@ body { padding-bottom:0 }
       <div class="fact"><dt>Inversión</dt><dd>US$ 299.99, pago único</dd></div>
     </dl>
 
-    <a class="btn btn-primary btn-buy btn-block" href="https://whop.com/the-light-club/puntozero/" target="_blank" rel="noopener">Reservar mi plaza</a>
+    <!-- ══ LISTA DE ESPERA ══ reemplazó al botón de compra el 2026-08-26, cuando
+         se llenó la primera convocatoria. Los correos van a puntozero/leads.json
+         vía lead.php y se ven en el panel admin, pestaña Leads.
+         Para reabrir la venta: devolver aquí el botón a Whop y quitar este bloque. -->
+    <div class="espera" id="avisame">
+      <p class="espera-tag">Cupos llenos</p>
+      <h3 class="espera-titulo">La primera convocatoria ya se llenó</h3>
+      <p class="espera-txt">
+        Déjanos tu correo y te avisamos <strong>antes que a nadie</strong> cuando abra la
+        siguiente. Sin spam: te escribimos solo para eso.
+      </p>
+
+      <form class="espera-form" id="espera-form" novalidate>
+        <!-- trampa para bots: invisible para una persona -->
+        <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <input type="email" name="email" id="espera-email" required
+               placeholder="tucorreo@ejemplo.com" autocomplete="email"
+               aria-label="Tu correo electrónico">
+        <button class="btn btn-primary btn-buy" type="submit">Avísame</button>
+      </form>
+      <p class="espera-msg" id="espera-msg" role="status" aria-live="polite"></p>
+    </div>
 
     <p class="close-mail">
-      ¿Dudas antes de decidir? Escríbenos a
+      ¿Tienes dudas? Escríbenos a
       <a href="mailto:puntozero@anonimustradelive.com">puntozero@anonimustradelive.com</a>.
       Preguntar no cuesta nada.
     </p>
@@ -1295,10 +1349,10 @@ body { padding-bottom:0 }
 <!-- ── BARRA FIJA MÓVIL ── -->
 <div class="dock" id="dock">
   <div class="dock-info">
-    <b>US$ 299.99</b>
-    <span>Empieza el lunes 17 de agosto</span>
+    <b>Cupos llenos</b>
+    <span>Anótate para la próxima</span>
   </div>
-  <a class="btn btn-primary btn-sm" href="https://whop.com/the-light-club/puntozero/" target="_blank" rel="noopener">Reservar mi plaza</a>
+  <a class="btn btn-primary btn-sm" href="#avisame">Avísame</a>
 </div>
 
 <script>
@@ -1893,6 +1947,51 @@ body { padding-bottom:0 }
     if (!corriendo) actual = window.scrollY;
     destino = Math.min(tope(), Math.max(0, window.scrollY + dest.getBoundingClientRect().top));
     if (!corriendo) { corriendo = true; previo = 0; requestAnimationFrame(paso); }
+  });
+})();
+
+
+/* ── Lista de espera ── manda el correo a lead.php sin recargar la página. */
+(function () {
+  var form = document.getElementById('espera-form');
+  if (!form) return;
+  var msg   = document.getElementById('espera-msg');
+  var boton = form.querySelector('button');
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var email = form.email.value.trim();
+    if (!email || email.indexOf('@') < 1) {
+      msg.className = 'espera-msg error';
+      msg.textContent = 'Escribe un correo válido.';
+      return;
+    }
+
+    boton.disabled = true;
+    var textoOriginal = boton.textContent;
+    boton.textContent = 'Enviando…';
+    msg.className = 'espera-msg';
+    msg.textContent = '';
+
+    var datos = new FormData();
+    datos.append('email', email);
+    datos.append('website', form.website.value);   /* trampa para bots */
+    datos.append('origen', 'landing');
+
+    fetch('lead.php', { method: 'POST', body: datos })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        msg.className = 'espera-msg ' + (d.ok ? 'ok' : 'error');
+        msg.textContent = d.message;
+        if (d.ok) { form.reset(); form.email.disabled = true; boton.disabled = true; boton.textContent = 'Anotado'; }
+        else { boton.disabled = false; boton.textContent = textoOriginal; }
+      })
+      .catch(function () {
+        msg.className = 'espera-msg error';
+        msg.textContent = 'No se pudo enviar. Escríbenos a puntozero@anonimustradelive.com.';
+        boton.disabled = false;
+        boton.textContent = textoOriginal;
+      });
   });
 })();
 

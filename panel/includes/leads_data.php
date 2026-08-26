@@ -1,0 +1,66 @@
+<?php
+// Lee los correos de la lista de espera de Punto Zerø DIRECTAMENTE de
+// puntozero/leads.json en el docroot principal (anonimustradelive.com) —
+// mismo patrón de docroots hermanos que ads_pricing.php y concurso_data.php,
+// sin duplicar datos entre subdominios.
+
+function getLeadsDir(): ?string {
+    static $resolved = false; // false = todavía no se intentó resolver
+
+    if ($resolved !== false) return $resolved;
+
+    $candidates = [];
+    if (defined('PUNTOZERO_DIR')) $candidates[] = PUNTOZERO_DIR;
+    // Mismo árbol de archivos (repo local / hosting con un solo document root)
+    $candidates[] = __DIR__ . '/../../puntozero';
+    // Producción: panel.anonimustradelive.com y anonimustradelive.com son
+    // document roots distintos pero hermanos bajo el mismo home de cPanel
+    $candidates[] = __DIR__ . '/../../anonimustradelive.com/puntozero';
+
+    foreach ($candidates as $c) {
+        if ($c && is_dir($c)) { $resolved = realpath($c) ?: $c; return $resolved; }
+    }
+
+    error_log('leads_data: no se encontró la carpeta puntozero/ en ninguna ruta candidata. ' .
+        'Define PUNTOZERO_DIR en config.php si la estructura del servidor cambió.');
+    $resolved = null;
+    return null;
+}
+
+function getLeads(): array {
+    $dir = getLeadsDir();
+    if (!$dir) return [];
+    $raw = @file_get_contents($dir . '/leads.json');
+    if (!$raw) return [];
+    $data = json_decode($raw, true);
+    return is_array($data) ? $data : [];
+}
+
+// Borra un correo por posición, verificando que la fecha coincida con la que
+// se mostró en pantalla. Evita borrar el equivocado si entró un lead nuevo
+// entre que se cargó la página y se envió el formulario de borrado.
+function deleteLead(int $index, string $expectedFecha): array {
+    $dir = getLeadsDir();
+    if (!$dir) return ['ok' => false, 'message' => 'No se encontró la carpeta de Punto Zerø.'];
+
+    $file = $dir . '/leads.json';
+    $raw  = @file_get_contents($file);
+    $all  = $raw ? (json_decode($raw, true) ?: []) : [];
+
+    if (!isset($all[$index]) || ($all[$index]['fecha'] ?? '') !== $expectedFecha) {
+        return ['ok' => false, 'message' => 'La lista cambió — recarga la página e intenta de nuevo.'];
+    }
+
+    $email = $all[$index]['email'] ?? '';
+    unset($all[$index]);
+    $all = array_values($all); // reindexa: si no, el JSON pasa a ser objeto con huecos
+
+    $ok = @file_put_contents(
+        $file,
+        json_encode($all, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+        LOCK_EX
+    );
+    if ($ok === false) return ['ok' => false, 'message' => 'No se pudo escribir el archivo.'];
+
+    return ['ok' => true, 'message' => "Se eliminó $email de la lista."];
+}

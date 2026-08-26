@@ -329,6 +329,15 @@ Ejecutado y verificado end-to-end el 2026-07-18: subdominio `reg.` eliminado, `p
 
 ## Historial de cambios recientes
 
+### 2026-08-26 — Punto Zerø cerró: lista de espera + leads en el panel
+- **La primera convocatoria se llenó.** Se ocultó Punto Zerø de las entradas públicas y la landing pasó de vender a captar leads para la próxima
+- **`index.html` del sitio principal**: los dos botones `.nav-cta-pz` (escritorio y móvil) quedaron **comentados, no borrados**, con la nota de cómo reactivarlos. La barra `.pz-bar` **ya se ocultaba sola** desde el 17 de agosto: se deja en su sitio porque para la próxima convocatoria basta con cambiarle la fecha de `FIN`
+- **`puntozero/index.html`**: los **5 botones que iban a Whop** ahora apuntan a `#avisame`. Esto era urgente: la página seguía en línea y alguien podía pagar US$ 299.99 por una convocatoria ya terminada. La sección de precio pasó a pasado ("Costó", "Te ahorrabas") y el bloque de compra se reemplazó por `.espera`, con el formulario de lista de espera. Va en **verde**, no carmesí, porque anotarse es gratis y beneficia al lector: no es una venta
+- **`puntozero/lead.php`** (nuevo): recibe el correo por `fetch` y lo guarda en `puntozero/leads.json`. **Mismo patrón de archivo plano que `concurso/submissions.json`**, sin base de datos. Valida con `FILTER_VALIDATE_EMAIL`, normaliza a minúsculas, **deduplica** (si ya estaba responde "Ya estabas en la lista", no un error), tiene **trampa para bots** (campo oculto `website`: si viene lleno responde ok sin guardar, para no darle pistas), tope de 20.000 entradas y `LOCK_EX` al escribir
+- **`puntozero/.htaccess`** (nuevo): bloquea el acceso web a `leads.json` y el listado de directorio. `leads.json` también está en `.gitignore`: son datos de personas generados en runtime
+- **Panel: nueva pestaña "🎓 Leads"** (`panel/leads/index.php` + `export_csv.php`, y `panel/includes/leads_data.php`). Lee `puntozero/leads.json` con el **mismo patrón de docroots hermanos** que `concurso_data.php` y `ads_pricing.php`. Tabla con correo, fecha y origen, borrado individual verificando la fecha contra la fila mostrada (evita borrar el equivocado si entró un lead nuevo mientras tanto), y exportación a CSV con BOM para Excel
+- **Para reabrir la venta:** devolver los 5 botones a Whop, quitar el bloque `.espera`, descomentar los botones del nav en `index.html` y actualizar la fecha de `FIN` de `.pz-bar`. Todo está marcado con comentarios en el código
+
 ### 2026-08-16 (2) — Punto Zerø en el sitio principal (barra temporal + botón)
 - **Motivo:** la landing de Punto Zerø no tenía ninguna entrada desde `index.html`, y el bootcamp arranca al día siguiente
 - **`index.html`**: nueva **barra de anuncio `.pz-bar`** como primer elemento de la página, con el nombre, la fecha de inicio, una cuenta atrás en vivo y un botón. Enlaza a `/puntozero/`. Además, botón **"Punto Zerø"** en el menú de escritorio (`.nav-actions`) y en el móvil (`.nav-mobile-actions`), con degradado morado→carmesí para que se distinga de los tres botones que ya había

@@ -20,3 +20,7 @@ ssh-hosting.txt
 
 # Copias de seguridad locales de la landing (no se despliegan ni hacen falta en el repo)
 puntozero/RESTAURAR-*.html
+
+# Correos de la lista de espera de Punto Zerø: datos de personas,
+# generados en runtime. Nunca al repo.
+puntozero/leads.json
