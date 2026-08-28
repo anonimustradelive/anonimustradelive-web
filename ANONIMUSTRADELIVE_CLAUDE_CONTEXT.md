@@ -329,6 +329,13 @@ Ejecutado y verificado end-to-end el 2026-07-18: subdominio `reg.` eliminado, `p
 
 ## Historial de cambios recientes
 
+### 2026-08-26 (3) — Punto Zerø vuelve a la bio y al sitio, apuntando a la lista de espera
+- Los botones se reactivaron para seguir captando correos, pero **todos apuntan a `/puntozero/#avisame`**, no a la venta: el ancla deja el formulario de lista de espera visible al llegar
+- **`bio/index.html`**: sección **"Formación"** al principio, con "Punto Zerø · Lista de espera — Bootcamp de 5 días · Cupos llenos · Anótate para la próxima". Va primero porque el objetivo declarado es juntar leads, y el texto dice "cupos llenos" de frente para que nadie llegue creyendo que puede comprar
+- **`index.html`**: se descomentaron los dos botones `.nav-cta-pz`. El de móvil dice "Punto Zerø · lista de espera"
+- **La barra `.pz-bar` sigue oculta**: se muestra sola solo mientras su fecha de `FIN` esté por venir, y todavía no hay fecha para la próxima convocatoria. Cuando la haya, actualizar esa fecha la reactiva sin tocar nada más
+- **Para reabrir la venta:** cambiar el destino de los tres enlaces a `/puntozero/` a secas, devolver los 5 botones de la landing a Whop y quitar el bloque `.espera`
+
 ### 2026-08-26 (2) — Bio reorganizada por secciones + CryptoPay
 - **Motivo:** la bio había crecido por acumulación y mezclaba intenciones distintas dentro de una misma sección. "Apóyanos" juntaba brókers, exchanges y herramientas de pago; el correo flotaba sin rótulo; y las sesiones en vivo, que son el contenido gratuito que convierte desconocidos en comunidad, estaban casi al final
 - **Orden nuevo, siguiendo el recorrido real del usuario** (aprende → únete → míranos → abre cuenta → consigue capital → cobra → herramientas → apóyanos → escríbenos): Comunidad · Sesiones en vivo · Abre tu cuenta para operar · Cuentas de fondeo · **Retira tus ganancias** · Herramientas y recursos · Apóyanos · Contacto
