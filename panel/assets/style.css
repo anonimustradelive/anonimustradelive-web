@@ -160,3 +160,18 @@ tr:last-child td { border-bottom:none; }
   position:absolute; bottom:1.5rem; left:50%; transform:translateX(-50%);
   font-size:0.78rem; color:var(--text-muted); background:rgba(0,0,0,0.45); padding:0.35rem 0.9rem; border-radius:20px;
 }
+
+/* ── Alta manual de leads (Punto Zerø) ── */
+.lead-add {
+  display:flex; gap:0.75rem; align-items:flex-end; flex-wrap:wrap;
+  background:var(--black2); border:1px solid var(--gray); border-radius:8px;
+  padding:1rem 1.1rem; margin-bottom:1.25rem;
+}
+.lead-add .field { flex:1 1 220px; }
+.lead-add .field:last-of-type { flex:0 1 200px; }
+.lead-add .btn-primary { flex-shrink:0; padding:0.72rem 1.2rem; font-size:0.85rem; }
+
+@media (max-width:560px) {
+  .lead-add { flex-direction:column; align-items:stretch; }
+  .lead-add .field, .lead-add .field:last-of-type { flex:1 1 auto; }
+}

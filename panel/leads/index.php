@@ -4,11 +4,21 @@ require_once __DIR__ . '/../includes/leads_data.php';
 
 $flash = '';
 $flash_type = 'ok';
+$origen_previo = ''; // se conserva entre altas: casi siempre se cargan varios de la misma red
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete') {
-    $result = deleteLead((int)($_POST['lead_index'] ?? -1), $_POST['lead_check'] ?? '');
-    $flash = $result['message'];
-    $flash_type = $result['ok'] ? 'ok' : 'error';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $accion = $_POST['action'] ?? '';
+
+    if ($accion === 'delete') {
+        $result = deleteLead((int)($_POST['lead_index'] ?? -1), $_POST['lead_check'] ?? '');
+        $flash = $result['message'];
+        $flash_type = $result['ok'] ? 'ok' : 'error';
+    } elseif ($accion === 'add') {
+        $origen_previo = trim($_POST['origen'] ?? '');
+        $result = addLead($_POST['email'] ?? '', $origen_previo);
+        $flash = $result['message'];
+        $flash_type = $result['ok'] ? 'ok' : 'error';
+    }
 }
 
 $leads = getLeads();
@@ -31,6 +41,27 @@ include __DIR__ . '/../includes/nav.php';
 <?php if (getLeadsDir() === null): ?>
 <div class="flash flash-error">⚠️ No se pudo leer la carpeta <code>puntozero/</code> del docroot principal. Revisa <code>panel/includes/leads_data.php</code>.</div>
 <?php endif; ?>
+
+<form method="POST" class="lead-add">
+  <input type="hidden" name="action" value="add">
+  <div class="field">
+    <label for="nuevo-email">Correo</label>
+    <input type="email" name="email" id="nuevo-email" required autofocus
+           placeholder="nombre@correo.com" autocomplete="off" spellcheck="false">
+  </div>
+  <div class="field">
+    <label for="nuevo-origen">De dónde salió</label>
+    <input type="text" name="origen" id="nuevo-origen" list="origenes-lead" maxlength="40"
+           placeholder="TikTok, WhatsApp…" autocomplete="off"
+           value="<?= htmlspecialchars($origen_previo) ?>">
+    <datalist id="origenes-lead">
+      <option value="TikTok"><option value="Instagram"><option value="WhatsApp">
+      <option value="Telegram"><option value="YouTube"><option value="En vivo">
+      <option value="Correo"><option value="Referido">
+    </datalist>
+  </div>
+  <button type="submit" class="btn-primary">＋ Agregar</button>
+</form>
 
 <p class="muted-sub" style="margin-bottom:1.25rem">
   <?= $total ?> correo<?= $total === 1 ? '' : 's' ?> en la lista de espera de la próxima convocatoria.

@@ -329,6 +329,15 @@ Ejecutado y verificado end-to-end el 2026-07-18: subdominio `reg.` eliminado, `p
 
 ## Historial de cambios recientes
 
+### 2026-08-30 — Alta manual de leads desde el panel
+- **Motivo:** muchos correos llegan por TikTok, Instagram, WhatsApp o Telegram y nunca pasan por el formulario de la landing. Antes solo se podían meter editando `leads.json` a mano por SSH
+- **`panel/includes/leads_data.php`**: función nueva `addLead($email, $origen)`, con la **misma validación que `puntozero/lead.php`** (minúsculas, `FILTER_VALIDATE_EMAIL`, tope de 190 caracteres) para que la lista no se parta en dos criterios distintos
+- **Un correo repetido no se trata como error**: devuelve `ok` y avisa "ya estaba en la lista (origen: X). No se duplicó". El correo está en la lista, que es lo que se quería. Efecto secundario útil: recargar la página después de agregar no duplica nada
+- **`panel/leads/index.php`**: formulario arriba de la tabla con dos campos, correo y **"de dónde salió"**. El campo de origen es un `input` con `datalist` (TikTok, Instagram, WhatsApp, Telegram, YouTube, En vivo, Correo, Referido): sugiere pero no obliga, así que un origen nuevo no exige tocar el código. Si se deja vacío se guarda como `manual`
+- **El origen se conserva entre altas** (`$origen_previo`): al cargar varios correos de la misma red no hay que reelegirlo cada vez. El foco vuelve al campo de correo (`autofocus`)
+- **`panel/assets/style.css`**: `.lead-add`, en línea en escritorio y apilado bajo 560 px. Reusa `.field` y `.btn-primary`, que ya existían
+- Los leads manuales salen en el CSV igual que los demás; el origen es lo único que los distingue
+
 ### 2026-08-26 (3) — Punto Zerø vuelve a la bio y al sitio, apuntando a la lista de espera
 - Los botones se reactivaron para seguir captando correos, pero **todos apuntan a `/puntozero/#avisame`**, no a la venta: el ancla deja el formulario de lista de espera visible al llegar
 - **`bio/index.html`**: sección **"Formación"** al principio, con "Punto Zerø · Lista de espera — Bootcamp de 5 días · Cupos llenos · Anótate para la próxima". Va primero porque el objetivo declarado es juntar leads, y el texto dice "cupos llenos" de frente para que nadie llegue creyendo que puede comprar

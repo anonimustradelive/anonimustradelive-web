@@ -36,6 +36,52 @@ function getLeads(): array {
     return is_array($data) ? $data : [];
 }
 
+// Agrega un correo a mano desde el panel. Es para los que nos llegan por
+// TikTok, Instagram, WhatsApp o Telegram, que nunca pasan por el formulario
+// de la landing. Misma validación y mismo antiduplicado que puntozero/lead.php.
+function addLead(string $email, string $origen): array {
+    $dir = getLeadsDir();
+    if (!$dir) return ['ok' => false, 'message' => 'No se encontró la carpeta de Punto Zerø.'];
+
+    $email = strtolower(trim($email));
+    if ($email === '') {
+        return ['ok' => false, 'message' => 'Escribe un correo.'];
+    }
+    if (strlen($email) > 190 || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return ['ok' => false, 'message' => 'Ese correo no parece válido: ' . $email];
+    }
+
+    $origen = substr(trim($origen), 0, 40);
+    if ($origen === '') $origen = 'manual';
+
+    $file = $dir . '/leads.json';
+    $raw  = @file_get_contents($file);
+    $all  = $raw ? (json_decode($raw, true) ?: []) : [];
+    if (!is_array($all)) $all = [];
+
+    // Que esté repetido no es un error: el correo ya está en la lista, que es
+    // justo lo que se quería. Se avisa y no se duplica.
+    foreach ($all as $l) {
+        if (strtolower($l['email'] ?? '') === $email) {
+            return ['ok' => true, 'message' => "$email ya estaba en la lista (origen: " . ($l['origen'] ?? '—') . "). No se duplicó."];
+        }
+    }
+
+    $all[] = ['email' => $email, 'fecha' => date('c'), 'origen' => $origen];
+
+    $ok = @file_put_contents(
+        $file,
+        json_encode($all, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+        LOCK_EX
+    );
+    if ($ok === false) {
+        error_log('leads_data: no se pudo escribir en ' . $file . ' (¿permisos?)');
+        return ['ok' => false, 'message' => 'No se pudo escribir el archivo. Revisa los permisos de puntozero/.'];
+    }
+
+    return ['ok' => true, 'message' => "Se agregó $email a la lista."];
+}
+
 // Borra un correo por posición, verificando que la fecha coincida con la que
 // se mostró en pantalla. Evita borrar el equivocado si entró un lead nuevo
 // entre que se cargó la página y se envió el formulario de borrado.
