@@ -753,6 +753,30 @@ details p { padding:0 0 1.35rem; font-size:0.95rem; max-width:62ch }
 }
 
 
+/* ── RESEÑAS ── las tres reales de la primera convocatoria. Sin color propio
+   a propósito: la paleta ya tiene tres significados asignados (carmesí marca,
+   verde dinero a tu favor, morado exclusivo) y unas estrellas doradas serían
+   un cuarto código que no dice nada. En blanco se leen igual de claro. */
+.rev-grid { display:grid; gap:0.85rem; margin-top:2.4rem }
+.rev {
+  background:var(--card); border:1px solid var(--line); border-radius:var(--rad);
+  padding:1.5rem 1.6rem; margin:0;
+}
+.rev-stars { font-size:0.85rem; letter-spacing:0.14em; line-height:1; color:var(--text) }
+.rev-txt { margin-top:0.9rem; font-size:0.98rem; line-height:1.6 }
+.rev-who { margin-top:1.15rem; font-size:0.85rem; color:var(--dim) }
+.rev-who b { color:var(--muted); font-weight:700 }
+
+@media (min-width:900px){
+  /* mismo truco que .days: las tarjetas no son prosa, así que no tienen por
+     qué encerrarse en la columna de lectura de 820 px */
+  .rev-grid {
+    position:relative; left:50%; transform:translateX(-50%);
+    width:min(1060px, calc(100vw - 4rem));
+    grid-template-columns:repeat(3, 1fr);
+  }
+}
+
 /* ── CHECKOUT ── el iframe de Whop se monta aquí, en el mismo hueco donde
    antes estaba el botón de compra. Solo se le da el aire de separación que
    tenía el botón: el checkout trae su propio relleno por dentro.
@@ -1088,6 +1112,37 @@ body { padding-bottom:0 }
   </div>
 </section>
 
+<!-- ── RESEÑAS ── las tres reales que dejó la primera convocatoria en Whop.
+     Van con el @ de cada persona a propósito: sin nombre verificable, un
+     testimonio no vale nada ante alguien que ya desconfía.
+     Sin párrafo de explicación y sin enlace a Whop: si son tres, son tres, y
+     mandar a leerlas fuera saca a la persona del embudo. -->
+
+<section>
+  <div class="wrap mid">
+    <p class="eyebrow">Lo que dijeron</p>
+    <h2 style="margin-top:1rem">Tres reseñas de la primera convocatoria</h2>
+
+    <div class="rev-grid">
+      <blockquote class="rev">
+        <p class="rev-stars" aria-label="5 de 5 estrellas">★★★★★</p>
+        <p class="rev-txt">Excelente explicación, excelente el trato, gracias por la paciencia 🙏 sigan así chicos!</p>
+        <p class="rev-who"><b>katherineRD24</b><br>@katherinerd</p>
+      </blockquote>
+      <blockquote class="rev">
+        <p class="rev-stars" aria-label="5 de 5 estrellas">★★★★★</p>
+        <p class="rev-txt">Excelente 🥇 Gracias chicos sigan así</p>
+        <p class="rev-who"><b>Flock</b><br>@admdialll</p>
+      </blockquote>
+      <blockquote class="rev">
+        <p class="rev-stars" aria-label="5 de 5 estrellas">★★★★★</p>
+        <p class="rev-txt">Excelente, los mejores!</p>
+        <p class="rev-who"><b>Dilesmy</b><br>@dilyc</p>
+      </blockquote>
+    </div>
+  </div>
+</section>
+
 <!-- ── LO QUE NO HACE ── -->
 <section>
   <div class="wrap mid">
@@ -1097,11 +1152,6 @@ body { padding-bottom:0 }
       Cinco días alcanzan para entender el terreno y salir con un método propio.
       <strong>No alcanzan para que ganes dinero todos los días desde la primera semana, y no
       te lo vamos a prometer.</strong> El que te prometa eso está jugando con tu tiempo y tu dinero.
-    </p>
-    <p>
-      Tampoco vas a encontrar testimonios: <strong>no hay todavía</strong>, porque nadie ha
-      tomado este bootcamp. Lo único que podemos enseñarte es lo que ya está publicado, y
-      está más arriba, en el video.
     </p>
 
     <div class="fit">
