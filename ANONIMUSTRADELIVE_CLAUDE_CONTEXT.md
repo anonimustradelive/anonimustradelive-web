@@ -324,6 +324,7 @@ Ejecutado y verificado end-to-end el 2026-07-18: subdominio `reg.` eliminado, `p
 3. **MarkdownV2 en Telegram:** usar siempre `mdEscape()` para contenido dinámico; nunca `htmlspecialchars()`
 4. **Estructura modular del bot:** nunca poner lógica de negocio en el router; usar `commands/`
 5. **Actualizar este archivo** (`CLAUDE_CONTEXT.md`) después de cada cambio relevante
+6. **Todo archivo o carpeta nueva necesita su línea en `.cpanel.yml`.** El deploy copia archivo por archivo, **no sincroniza carpetas**: lo que no esté listado ahí se queda en GitHub y nunca llega al servidor, sin ningún aviso. Ya pasó con `commands/` (junio de 2026) y con `puntozero/gracias/` (septiembre de 2026)
 
 ---
 
@@ -346,6 +347,7 @@ Ejecutado y verificado end-to-end el 2026-07-18: subdominio `reg.` eliminado, `p
 - **Entradas actualizadas:** `index.html` reactiva la barra `.pz-bar` con la fecha nueva (`Date.UTC(2026, 8, 21, 18, 0, 0)`, la misma que el contador de la landing: si se cambia una hay que cambiar la otra) y los dos botones del nav vuelven a `/puntozero/`. `bio/index.html` pasa de "Lista de espera" a "Reserva tu plaza"
 - **Borrador de correo sin enviar:** `Material de enseñanza/Punto Zero/6 Correos/correo-3-segunda-convocatoria.html`, para la lista de espera. Los destinatarios se exportan desde el panel, pestaña Leads
 - ⚠️ **Visto en el checkout, a corregir en Whop, no en el código:** los términos dicen "The Light Club (by **AnonimusTarde** Live)". Es el nombre de la cuenta de Whop y aparece justo encima del botón de pago
+- 🐛 **Tras el primer deploy, `/puntozero/gracias` daba 404.** La carpeta estaba en git pero faltaba su línea en `.cpanel.yml`, que copia archivo por archivo y no sincroniza carpetas. Corregido con `mkdir -p` + `cp` de `puntozero/gracias/index.html`. Ver la regla 6 de desarrollo: es la segunda vez que pasa
 
 ### 2026-08-30 — Alta manual de leads desde el panel
 - **Motivo:** muchos correos llegan por TikTok, Instagram, WhatsApp o Telegram y nunca pasan por el formulario de la landing. Antes solo se podían meter editando `leads.json` a mano por SSH
