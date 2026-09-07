@@ -915,7 +915,7 @@
      Para quitarla antes, borrar este bloque, su CSS (.pz-bar) y su script.       -->
 <a class="pz-bar" id="pz-bar" href="/puntozero/">
   <span class="pz-bar-tag">Punto Zerø</span>
-  <span class="pz-bar-txt">Bootcamp de trading en vivo, 5 días. <b>Empieza el lunes 17.</b></span>
+  <span class="pz-bar-txt">Bootcamp de trading en vivo, 5 días. <b>Empieza el lunes 21 de septiembre.</b></span>
   <span class="pz-bar-cd" id="pz-cd"></span>
   <span class="pz-bar-go"><span class="pz-long">Ver el bootcamp </span>→</span>
 </a>
@@ -953,11 +953,10 @@
     <li><a href="/utilidades">🔒 herramientas vip</a></li>
   </ul>
   <div class="nav-actions">
-    <!-- PUNTO ZERØ — apunta a la LISTA DE ESPERA, no a la venta: la primera
-         convocatoria cerró. Cuando abra la siguiente, cambiar el destino a
-         /puntozero/ a secas y actualizar la fecha de FIN en el script de
-         .pz-bar (esa barra se muestra sola mientras la fecha esté por venir). -->
-    <a class="nav-cta-pz" href="/puntozero/#avisame">Punto Zerø</a>
+    <!-- PUNTO ZERØ — segunda convocatoria abierta: apunta a la venta. Si vuelve
+         a cerrarse, mirar el commit a8589bf, que tiene la versión de lista de
+         espera de estos botones y de la landing entera. -->
+    <a class="nav-cta-pz" href="/puntozero/">Punto Zerø</a>
     <a class="nav-cta-outline" href="mailto:anonimustradelive@outlook.com?subject=Contacto%20desde%20la%20web">📧 contacto</a>
     <a class="nav-cta-red" href="#donaciones">🤍 donar</a>
     <a class="nav-cta" href="https://t.me/anonimustradelive_bot" target="_blank" rel="noopener">únete</a>
@@ -992,7 +991,7 @@
   <a class="nav-mobile-link" href="/utilidades">🔒 herramientas vip</a>
   <div class="nav-mobile-actions">
     <!-- PUNTO ZERØ — lista de espera, ver nota en el menú de escritorio. -->
-    <a class="nav-cta-pz" href="/puntozero/#avisame" onclick="navClose()">Punto Zerø · lista de espera</a>
+    <a class="nav-cta-pz" href="/puntozero/" onclick="navClose()">Punto Zerø · reserva tu plaza</a>
     <a class="nav-cta-outline" href="mailto:anonimustradelive@outlook.com?subject=Contacto%20desde%20la%20web" onclick="navClose()">📧 contacto</a>
     <a class="nav-cta-red" href="#donaciones" onclick="navClose()">🤍 donar</a>
     <a class="nav-cta" href="https://t.me/anonimustradelive_bot" target="_blank" rel="noopener" onclick="navClose()">únete</a>
@@ -2558,13 +2557,14 @@ async function donConnectWith(provider) {
 
 <script>
 /* ══ BARRA PUNTO ZERØ ══ cuenta atrás al inicio de la primera clase:
-   lunes 17 de agosto de 2026, 2:00 p. m. hora del este (GMT-4 en verano),
+   lunes 21 de septiembre de 2026, 2:00 p. m. hora del este (GMT-4 en verano),
    o sea 18:00 UTC. Pasada esa hora la barra se retira sola, así que no hace
-   falta acordarse de quitarla a mano. */
+   falta acordarse de quitarla a mano. Es la misma fecha que usa el contador
+   de la landing: si se cambia una, hay que cambiar la otra. */
 (function () {
   var bar = document.getElementById('pz-bar'), cd = document.getElementById('pz-cd');
   if (!bar || !cd) return;
-  var FIN = Date.UTC(2026, 7, 17, 18, 0, 0);
+  var FIN = Date.UTC(2026, 8, 21, 18, 0, 0);
   function tic() {
     var falta = FIN - Date.now();
     if (falta <= 0) { bar.style.display = 'none'; clearInterval(t); return; }

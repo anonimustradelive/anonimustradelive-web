@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pago recibido · Punto Zerø</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#050506">
+<link rel="icon" href="../img/icono.png" type="image/png">
+<link rel="apple-touch-icon" href="../img/icono.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+/* Mismos tokens que la landing. Esta página es autocontenida a propósito:
+   es la primera que ve alguien que acaba de pagar, y no debe depender de
+   nada que pueda fallar. */
+:root {
+  --bg:        #050506;
+  --card:      #151519;
+  --line:      rgba(244,244,246,0.10);
+  --line-soft: rgba(244,244,246,0.06);
+
+  --crimson:      #E23B52;
+  --crimson-glow: rgba(226,59,82,0.14);
+  --crimson-line: rgba(226,59,82,0.28);
+
+  --text:  #F4F4F6;
+  --muted: #ADADB6;
+  --dim:   #74747E;
+
+  --green-lt:   #2FD693;
+  --green-glow: rgba(30,158,106,0.12);
+  --green-line: rgba(47,214,147,0.28);
+
+  --rad: 14px;
+}
+
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box }
+html { -webkit-text-size-adjust:100% }
+body {
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  background:var(--bg); color:var(--text);
+  line-height:1.65; font-size:17px;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh; display:flex; flex-direction:column;
+}
+
+.wrap { max-width:640px; margin:0 auto; padding:0 clamp(1.25rem,5vw,2rem); width:100% }
+
+/* ── Cabecera: la misma marca de la landing, sin menú ni CTA.
+      Quien llega aquí ya compró: no hay nada más que venderle. ── */
+header { border-bottom:1px solid var(--line-soft); padding:1.1rem 0 }
+.marca { display:flex; flex-direction:column; text-decoration:none; color:inherit; line-height:1.2 }
+.marca b { font-size:1.02rem; font-weight:800; letter-spacing:-0.03em }
+.marca span { font-size:0.66rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--dim) }
+
+main { flex:1; display:flex; align-items:center; padding:clamp(3rem,10vw,5.5rem) 0 }
+
+.tarjeta {
+  border:1px solid var(--green-line); border-radius:var(--rad);
+  background:linear-gradient(165deg, var(--green-glow), rgba(21,21,25,0) 62%);
+  padding:clamp(1.7rem,6vw,2.6rem);
+}
+.tarjeta.malo {
+  border-color:var(--crimson-line);
+  background:linear-gradient(165deg, var(--crimson-glow), rgba(21,21,25,0) 62%);
+}
+
+.marcador {
+  display:inline-block; margin-bottom:1.1rem; padding:0.32rem 0.8rem; border-radius:100px;
+  font-size:0.62rem; font-weight:800; letter-spacing:0.13em; text-transform:uppercase;
+  background:var(--green-glow); border:1px solid var(--green-line); color:var(--green-lt);
+}
+.tarjeta.malo .marcador { background:var(--crimson-glow); border-color:var(--crimson-line); color:var(--crimson) }
+
+h1 { font-size:clamp(1.6rem,5.4vw,2.2rem); line-height:1.12; letter-spacing:-0.03em; font-weight:800 }
+.tarjeta p { margin-top:1.1rem; color:var(--muted) }
+.tarjeta p strong { color:var(--text); font-weight:700 }
+
+.btn {
+  display:inline-flex; align-items:center; justify-content:center; gap:0.5rem;
+  font-family:inherit; font-size:1rem; font-weight:700; letter-spacing:-0.01em;
+  padding:1.05rem 1.9rem; border-radius:10px; border:1px solid transparent;
+  text-decoration:none; cursor:pointer; text-align:center;
+  transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
+  background:linear-gradient(180deg,#E62345 0%,#C01031 100%); color:#fff;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.22), 0 6px 26px rgba(206,20,54,0.34);
+  margin-top:1.9rem; width:100%;
+}
+.btn:hover {
+  background:linear-gradient(180deg,#F23050 0%,#CE1436 100%);
+  transform:translateY(-2px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.26), 0 10px 34px rgba(206,20,54,0.48);
+}
+@media (prefers-reduced-motion:reduce){ .btn, .btn:hover { transition:none; transform:none } }
+
+.pie-nota { margin-top:1.3rem; font-size:0.86rem; color:var(--dim) }
+.pie-nota a { color:var(--muted) }
+
+footer { border-top:1px solid var(--line-soft); padding:1.6rem 0 2.2rem }
+footer p { font-size:0.78rem; color:var(--dim) }
+footer a { color:var(--muted) }
+
+:focus-visible { outline:2px solid var(--crimson); outline-offset:3px; border-radius:4px }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="marca" href="https://anonimustradelive.com/puntozero/">
+      <b>Punto Zerø</b>
+      <span>AnonimusTrade Live</span>
+    </a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <!-- Estado normal: Whop devuelve aquí tras un pago correcto. También es lo
+         que se ve si la URL llega sin ningún parámetro. -->
+    <div class="tarjeta" id="ok">
+      <p class="marcador">Listo</p>
+      <h1>Pago recibido</h1>
+      <p>
+        Revisa tu correo: Whop te acaba de enviar la confirmación con tus datos de acceso.
+        <strong>Mira también la carpeta de spam</strong>, que es donde suele caer el primero.
+      </p>
+      <p>
+        El acceso a Punto Zerø está en <strong>Whop</strong>, no en esta web. Ahí tienes las
+        clases y el chat de tu grupo.
+      </p>
+      <a class="btn" href="https://whop.com/puntozero" target="_blank" rel="noopener">Entrar a Punto Zerø</a>
+      <p class="pie-nota">
+        ¿No te llegó nada en unos minutos? Escríbenos a
+        <a href="mailto:puntozero@anonimustradelive.com">puntozero@anonimustradelive.com</a>.
+      </p>
+    </div>
+
+    <!-- Estado de error: Whop añade ?status=error cuando el pago no se completó. -->
+    <div class="tarjeta malo" id="error" hidden>
+      <p class="marcador">Sin completar</p>
+      <h1>El pago no se completó</h1>
+      <p>
+        No se te cobró nada. Puede ser un rechazo del banco, una tarjeta sin fondos o
+        simplemente que se cerró la ventana antes de terminar.
+      </p>
+      <p>
+        Tu plaza <strong>no está reservada</strong> todavía. Vuelve a la página e inténtalo
+        de nuevo cuando quieras.
+      </p>
+      <a class="btn" href="https://anonimustradelive.com/puntozero/">Volver a intentarlo</a>
+      <p class="pie-nota">
+        ¿Se repite el problema? Escríbenos a
+        <a href="mailto:puntozero@anonimustradelive.com">puntozero@anonimustradelive.com</a>
+        y lo resolvemos contigo.
+      </p>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>
+      Punto Zerø es un programa de AnonimusTrade Live ·
+      <a href="mailto:puntozero@anonimustradelive.com">puntozero@anonimustradelive.com</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+/* Whop devuelve a esta URL con ?status=... El caso bueno (y el caso sin
+   parámetro) ya está pintado en el HTML, así que si el script no corriera
+   la persona igual vería la confirmación en vez de una página en blanco. */
+(function () {
+  var estado = new URLSearchParams(window.location.search).get('status');
+  if (estado === 'error') {
+    document.getElementById('ok').hidden = true;
+    document.getElementById('error').hidden = false;
+    document.title = 'El pago no se completó · Punto Zerø';
+  }
+})();
+</script>
+
+</body>
+</html>

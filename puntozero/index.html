@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Punto Zerø · Lo que el 90 % de los traders se salta</title>
-<meta name="description" content="Bootcamp intensivo de trading en vivo. Cinco días, de lunes a viernes. Empieza el 17 de agosto de 2026. Todos los cursos trabajan el mercado, pero pocos trabajan al trader.">
+<meta name="description" content="Bootcamp intensivo de trading en vivo. Cinco días, de lunes a viernes, más un sábado dedicado a Breakout. Empieza el 21 de septiembre de 2026. Todos los cursos trabajan el mercado, pero pocos trabajan al trader.">
 <meta name="theme-color" content="#050506">
 <link rel="canonical" href="https://anonimustradelive.com/puntozero/">
 <link rel="icon" href="img/icono.png" type="image/png">
@@ -13,7 +13,7 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://anonimustradelive.com/puntozero/">
 <meta property="og:title" content="Punto Zerø · Lo que el 90 % de los traders se salta">
-<meta property="og:description" content="Bootcamp intensivo de trading en vivo. Cinco días, del 17 al 21 de agosto. Todos los cursos trabajan el mercado, pero pocos trabajan al trader.">
+<meta property="og:description" content="Bootcamp intensivo de trading en vivo. Del 21 al 26 de septiembre. Todos los cursos trabajan el mercado, pero pocos trabajan al trader.">
 <meta property="og:image" content="https://anonimustradelive.com/puntozero/img/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -26,6 +26,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <!-- Bodoni Moda se usa solo para la O de la .Ø: se pide subconjuntada a ese único glifo -->
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,500&text=O&display=swap" rel="stylesheet">
+
+<!-- Checkout de Whop: monta el iframe de pago sobre el div con
+     data-whop-checkout-plan-id que está en la sección "reservar".
+     Va una sola vez en toda la página. -->
+<script async defer src="https://js.whop.com/static/checkout/loader.js"></script>
 <style>
 :root {
   --bg:        #050506;
@@ -633,7 +638,7 @@ nav .wrap { display:flex; align-items:center; justify-content:space-between; wid
 
 /* ── Precio en dos columnas (escritorio) ────────────────────────────────
    El desglose a la izquierda y el precio a la derecha, para que el ojo
-   compare US$ 2,620 contra US$ 299.99 de un vistazo en vez de tener que
+   compare US$ 2,820 contra US$ 299.99 de un vistazo en vez de tener que
    recordar el primero mientras baja al segundo.                        */
 .precio-reja { display:grid; gap:2.6rem }
 .stack-wrap { text-align:left; margin-bottom:0 }
@@ -740,44 +745,24 @@ details p { padding:0 0 1.35rem; font-size:0.95rem; max-width:62ch }
     width:min(1060px, calc(100vw - 4rem));
   }
   .days { grid-template-columns:1fr 1fr; gap:0.85rem }
-  /* el quinto día ocupa la fila entera: si no, queda un hueco raro */
-  .days .day:last-child { grid-column:1 / -1 }
+  /* la última tarjeta ocupa la fila entera solo si el total es impar: si no,
+     queda un hueco raro. Con seis días la reja cierra sola y no hace falta. */
+  .days .day:nth-child(odd):last-child { grid-column:1 / -1 }
 
   .faq { display:grid; grid-template-columns:1fr 1fr; gap:0 3rem; align-items:start }
 }
 
 
-/* ── LISTA DE ESPERA ── reemplazó al bloque de compra cuando se llenó la
-   primera convocatoria. Usa el verde de "dinero a tu favor" porque anotarse
-   es gratis y beneficia al lector, no una venta. */
-.espera {
-  margin-top:2.4rem; padding:clamp(1.6rem,5vw,2.2rem);
-  border:1px solid var(--green-line); border-radius:var(--rad);
-  background:linear-gradient(165deg, rgba(30,158,106,0.12), rgba(21,21,25,0) 62%);
-  scroll-margin-top:80px;
-}
-.espera-tag {
-  display:inline-block; margin-bottom:0.9rem; padding:0.32rem 0.8rem; border-radius:100px;
-  background:var(--crimson-glow); border:1px solid var(--crimson-line); color:var(--crimson);
-  font-size:0.62rem; font-weight:800; letter-spacing:0.13em; text-transform:uppercase;
-}
-.espera-titulo { font-size:clamp(1.25rem,3.6vw,1.6rem); margin-bottom:0.9rem }
-.espera-txt { font-size:0.98rem }
-.espera-form { display:flex; flex-wrap:wrap; gap:0.7rem; margin-top:1.5rem }
-.espera-form input[type=email] {
-  flex:1 1 220px; min-width:0;
-  padding:0.95rem 1.1rem; border-radius:10px;
-  background:rgba(244,244,246,0.05); border:1px solid var(--line);
-  color:var(--text); font-family:inherit; font-size:1rem;
-}
-.espera-form input[type=email]::placeholder { color:var(--dim) }
-.espera-form input[type=email]:focus { outline:none; border-color:var(--green-line); background:rgba(30,158,106,0.08) }
-.espera-form button { flex:0 0 auto }
-/* la trampa para bots: fuera de pantalla, nunca enfocable a la vista */
-.espera-form input[name=website] { position:absolute; left:-9999px; width:1px; height:1px; opacity:0 }
-.espera-msg { margin-top:0.9rem; font-size:0.92rem; min-height:1.3em }
-.espera-msg.ok    { color:var(--green-lt); font-weight:600 }
-.espera-msg.error { color:var(--crimson); font-weight:600 }
+/* ── CHECKOUT ── el iframe de Whop se monta aquí, en el mismo hueco donde
+   antes estaba el botón de compra. Solo se le da el aire de separación que
+   tenía el botón: el checkout trae su propio relleno por dentro.
+   (La lista de espera que ocupó este sitio entre el 26/8 y el 7/9 de 2026
+   está completa en el commit a8589bf, por si hay que volver a cerrar.) */
+.checkout-wrap { margin-top:2.4rem }
+/* Solo aparece si el checkout no llegó a montarse: preguntar "¿no carga?"
+   debajo de un pago que sí cargó siembra una duda que no existía. */
+.checkout-nota { display:none; margin-top:1.1rem; font-size:0.85rem; color:var(--dim); text-align:center }
+.checkout-nota.visible { display:block }
 
 /* ── PIE ── */
 footer { background:var(--bg); border-top:1px solid var(--line-soft); padding:clamp(2.75rem,8vw,4rem) 0 3rem }
@@ -822,7 +807,7 @@ body { padding-bottom:0 }
       <b>Punto Zerø</b>
       <span>AnonimusTrade Live</span>
     </a>
-    <a class="btn btn-primary btn-sm" href="#avisame">Avísame</a>
+    <a class="btn btn-primary btn-sm" href="#reservar">Reservar mi plaza</a>
   </div>
 </nav>
 
@@ -834,14 +819,14 @@ body { padding-bottom:0 }
     <canvas class="hero-canvas c-front" id="singF"></canvas>
   </div>
   <div class="wrap">
-    <p class="hero-badge">Bootcamp en vivo<span class="badge-sep"> · </span><br class="badge-br">Empieza el lunes 17 de agosto</p>
+    <p class="hero-badge">Bootcamp en vivo<span class="badge-sep"> · </span><br class="badge-br">Empieza el lunes 21 de septiembre</p>
     <h1>Lo que el 90&nbsp;% de los traders se salta</h1>
     <p class="hero-sub">
       Ya lo has probado todo. Viste videos, copiaste señales, seguiste a alguien en
       Telegram. Y aun así perdiste, o ganaste un rato y después lo devolviste todo.
     </p>
     <div class="hero-cta">
-      <a class="btn btn-primary" href="#avisame">Avísame de la próxima convocatoria</a>
+      <a class="btn btn-primary" href="#reservar">Reservar mi plaza · US$ 299.99</a>
       <a class="btn btn-ghost" href="https://anonimustradelive.com/email_marketing/punto-zero-extracto.pdf" target="_blank" rel="noopener">Descargar el extracto gratis</a>
     </div>
     <!-- Banda de logística: en escritorio son tres grupos rotulados lado a lado
@@ -849,15 +834,14 @@ body { padding-bottom:0 }
          las fechas, que es donde tiene sentido. En móvil se apila. -->
     <div class="banda">
       <div class="banda-col">
-        <p class="banda-lbl">Primera convocatoria</p>
-        <p class="banda-fecha"><b>Lun 17</b> <i>→</i> <b>Vie 21</b><span>de agosto</span></p>
+        <p class="banda-lbl">Segunda convocatoria</p>
+        <p class="banda-fecha"><b>Lun 21</b> <i>→</i> <b>Sáb 26</b><span>de septiembre</span></p>
       </div>
 
       <div class="banda-col">
-        <p class="banda-lbl">Elige tu tanda</p>
+        <p class="banda-lbl">Horario</p>
         <div class="tandas-row">
-          <span class="tanda"><b>Tanda 1 · GMT-4</b><em>2:00 - 4:00 p. m.</em></span>
-          <span class="tanda"><b>Tanda 2 · GMT-4</b><em>6:00 - 8:00 p. m.</em></span>
+          <span class="tanda"><b>Todos los días · GMT-4</b><em>2:00 - 4:00 p. m.</em></span>
         </div>
       </div>
 
@@ -874,7 +858,7 @@ body { padding-bottom:0 }
       </div>
     </div>
 
-    <p class="hero-pago">Pago único, sin suscripción. La misma clase en las dos tandas: eliges una y es la tuya los cinco días.</p>
+    <p class="hero-pago">Pago único, sin suscripción. Un solo horario para todo el grupo, de 2:00 a 4:00 p. m., hora del este.</p>
   </div>
 </header>
 
@@ -934,8 +918,8 @@ body { padding-bottom:0 }
     <p class="eyebrow">De qué se trata</p>
     <h2 style="margin-top:1rem">Cinco días en vivo y un manual <em>tuyo para siempre</em></h2>
     <p style="margin-top:1.8rem" class="lead">
-      Cinco clases en directo, de lunes a viernes, de dos horas cada una. Más un manual de
-      69 páginas que recibes el primer día.
+      Cinco clases en directo, de lunes a viernes, de dos horas cada una, y un sexto día el
+      sábado dedicado a Breakout. Más un manual de 69 páginas que recibes el primer día.
     </p>
     <p>
       Empezamos en cero absoluto: qué es una vela, quién está al otro lado del mercado.
@@ -1012,6 +996,14 @@ body { padding-bottom:0 }
         <p>Cómo elegir uno y verificar su licencia tú mismo.</p>
         <details class="day-more"><summary>Ver detalle</summary><p>Qué hace tu bróker con tu orden y por qué importa. Cómo comparar costos de verdad. La trampa de los bonos. Tu plan de trading.</p></details>
       </article>
+      <!-- Día 6: el sábado. No existía en la primera convocatoria; se añadió para
+           dar Breakout en directo en vez de solo entregarlo como material. -->
+      <article class="day">
+        <div class="day-n">6</div>
+        <h3>Breakout, en directo</h3>
+        <p>El sábado, la sesión completa para el modelo de entrada. <span class="mark">Día nuevo en esta edición.</span></p>
+        <details class="day-more"><summary>Ver detalle</summary><p>Uno de los seis modelos de nuestra estrategia de scalping. Cómo se identifica la ruptura, dónde va la entrada, dónde va el stop y cómo se gestiona la operación. Va al final por algo: sin los cinco días anteriores, un modelo de entrada suelto no se sostiene.</p></details>
+      </article>
     </div>
   </div>
 </section>
@@ -1043,13 +1035,14 @@ body { padding-bottom:0 }
 
       <div class="hero-item hero-item-wide">
         <span class="item-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.2 11.4h17.6v9.4H3.2z"/><path d="M2 7.4h20v4H2zM12 7.4v13.4"/><path d="M12 7.4S10.9 3 8.4 3a2.2 2.2 0 0 0 0 4.4zM12 7.4S13.1 3 15.6 3a2.2 2.2 0 0 1 0 4.4z"/></svg></span>
-        <h3>Breakout, un modelo de entrada de nuestro scalping <em>solo en esta edición</em></h3>
-        <p>Es uno de los seis modelos de la estrategia que vamos a vender aparte a US$ 3,000. A los grupos siguientes ya no se les regala.</p>
+        <h3>Breakout, un modelo de entrada de nuestro scalping <em>ahora en directo</em></h3>
+        <p>Es uno de los seis modelos de la estrategia que vamos a vender aparte a US$ 3,000. En la primera convocatoria se entregaba como material. Funcionó lo bastante bien como para darle un día entero en vivo, y sigue incluido sin subir el precio.</p>
       </div>
     </div>
 
     <ul class="plain">
       <li>Cinco clases en vivo de dos horas, de lunes a viernes</li>
+      <li>Un sexto día el sábado, dedicado entero a Breakout</li>
       <li>Q&amp;A al final de cada clase</li>
       <li>Chat de tu grupo durante toda la semana</li>
       <li>Plantilla de operación y plantilla de plan de trading</li>
@@ -1148,10 +1141,10 @@ body { padding-bottom:0 }
     <div class="stack">
       <div class="stack-row">
         <div class="stack-what">
-          <b>Cinco clases en vivo (10 horas)</b>
+          <b>Seis clases en vivo (12 horas)</b>
           <span>Nuestra mentoría 1:1 cuesta US$ 100 la hora.</span>
         </div>
-        <div class="stack-val">US$ 1,000</div>
+        <div class="stack-val">US$ 1,200</div>
       </div>
       <div class="stack-row">
         <div class="stack-what">
@@ -1182,20 +1175,20 @@ body { padding-bottom:0 }
       </div>
       <div class="stack-row stack-sum">
         <div class="stack-what"><b>Por separado</b></div>
-        <div class="stack-val">US$ 2,620</div>
+        <div class="stack-val">US$ 2,820</div>
       </div>
     </div>
 
   </div>
 
   <div class="precio-lado">
-    <p class="price-lead">Costó</p>
+    <p class="price-lead">Te lo llevas todo por</p>
     <div class="price-n"><sup>US$</sup>299.99</div>
     <p class="price-tag">Pago único</p>
-    <p class="price-save">Te ahorrabas <b>US$ 2,320</b></p>
+    <p class="price-save">Te ahorras <b>US$ 2,520</b></p>
     <p class="precio-extracto">
-      La próxima convocatoria abrirá a este precio o cerca. Si quieres entrar,
-      <a href="#avisame">déjanos tu correo</a> y te avisamos antes que a nadie.
+      Antes de decidir, <strong>llévate el extracto gratis</strong>: son 7 páginas del manual
+      real, para que veas cómo enseñamos sin pagar nada.
     </p>
   </div>
   </div>
@@ -1208,27 +1201,30 @@ body { padding-bottom:0 }
       <div class="gift-top">
         <span class="gift-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.2 11.4h17.6v9.4H3.2z"/><path d="M2 7.4h20v4H2zM12 7.4v13.4"/><path d="M12 7.4S10.9 3 8.4 3a2.2 2.2 0 0 0 0 4.4zM12 7.4S13.1 3 15.6 3a2.2 2.2 0 0 1 0 4.4z"/></svg></span>
         <div>
-          <span class="eyebrow">Solo en esta edición</span>
-          <h2>El regalo de la primera convocatoria</h2>
+          <span class="eyebrow">Incluido, sin subir el precio</span>
+          <h2>Breakout ya es parte del programa</h2>
         </div>
       </div>
 
       <p class="gift-what">
         Te llevas <strong>Breakout</strong>, uno de los seis modelos de entrada de nuestra
-        estrategia de scalping. La estrategia completa la vamos a vender aparte.
+        estrategia de scalping, y esta vez lo damos en vivo el sábado. La estrategia completa
+        la vamos a vender aparte.
       </p>
 
       <div class="gift-price">
         <span class="gift-price-val">US$ 500</span>
         <span class="gift-price-arrow" aria-hidden="true">→</span>
-        <span class="gift-price-lbl">Gratis, solo en esta edición</span>
+        <span class="gift-price-lbl">Incluido, y ahora en directo</span>
       </div>
 
       <p class="gift-why">
-        Las plazas de esta edición son ilimitadas. A los grupos siguientes ya no se les regala.
+        En la primera convocatoria lo entregábamos como material suelto, y fue lo que más
+        movió a quien empezaba de cero. Por eso le dimos un día propio en vivo y lo dejamos
+        dentro, sin tocar el precio.
       </p>
 
-      <a class="btn btn-primary btn-buy gift-cta" href="#avisame">Avísame de la próxima</a>
+      <a class="btn btn-primary btn-buy gift-cta" href="#reservar">Reservar mi plaza</a>
     </div>
   </div>
 </section>
@@ -1243,37 +1239,34 @@ body { padding-bottom:0 }
     </p>
 
     <dl class="facts">
-      <div class="fact"><dt>Comienza</dt><dd>Lunes 17 de agosto de 2026</dd></div>
-      <div class="fact"><dt>Duración</dt><dd>5 días, de lunes a viernes, 2 horas por clase</dd></div>
-      <div class="fact"><dt>Eliges una tanda</dt><dd>Tanda 1: de 2:00 a 4:00 p. m.<br>Tanda 2: de 6:00 a 8:00 p. m.<br><span class="fact-tz">Hora del este de Nueva York (GMT-4)</span></dd></div>
+      <div class="fact"><dt>Comienza</dt><dd>Lunes 21 de septiembre de 2026</dd></div>
+      <div class="fact"><dt>Duración</dt><dd>5 días, de lunes a viernes, más el sábado de Breakout. 2 horas por clase</dd></div>
+      <div class="fact"><dt>Horario</dt><dd>De 2:00 a 4:00 p. m.<br><span class="fact-tz">Hora del este de Nueva York (GMT-4)</span></dd></div>
       <div class="fact"><dt>Inversión</dt><dd>US$ 299.99, pago único</dd></div>
     </dl>
 
-    <!-- ══ LISTA DE ESPERA ══ reemplazó al botón de compra el 2026-08-26, cuando
-         se llenó la primera convocatoria. Los correos van a puntozero/leads.json
-         vía lead.php y se ven en el panel admin, pestaña Leads.
-         Para reabrir la venta: devolver aquí el botón a Whop y quitar este bloque. -->
-    <div class="espera" id="avisame">
-      <p class="espera-tag">Cupos llenos</p>
-      <h3 class="espera-titulo">La primera convocatoria ya se llenó</h3>
-      <p class="espera-txt">
-        Déjanos tu correo y te avisamos <strong>antes que a nadie</strong> cuando abra la
-        siguiente. Sin spam: te escribimos solo para eso.
+    <!-- ══ CHECKOUT ══ Whop embebido: se paga aquí mismo, sin salir de la página.
+         El script que lo monta está en el <head> y va una sola vez.
+         Todos los botones "Reservar mi plaza" de la página apuntan a #reservar,
+         que es esta sección. No añadir un segundo embed. -->
+    <div class="checkout-wrap">
+      <div
+        data-whop-checkout-plan-id="plan_XfCA5U7ELvdHd"
+        data-whop-checkout-theme="dark"
+        data-whop-checkout-return-url="https://anonimustradelive.com/puntozero/gracias"
+        style="width: 100%; max-width: 100%; height: fit-content; overflow: hidden;"
+      ></div>
+      <!-- Red de seguridad: si un bloqueador impide cargar js.whop.com, el
+           visitante se queda sin forma de pagar. Este enlace es esa salida, y
+           solo se muestra si el checkout no llegó a montarse (ver script). -->
+      <p class="checkout-nota" id="checkout-nota">
+        ¿No carga el pago? Ábrelo en
+        <a href="https://whop.com/checkout/plan_XfCA5U7ELvdHd" target="_blank" rel="noopener">Whop directamente</a>.
       </p>
-
-      <form class="espera-form" id="espera-form" novalidate>
-        <!-- trampa para bots: invisible para una persona -->
-        <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-        <input type="email" name="email" id="espera-email" required
-               placeholder="tucorreo@ejemplo.com" autocomplete="email"
-               aria-label="Tu correo electrónico">
-        <button class="btn btn-primary btn-buy" type="submit">Avísame</button>
-      </form>
-      <p class="espera-msg" id="espera-msg" role="status" aria-live="polite"></p>
     </div>
 
     <p class="close-mail">
-      ¿Tienes dudas? Escríbenos a
+      ¿Dudas antes de decidir? Escríbenos a
       <a href="mailto:puntozero@anonimustradelive.com">puntozero@anonimustradelive.com</a>.
       Preguntar no cuesta nada.
     </p>
@@ -1293,25 +1286,18 @@ body { padding-bottom:0 }
         <p>En Whop, la misma plataforma donde reservas tu plaza. Al entrar tienes ahí el acceso a las clases y el chat de tu grupo. No necesitas instalar nada más.</p>
       </details>
       <details>
-        <summary>¿Puedo cambiarme de tanda durante la semana?</summary>
-        <p>No. Eliges una al reservar y esa es la tuya los cinco días. Cada tanda se prepara para quienes se anotaron en ella, así que si la gente se mueve sobre la marcha terminamos dando una clase a una sala vacía y repitiéndola después. Elige la que de verdad puedas cumplir.</p>
-      </details>
-      <details>
         <summary>¿Y si no puedo asistir un día?</summary>
-        <p>Esa clase la pierdes, porque no hay grabaciones. El manual cubre el contenido, pero el Q&amp;A no se repone. Si ya sabes que vas a faltar dos días o más, mejor espera a la siguiente edición.</p>
+        <p>La clase queda grabada un tiempo para que la veas después. Lo que no se repone es el Q&amp;A: tus preguntas se responden en vivo, y de esa parte solo sacas provecho si estás. Si ya sabes que vas a faltar dos días o más, mejor espera a la siguiente edición.</p>
       </details>
       <details>
         <summary>¿Necesito dinero o un bróker para empezar?</summary>
         <p>Ninguna de las dos cosas. Durante la semana no necesitas poner ni un peso en el mercado, y te vamos a recomendar que todavía no lo hagas. El bróker lo vemos el día 5, cuando ya sepas elegirlo tú.</p>
       </details>
-      <details>
-        <summary>¿Por qué no hay grabaciones?</summary>
-        <p>Para que el Q&amp;A sea honesto. La gente no pregunta por sus pérdidas reales delante de una cámara que va a quedar guardada. El manual de 69 páginas cumple esa función.</p>
-      </details>
-      <details>
-        <summary>¿Por qué no hay testimonios?</summary>
-        <p>Porque es la primera edición y nadie lo ha tomado todavía. Preferimos decirlo a inventarlos.</p>
-      </details>
+      <!-- Aquí iba "¿Por qué no hay grabaciones?": en la primera convocatoria no
+           las había. Ahora sí, así que la pregunta se cayó.
+           Aquí iba también "¿Por qué no hay testimonios?", que decía que nadie
+           lo había tomado todavía. Ya no es cierto: pendiente montar los
+           testimonios reales de la primera convocatoria cuando lleguen. -->
       <details>
         <summary>¿Hay devoluciones?</summary>
         <p>No. Por eso ponemos en esta página todo lo que el bootcamp no hace, y por eso el extracto de 7 páginas es gratis: para que decidas sabiendo.</p>
@@ -1349,10 +1335,10 @@ body { padding-bottom:0 }
 <!-- ── BARRA FIJA MÓVIL ── -->
 <div class="dock" id="dock">
   <div class="dock-info">
-    <b>Cupos llenos</b>
-    <span>Anótate para la próxima</span>
+    <b>US$ 299.99</b>
+    <span>Empieza el lunes 21 de septiembre</span>
   </div>
-  <a class="btn btn-primary btn-sm" href="#avisame">Avísame</a>
+  <a class="btn btn-primary btn-sm" href="#reservar">Reservar mi plaza</a>
 </div>
 
 <script>
@@ -1841,13 +1827,14 @@ body { padding-bottom:0 }
 })();
 
 /* ── Cuenta regresiva al inicio de la primera clase ─────────────────────
-   Lunes 17 de agosto de 2026, 2:00 p. m. hora del este (EDT = UTC-4),
-   que es la hora de arranque de la Tanda 1. Se calcula en UTC para que dé
-   el mismo instante desde cualquier país.                                */
+   Lunes 21 de septiembre de 2026, 2:00 p. m. hora del este (EDT = UTC-4).
+   Se calcula en UTC para que dé el mismo instante desde cualquier país.
+   Ojo si una convocatoria futura cae en noviembre o después: Nueva York
+   pasa a EST (UTC-5) y el desfase deja de ser de 4 horas.                */
 (function () {
   var caja = document.getElementById('cierre');
   if (!caja) return;
-  var FIN = Date.UTC(2026, 7, 17, 18, 0, 0);   // 14:00 EDT = 18:00 UTC
+  var FIN = Date.UTC(2026, 8, 21, 18, 0, 0);   // 14:00 EDT = 18:00 UTC
   var d = document.getElementById('cd-d'), h = document.getElementById('cd-h'),
       m = document.getElementById('cd-m'), s = document.getElementById('cd-s');
 
@@ -1951,49 +1938,22 @@ body { padding-bottom:0 }
 })();
 
 
-/* ── Lista de espera ── manda el correo a lead.php sin recargar la página. */
+/* ── Red de seguridad del checkout ──────────────────────────────────────
+   Si un bloqueador impide js.whop.com, el div del embed se queda vacío y la
+   persona no tiene forma de pagar. Pasados unos segundos, si no se montó el
+   iframe, se enseña el enlace al checkout de Whop.                        */
 (function () {
-  var form = document.getElementById('espera-form');
-  if (!form) return;
-  var msg   = document.getElementById('espera-msg');
-  var boton = form.querySelector('button');
-
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    var email = form.email.value.trim();
-    if (!email || email.indexOf('@') < 1) {
-      msg.className = 'espera-msg error';
-      msg.textContent = 'Escribe un correo válido.';
-      return;
-    }
-
-    boton.disabled = true;
-    var textoOriginal = boton.textContent;
-    boton.textContent = 'Enviando…';
-    msg.className = 'espera-msg';
-    msg.textContent = '';
-
-    var datos = new FormData();
-    datos.append('email', email);
-    datos.append('website', form.website.value);   /* trampa para bots */
-    datos.append('origen', 'landing');
-
-    fetch('lead.php', { method: 'POST', body: datos })
-      .then(function (r) { return r.json(); })
-      .then(function (d) {
-        msg.className = 'espera-msg ' + (d.ok ? 'ok' : 'error');
-        msg.textContent = d.message;
-        if (d.ok) { form.reset(); form.email.disabled = true; boton.disabled = true; boton.textContent = 'Anotado'; }
-        else { boton.disabled = false; boton.textContent = textoOriginal; }
-      })
-      .catch(function () {
-        msg.className = 'espera-msg error';
-        msg.textContent = 'No se pudo enviar. Escríbenos a puntozero@anonimustradelive.com.';
-        boton.disabled = false;
-        boton.textContent = textoOriginal;
-      });
-  });
+  var nota = document.getElementById('checkout-nota');
+  if (!nota) return;
+  setTimeout(function () {
+    if (!document.querySelector('.checkout-wrap iframe')) nota.classList.add('visible');
+  }, 5000);
 })();
+
+/* La lista de espera vivió aquí entre el 26/8 y el 7/9 de 2026, mientras la
+   primera convocatoria estuvo cerrada. Su HTML, su CSS y este script están
+   completos en el commit a8589bf; lead.php y el panel de leads siguen en pie
+   para cuando haya que volver a cerrar. */
 
 /* Aparición escalonada de los bloques al hacer scroll */
 (function () {
