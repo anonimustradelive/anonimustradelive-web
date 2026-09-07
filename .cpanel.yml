@@ -34,6 +34,8 @@ deployment:
     - /bin/cp -r puntozero/img /home/ntpsrnlfrg/anonimustradelive.com/puntozero/
     - /bin/cp puntozero/lead.php /home/ntpsrnlfrg/anonimustradelive.com/puntozero/
     - /bin/cp puntozero/.htaccess /home/ntpsrnlfrg/anonimustradelive.com/puntozero/
+    - /bin/mkdir -p /home/ntpsrnlfrg/anonimustradelive.com/puntozero/gracias
+    - /bin/cp puntozero/gracias/index.html /home/ntpsrnlfrg/anonimustradelive.com/puntozero/gracias/
     - /bin/mkdir -p /home/ntpsrnlfrg/anonimustradelive.com/concurso
     - /bin/cp concurso/index.php /home/ntpsrnlfrg/anonimustradelive.com/concurso/
     - /bin/cp concurso/.htaccess /home/ntpsrnlfrg/anonimustradelive.com/concurso/
